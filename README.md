@@ -1,6 +1,6 @@
 # 파이널 프로젝트 - 루트3은 4 조
 
-## 그룹웨어 - AURORA
+## 그룹웨어 - AURORA - springboot
 
 ### 팀원
 * 오승재 - os133517@gmail.com
