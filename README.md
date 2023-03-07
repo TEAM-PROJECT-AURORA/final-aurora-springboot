@@ -4,7 +4,7 @@
 
 ### 팀원
 * 오승재 - os133517@gmail.com
-* 서지수 - 
+* 서지수 - seojs3045@gmail.com
 * 김수용 -
-* 정근호 -
+* 정근호 - jgh337337@gmail.com
 * 허재홍 -
