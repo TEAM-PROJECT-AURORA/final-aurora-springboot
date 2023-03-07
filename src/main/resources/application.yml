@@ -1,0 +1,38 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/aurora?useSSL=false
+    username:
+    password:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  web:
+    resources:
+      static-locations: classpath:/imgs/
+
+image:
+  add-resource-locations: /imgs/
+  add-resource-handler: /imgs/**
+
+  image-dir: /imgs/
+  image-url: http://localhost:8090/imgs/
+
+jwt:
+  secret: dW5pLXJlYWN0LW5naW54LXNwcmluZy1ib290LWp3dC1vcmFjbGUtZG9ja2VyLWVjMi1yZWFjdC1uZ25peC1zcHJpbmctYm9vdC1qd3Qtb3JhY2xlLWRvY2tlci1lYzIK
+
+mybatis:
+  mapper-locations: mybatis/mapper/*.xml
+  type-aliases-package: com.root34.aurora
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+
