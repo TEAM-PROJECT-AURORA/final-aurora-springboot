@@ -2,7 +2,17 @@ name: CI/CD Workflow  # 워크플로우 이름
 
 on:  # 워크플로를 트리거하는 이벤트를 지정
   push:  # 푸시 이벤트 발생 시 트리거
-    branches: [feature/*, develop, main, release]  # 다음 브랜치에서 푸시 이벤트가 발생하면 워크플로를 실행
+    branches: # 다음 브랜치에서 푸시 이벤트가 발생하면 워크플로를 실행
+      - 'feature/**'
+      - 'develop'
+      - 'main'
+      - 'release'
+  pull_request:
+    branches:
+      - 'feature/**'
+      - 'develop'
+      - 'main'
+      - 'release'
 
 jobs:  # 워크플로우에 대한 하나 이상의 작업을 정의
   build:  # 작업 이름
