@@ -7,4 +7,4 @@
 * 서지수 - seojs3045@gmail.com
 * 김수용 -
 * 정근호 - jgh337337@gmail.com
-* 허재홍 -
+* 허재홍 - zero5140@gmail.com
