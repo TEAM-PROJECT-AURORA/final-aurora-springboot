@@ -36,8 +36,35 @@ public class ApprovalController {
     public ResponseEntity<ResponseDto> lastList(@RequestBody ApprovalDTO approvalDTO){
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.lastList()));
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.lastList()));
     }
+
+    /**
+     @MethodName : pendingList
+     @Date : 12:09 AM
+     @Writer : heojaehong
+     @Method Description : 미결재 리스트 조회
+     */
+    @GetMapping("/approvals/pending")
+    public ResponseEntity<ResponseDto> pendingList(@RequestBody ApprovalDTO approvalDTO){
+        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.pendingList()));
+    }
+
+    /**
+     @MethodName : completedList
+     @Date : 12:09 AM
+     @Writer : heojaehong
+     @Method Description : 결재완료 리스트 조회
+     */
+    @GetMapping("/approvals/completed")
+    public ResponseEntity<ResponseDto> completedList(@RequestBody ApprovalDTO approvalDTO){
+        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.completedList()));
+    }
+
     /**
         @MethodName : approve
     	@Date : 3:07 PM
@@ -45,11 +72,12 @@ public class ApprovalController {
     	@Method Description : 결재서류 생성을 위한 메소드
     */
     @PostMapping("/approvals/draft/form/{docCode}")
-    public ResponseEntity<ResponseDto> approve(@RequestBody DocumentDTO documentDTO){
-        log.info("[ApprovalController] postMapping docCode: " + documentDTO.getDocCode());
-        ApprovalDTO approvalDTO = new ApprovalDTO();
-        approvalDTO.setDocumentDto(documentDTO);
+    public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody ApprovalDTO approvalDTO) throws Exception {
+        log.info("[ApprovalController] postMapping docCode: " + approvalDTO.getDocumentDto().getDocCode());
 
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setDocCode(docCode);
+        approvalDTO.setDocumentDto(documentDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
     }

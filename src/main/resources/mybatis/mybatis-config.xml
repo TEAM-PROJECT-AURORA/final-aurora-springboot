@@ -15,11 +15,15 @@
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 		<typeAlias alias="attendanceDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 
+		<typeAlias alias="ApprovalDTO" type="com.root34.aurora.approval.dto.ApprovalDTO"/>
+		<typeAlias alias="ApprovalLineDTO" type="com.root34.aurora.approval.dto.ApprovalLineDTO"/>
+		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="memberMapper.xml"/>
 		<mapper resource="attendanceMapper.xml"/>
 
+		<mapper resource="Approval.xml"/>
 	</mappers>
 </configuration>
