@@ -7,10 +7,7 @@ import com.root34.aurora.common.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  @FileName : ApprovalController
@@ -20,29 +17,36 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/approvals")
+@RequestMapping("/api/v1")
 public class ApprovalController {
 
     private final ApprovalService approvalService;
-    /**
-        @MethodName : ApprovalController
-    	@Date : 3:01 PM
-    	@Writer : heojaehong
-    	@Method Description : 컨트롤러 생성자 메소드
-    */
+
     public ApprovalController(ApprovalService approvalService) {
         this.approvalService = approvalService;
     }
 
+    /**
+        @MethodName : lastList
+    	@Date : 4:20 PM
+    	@Writer : heojaehong
+    	@Method Description : 최근 리스트 조회
+    */
+    @GetMapping("/approvals")
+    public ResponseEntity<ResponseDto> lastList(@RequestBody ApprovalDTO approvalDTO){
+        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.lastList()));
+    }
     /**
         @MethodName : approve
     	@Date : 3:07 PM
     	@Writer : heojaehong
     	@Method Description : 결재서류 생성을 위한 메소드
     */
-    @PostMapping("/draft/form/{docCode}")
+    @PostMapping("/approvals/draft/form/{docCode}")
     public ResponseEntity<ResponseDto> approve(@RequestBody DocumentDTO documentDTO){
-
+        log.info("[ApprovalController] postMapping docCode: " + documentDTO.getDocCode());
         ApprovalDTO approvalDTO = new ApprovalDTO();
         approvalDTO.setDocumentDto(documentDTO);
 
