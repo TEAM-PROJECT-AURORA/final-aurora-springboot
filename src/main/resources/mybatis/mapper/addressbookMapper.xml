@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.addressBook.dao.AddressBookMapper">
+    <select id="selectTotalMemberAddresses" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ADDRESS_BOOK
+    </select>
+    <select id="selectAllMemberAddress" resultType="memberDTO">
+        SELECT
+            MEMBER_NAME,
+            PHONE,
+            MEMBER_EMAIL,
+            '회사',
+            DEPT_CODE,
+            '회사 전화'
+          FROM TBL_MEMBER
+    </select>
+    <select id="selectAllMemberAddressesByDept" resultType="memberDTO">
+        SELECT
+            MEMBER_NAME,
+            PHONE,
+            MEMBER_EMAIL,
+            '회사',
+            DEPT_CODE,
+            '회사 전화'
+          FROM TBL_MEMBER
+         WHERE DEPT_CODE = #{ deptCode }
+    </select>
+    <select id="selectOneMemberAddress" parameterType="_int" resultType="memberDTO">
+        SELECT
+            MEMBER_CODE,
+            MEMBER_NAME,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            MEMBER_EMAIL,
+            INTRODUCTION,
+            BIRTHDAY,
+            TEAM,
+            PHONE
+          FROM TBL_MEMBER
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectAllPersonalAddresses" parameterType="_int" resultType="addressBookDTO">
+        SELECT
+            A.ADDBOOK_NO,
+            A.NAME,
+            A.PHONE,
+            A.EMAIL,
+            A.COMPANY,
+            A.DEPARTMENT,
+            A.COM_PHONE
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_PERSONAL_BOOK B
+            ON A.ADDBOOK_NO = B.ADDBOOK_NO
+          JOIN TBL_ADDRESS_GROUP C
+            ON B.GROUP_CODE = C.GROUP_CODE
+         WHERE B.MEMBER_CODE = #{ memberCode }
+    </select>
+    <insert id="insertPersonalAddress" parameterType="addressBookDTO">
+        INSERT ALL
+        INTO TBL_ADDRESS_BOOK
+            (NAME, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
+        VALUES
+            (#{ name }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
+        INTO TBL_PERSONAL_BOOK
+            (ADDBOOK_NO, MEMBER_CODE, TEAM, GROUP_CODE)
+        VALUES
+            (IDENT_CURRENT(), #{ memberCode }, NULL, #{ groupCode })
+    </insert>
+    <select id="selectAllTeamAddresses" parameterType="String" resultType="addressBookDTO">
+        SELECT
+            A.ADDBOOK_NO,
+            A.NAME,
+            A.PHONE,
+            A.EMAIL,
+            A.COMPANY,
+            A.DEPARTMENT,
+            A.COM_PHONE
+        FROM TBL_ADDRESS_BOOK A
+        JOIN TBL_PERSONAL_BOOK B
+          ON A.ADDBOOK_NO = B.ADDBOOK_NO
+        JOIN TBL_ADDRESS_GROUP C
+          ON B.GROUP_CODE = C.GROUP_CODE
+       WHERE B.MEMBER_CODE = #{ memberCode }
+    </select>
+    <insert id="insertTeamAddress" parameterType="addressBookDTO">
+        INSERT INTO TBL_ADDRESS_BOOK
+            (NAME, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
+        VALUES
+            (#{ name }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
+    </insert>
+</mapper>

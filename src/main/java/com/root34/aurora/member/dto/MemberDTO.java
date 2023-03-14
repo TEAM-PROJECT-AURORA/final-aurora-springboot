@@ -5,18 +5,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class MemberDto implements UserDetails {
-    private Long memberCode;
+public class MemberDTO implements UserDetails {
+    private int memberCode;
     private String memberId;
     private String memberPassword;
     private String memberName;
     private String memberEmail;
     private String memberRole;
 
-    public MemberDto() {
+    public MemberDTO() {
     }
 
-    public MemberDto(Long memberCode, String memberId, String memberPassword, String memberName, String memberEmail, String memberRole, Collection<? extends GrantedAuthority> authorities) {
+    public MemberDTO(int memberCode, String memberId, String memberPassword, String memberName, String memberEmail, String memberRole, Collection<? extends GrantedAuthority> authorities) {
         this.memberCode = memberCode;
         this.memberId = memberId;
         this.memberPassword = memberPassword;
@@ -26,11 +26,11 @@ public class MemberDto implements UserDetails {
         this.authorities = authorities;
     }
 
-    public Long getMemberCode() {
+    public int getMemberCode() {
         return memberCode;
     }
 
-    public void setMemberCode(Long memberCode) {
+    public void setMemberCode(int memberCode) {
         this.memberCode = memberCode;
     }
 
