@@ -5,6 +5,7 @@ import com.root34.aurora.approval.dto.ApprovalDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 /**
@@ -30,12 +31,40 @@ public class ApprovalService {
      @Method Description : 최근 결재 리스트 조회
      */
     public List<ApprovalDTO> lastList() {
-        // 조회할 목록이 없을 때
 
-        // 조회할 목록이 있을 때
-        List<ApprovalDTO> approval = approvalMapper.lastList();
+        try {
+            List<ApprovalDTO> approvalDtoList = approvalMapper.lastList();
+            if (approvalDtoList == null) {
+                throw new Exception("목록이 없습니다.");
+            }
 
-        return approval;
+            return approvalDtoList;
+        } catch (Exception e) {
+            log.error("[ApprovalService] lastList method error : " + e.getMessage());
+
+            return null;
+        }
+    }
+
+    public List<ApprovalDTO> pendingList() {
+
+        try {
+            List<ApprovalDTO> pendingList = approvalMapper.pendingList();
+            if(pendingList == null){
+                throw new Exception("조회할 목록이 없습니다.");
+            }
+
+            return pendingList;
+        } catch (Exception e) {
+            log.error("[ApprovalService] pendingList method error : " + e.getMessage());
+
+            return null;
+        }
+    }
+
+    public List<ApprovalDTO> completedList() {
+
+        return null;
     }
 
     /**
@@ -44,11 +73,19 @@ public class ApprovalService {
     	@Writer : heojaehong
     	@Method Description : 전자결재 서류 등록
     */
-    public ApprovalDTO approve(ApprovalDTO approvalDTO){
+    public ApprovalDTO approve(ApprovalDTO approvalDTO) throws Exception { // 호출한 곳에서 예외처리
 
-        int result = approvalMapper.insertApprove(approvalDTO);
+        try {
+            int result = approvalMapper.insertApprove(approvalDTO);
+            if(result == 0){
+                throw new Exception("제출 실패!");
+            }
 
-        return approvalDTO;
+            return approvalDTO;
+        } catch (Exception e) {
+            throw e;
+        }
     }
+
 
 }

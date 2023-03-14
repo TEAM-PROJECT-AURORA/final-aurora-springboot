@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.approval.dao.ApprovalMapper">
+
+    <insert id="insertApprove" parameterType="ApprovalDTO">
+        INSERT INTO TBL_APPROVAL
+        (APP_CODE, DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_DATE, APP_END_DATE, APP_OPEN)
+        VALUES
+        (null, #{ documentDto.docCode }, #{ memberDto.memberCode }, #{ appTitle }, #{ appDescript }, #{ appDate }, #{ appEndDate },
+         #{ appOpen } )
+    </insert>
+
+    <select id="lastList" parameterType="ApprovalDTO">
+        select
+            ta.APP_TITLE ,
+            tal.APP_STATUS
+        from TBL_APPROVAL ta
+        join TBL_APPROVAL_LINE tal
+        ON   (ta.APP_CODE = tal.APP_CODE)
+        where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY)
+    </select>
+</mapper>

@@ -12,10 +12,12 @@
 	</settings>
 
 	<typeAliases>
-		<!-- <typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/> -->
+		<typeAlias alias="ApprovalDTO" type="com.root34.aurora.approval.dto.ApprovalDTO"/>
+		<typeAlias alias="ApprovalLineDTO" type="com.root34.aurora.approval.dto.ApprovalLineDTO"/>
+		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
 	</typeAliases>
 
 	<mappers>
-		<!-- <mapper resource="addressBookMapper.xml" /> -->
+		<mapper resource="Approval.xml"/>
 	</mappers>
 </configuration>

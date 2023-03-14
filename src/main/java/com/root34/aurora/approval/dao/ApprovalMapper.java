@@ -18,4 +18,6 @@ public interface ApprovalMapper {
     int insertApprove(ApprovalDTO approvalDTO);
 
     List<ApprovalDTO> lastList();
+
+    List<ApprovalDTO> pendingList();
 }
