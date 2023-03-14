@@ -1,0 +1,15 @@
+name: CI/CD Feature 브랜치
+on:
+  push:
+    branches:
+      - feature/*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run tests
+      uses: actions/run-tests@v1
+    - name: Build code
+      uses: actions/build@v1
