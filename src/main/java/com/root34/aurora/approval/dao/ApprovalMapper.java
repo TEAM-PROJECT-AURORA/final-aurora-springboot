@@ -2,6 +2,9 @@ package com.root34.aurora.approval.dao;
 
 import com.root34.aurora.approval.dto.ApprovalDTO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
 /**
  @FileName : ApprovalMapper
  @Date : 3:08 PM
@@ -13,4 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ApprovalMapper {
 
     int insertApprove(ApprovalDTO approvalDTO);
+
+    List<ApprovalDTO> lastList();
 }
