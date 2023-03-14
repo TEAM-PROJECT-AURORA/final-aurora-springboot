@@ -1,8 +1,8 @@
 package com.root34.aurora.jwt;
 
-import com.oh.momozzi.exception.TokenException;
-import com.oh.momozzi.member.dto.MemberDto;
-import com.oh.momozzi.member.dto.TokenDto;
+import com.root34.aurora.exception.TokenException;
+import com.root34.aurora.member.dto.MemberDto;
+import com.root34.aurora.member.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
