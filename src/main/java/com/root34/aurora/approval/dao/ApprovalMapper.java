@@ -20,4 +20,8 @@ public interface ApprovalMapper {
     List<ApprovalDTO> lastList();
 
     List<ApprovalDTO> pendingList();
+
+    ApprovalDTO selectApprove(int appCode);
+
+    List<ApprovalDTO> completedList();
 }
