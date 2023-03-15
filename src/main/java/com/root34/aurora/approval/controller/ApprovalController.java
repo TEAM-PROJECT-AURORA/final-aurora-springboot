@@ -60,9 +60,27 @@ public class ApprovalController {
      */
     @GetMapping("/approvals/completed")
     public ResponseEntity<ResponseDto> completedList(@RequestBody ApprovalDTO approvalDTO){
+
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.completedList()));
+    }
+
+    /**
+        @MethodName : detailApprove
+    	@Date : 2:01 PM
+    	@Writer : heojaehong
+    	@Method Description : 결재 상세정보 조회
+    */
+    @GetMapping("/approvals/{appCode}")
+    public ResponseEntity<ResponseDto> detailApprove(@PathVariable int appCode){
+
+        ApprovalDTO approvalDTO = new ApprovalDTO();
+        log.info("[ApprovalController] GetMapping detailApprove: " + approvalDTO.toString());
+
+        approvalDTO.setAppCode(appCode);
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "상세정보 조회 성공", approvalService.detailApprove(appCode)));
     }
 
     /**

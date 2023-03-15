@@ -4,6 +4,7 @@ import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  @FileName : ApprovalDTO
@@ -30,5 +31,7 @@ public class ApprovalDTO {
     private Date appEndDate;
     /**@params : 확인여부*/
     private String appOpen;
+    /**@params : 결재선*/
+    private List<ApprovalLineDTO> approvalLineDtoList;
 
 }

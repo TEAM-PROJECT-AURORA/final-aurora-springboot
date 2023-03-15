@@ -21,4 +21,27 @@
         ON   (ta.APP_CODE = tal.APP_CODE)
         where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY)
     </select>
+
+    <select id="pendingList" parameterType="ApprovalDTO">
+        select
+            ta.APP_TITLE ,
+            tal.APP_STATUS
+        from TBL_APPROVAL ta
+        join TBL_APPROVAL_LINE tal
+        ON   (ta.APP_CODE = tal.APP_CODE)
+        where ta.APP_STATUS = 'N'
+    </select>
+
+    <select id="selectApprove" parameterType="ApprovalDTO">
+        select
+            *
+        from TBL_APPROVAL ta
+                 join TBL_APPROVAL_LINE tal
+                      ON   (ta.APP_CODE = tal.APP_CODE)
+        where ta.APP_STATUS = 'N'
+    </select>
+
+    <select id="completedList" parameterType="ApprovalDTO">
+
+    </select>
 </mapper>
