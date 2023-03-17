@@ -37,9 +37,17 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     // elk
-//    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+test {
+    failFast = true
+    maxParallelForks = 1
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
 }
