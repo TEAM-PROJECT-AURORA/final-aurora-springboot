@@ -3,7 +3,7 @@ package com.root34.aurora.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oh.momozzi.exception.dto.ApiExceptionDto;
+import com.root34.aurora.exception.dto.ApiExceptionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
