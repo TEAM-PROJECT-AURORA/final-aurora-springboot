@@ -29,7 +29,7 @@
     </appender>
 
     <!-- Log Stash 사용시 사용할 TCP 통신 정보
-			LogstashEncoder : spring에서 발생하는 로그를 elk stack에서 사용되는 json 형태로 변환
+			LogstashEncoder : spring에서 발생하는 로그를 elk stack에서 사용되는 json 형태로 변환밋
 		  LogstashTcpSocketAppender : Logstash 서버에 로그 전송
      -->
 <!--    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
