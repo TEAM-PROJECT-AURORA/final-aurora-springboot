@@ -33,6 +33,7 @@ mybatis:
     map-underscore-to-camel-case: true
 
 logging:
-  level:
-    root: info
+  config: file:src/main/resources/logback-spring.xml
+
+
 
