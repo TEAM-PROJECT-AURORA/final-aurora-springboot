@@ -87,7 +87,7 @@ public class ApprovalController {
         @MethodName : approve
     	@Date : 3:07 PM
     	@Writer : heojaehong
-    	@Method Description : 결재서류 생성을 위한 메소드
+    	@Description : 결재서류 생성을 위한 메소드
     */
     @PostMapping("/approvals/draft/form/{docCode}")
     public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody ApprovalDTO approvalDTO) throws Exception {
@@ -98,5 +98,16 @@ public class ApprovalController {
         approvalDTO.setDocumentDto(documentDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
+    }
+    /**
+        @MethodName : updateApproval
+    	@Date : 2:10 PM
+    	@Writer : heojaehong
+    	@Description : 결재 수정
+    */
+    @PutMapping("approvals/{docCode}")
+    public ResponseEntity<ResponseDto> updateApproval(@PathVariable int docCode, @RequestBody ApprovalDTO approvalDTO){
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "수정 성공", approvalService.updateApproval(docCode)));
     }
 }
