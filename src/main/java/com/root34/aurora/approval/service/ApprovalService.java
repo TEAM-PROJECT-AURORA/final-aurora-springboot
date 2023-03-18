@@ -131,4 +131,9 @@ public class ApprovalService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
     }
+
+    public ApprovalDTO updateApproval(int docCode) {
+
+        return null;
+    }
 }

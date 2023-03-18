@@ -14,14 +14,16 @@ import java.util.List;
 @Mapper
 
 public interface ApprovalMapper {
-
+    /** 결재 생성
+     * @param approvalDTO 결재 DTO*/
     int insertApprove(ApprovalDTO approvalDTO);
-
+    /** 최근리스트, 첫화면에 보여지는 데이터 */
     List<ApprovalDTO> lastList();
-
+    /** 미결재 리스트 */
     List<ApprovalDTO> pendingList();
-
+    /** 상세 정보 조회
+     * @param appCode 결재코드*/
     ApprovalDTO selectApprove(int appCode);
-
+    /** 결재완료 리스트 */
     List<ApprovalDTO> completedList();
 }
