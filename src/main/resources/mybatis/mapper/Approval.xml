@@ -29,7 +29,7 @@
         from TBL_APPROVAL ta
         join TBL_APPROVAL_LINE tal
         ON   (ta.APP_CODE = tal.APP_CODE)
-        where ta.APP_STATUS = 'N'
+        where tal.APP_STATUS = 'N'
     </select>
 
     <select id="selectApprove" parameterType="ApprovalDTO">
@@ -38,10 +38,28 @@
         from TBL_APPROVAL ta
                  join TBL_APPROVAL_LINE tal
                       ON   (ta.APP_CODE = tal.APP_CODE)
-        where ta.APP_STATUS = 'N'
+        where ta.APP_CODE = #{ appCode }
     </select>
 
     <select id="completedList" parameterType="ApprovalDTO">
-
+        elect
+            *
+        from TBL_APPROVAL ta
+                 join TBL_APPROVAL_LINE tal
+                      ON   (ta.APP_CODE = tal.APP_CODE)
+        where tal.APP_STATUS = 'Y'
     </select>
+
+    <update id="updateApporval" parameterType="ApprovalDTO">
+        update TBL_APPROVAL
+        set
+            APP_TITLE = #{ appTItle },
+            APP_DATE = #{ appDate }
+        where APP_CODE = #{ appCode }
+    </update>
+ 
+    <delete id="deleteApproval" parameterType="ApprovalDTO">
+        delete from TBL_APPROVAL
+        where APP_CODE = #{ appCode }
+    </delete>
 </mapper>

@@ -10,4 +10,13 @@ import lombok.Data;
  */
 @Data
 public class FileDTO {
+
+    private int fileCode;
+    private String fileName;
+    private String fileOriginName;
+    private String fileSize;
+    private String filePath;
+    private ApprovalDTO approval;
+    // 수용이 형 메일, 보고 
+    
 }
