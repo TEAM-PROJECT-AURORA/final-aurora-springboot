@@ -1,10 +1,17 @@
 package com.root34.aurora.member.service;
 
+import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.exception.WrongPasswordException;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.MemberDto;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -18,10 +25,10 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public MemberDTO selectMyInfo(String memberId) {
+    public MemberDto selectMyInfo(String memberId) {
 
         log.info("[MemberService] getMyInfo Start ==============================");
-        MemberDTO member = memberMapper.selectByMemberId(memberId);
+        MemberDto member = memberMapper.selectByMemberId(memberId);
         log.info("[MemberService] {}", member);
         log.info("[MemberService] getMyInfo End ==============================");
 

@@ -24,7 +24,6 @@ bin/
 *.ipr
 *.log
 *.yml
-*.sql
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
