@@ -32,16 +32,16 @@
 			LogstashEncoder : spring에서 발생하는 로그를 elk stack에서 사용되는 json 형태로 변환
 		  LogstashTcpSocketAppender : Logstash 서버에 로그 전송
      -->
-    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-<!--        <destination>127.0.0.1:4560</destination>-->
-<!--        <destination>172.22.208.213:4560</destination>-->
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
-    </appender>
+<!--    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--&lt;!&ndash;        <destination>127.0.0.1:4560</destination>&ndash;&gt;-->
+<!--&lt;!&ndash;        <destination>172.22.208.213:4560</destination>&ndash;&gt;-->
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>-->
+<!--    </appender>-->
 
     <!-- root레벨 설정 -->
     <root level="DEBUG">
         <appender-ref ref="console" />
-        <appender-ref ref="stash" />
+<!--        //<appender-ref ref="stash" />-->
         <appender-ref ref="ROLLING" />
     </root>
 

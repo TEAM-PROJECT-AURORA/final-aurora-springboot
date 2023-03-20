@@ -4,13 +4,13 @@ package com.root34.aurora.common;
 import org.springframework.http.HttpStatus;
 
 
-public class ResponseDto {
+public class ResponseDTO {
 
     private int status;
     private String message;
     private Object data;
 
-    public ResponseDto(HttpStatus status, String message, Object data){
+    public ResponseDTO(HttpStatus status, String message, Object data){
         this.status = status.value();
         this.message = message;
         this.data = data;
@@ -42,7 +42,7 @@ public class ResponseDto {
 
     @Override
     public String toString() {
-        return "ResponseDto{" +
+        return "ResponseDTO{" +
                 "status=" + status +
                 ", message='" + message + '\'' +
                 ", data=" + data +
