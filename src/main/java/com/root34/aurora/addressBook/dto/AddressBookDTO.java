@@ -13,6 +13,10 @@ public class AddressBookDTO {
 
     /**
      * @param addbookNo 주소록번호
+     * @param groupCode 그룹 코드
+     * @param groupName 그룹명
+     * @param memberCode 사원 코드
+     * @param team 소속팀
      * @param name 이름
      * @param phone 전화번호
      * @param email 이메일
@@ -21,6 +25,10 @@ public class AddressBookDTO {
      * @param comPhone 회사전화
      */
     private String addbookNo;
+    private String groupCode;
+    private String groupName;
+    private int memberCode;
+    private String team;
     private String name;
     private String phone;
     private String email;

@@ -1,33 +1,47 @@
 package com.root34.aurora.addressBook.dao;
 
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 	@ClassName : AddressBookMapper
 	@Date : 2023-03-14
 	@Writer : 오승재
-	@Description : 주소록 매퍼 + TODO-페이징 처리 넣을 것
+	@Description : 주소록 매퍼
 */
 @Mapper
 public interface AddressBookMapper {
 
 	int selectTotalMemberAddresses();
 
-	List<MemberDTO> selectAllMemberAddresses();
+	List<MemberDTO> selectAllMemberAddresses(SelectCriteria selectCriteria);
 
-	List<MemberDTO> selectAllMemberAddressesByDept(String deptCode);
+	int selectTotalMemberAddressesByDept(String deptCode);
+
+	List<MemberDTO> selectAllMemberAddressesByDept(Map map);
 
 	MemberDTO selectOneMemberAddress(int memberCode);
 
-	List<AddressBookDTO> selectAllPersonalAddresses(int MemberCode);
+	int insertGroup(String groupName);
+
+	int selectTotalPersonalAddresses(int MemberCode);
+
+	List<AddressBookDTO> selectAllPersonalAddresses(Map map);
 
 	int insertPersonalAddress(AddressBookDTO addressBookDTO);
 
-	List<AddressBookDTO> selectAllTeamAddresses(String team);
+	int selectTotalTeamAddresses(String team);
+
+	List<AddressBookDTO> selectAllTeamAddresses(Map map);
 
 	int insertTeamAddress(AddressBookDTO addressBookDTO);
+
+	int updateAddress(AddressBookDTO addressBookDTO);
+
+	int deleteAddress(String addbookNo);
 }

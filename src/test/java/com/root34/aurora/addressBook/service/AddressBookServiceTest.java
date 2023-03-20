@@ -1,4 +1,4 @@
-package com.root34.aurora.addressBook.dao;
+package com.root34.aurora.addressBook.service;
 
 import com.root34.aurora.FinalAuroraSpringbootApplication;
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
@@ -18,57 +18,45 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ContextConfiguration(classes = FinalAuroraSpringbootApplication.class)
-class AddressBookMapperTest {
+class AddressBookServiceTest {
 
     @Autowired
-    private AddressBookMapper addressBookMapper;
+    private AddressBookService addressBookService;
 
     @Test
-    void 매퍼_인터페이스_의존성_주입_테스트() {
+    void 주소록_서비스_의존성_주입_테스트() {
 
-        assertNotNull(addressBookMapper);
+        assertNotNull(addressBookService);
     }
 
+
     @Test
-    void 주소록_총개수_조회_매퍼_테스트() {
+    void 주소록_총개수_조회_서비스_테스트() {
 
         // given
 
         // when
-        int total = addressBookMapper.selectTotalMemberAddresses();
+        int result = addressBookService.selectTotalMemberAddresses();
 
         // then
-        assertTrue(total > 0);
+        assertTrue(result > 0);
     }
 
     @Test
-    void 주소록_전체_조회_매퍼_테스트() {
+    void 주소록_전체_조회_서비스_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
 
         // when
-        List<MemberDTO> list = addressBookMapper.selectAllMemberAddresses(selectCriteria);
+        List<MemberDTO> list = addressBookService.selectAllMemberAddresses(selectCriteria);
 
         // then
         assertNotNull(list);
     }
 
     @Test
-    void 부서별_주소록_총개수_조회_매퍼_테스트() {
-
-        // given
-        String deptCode = "DEV";
-
-        // when
-        int total = addressBookMapper.selectTotalMemberAddressesByDept(deptCode);
-
-        // then
-        assertTrue(total > 0);
-    }
-
-    @Test
-    void 부서별_주소록_조회_매퍼_테스트() {
+    void 부서별_주소록_조회_서비스_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
@@ -77,20 +65,20 @@ class AddressBookMapperTest {
         map.put("deptCode", "DEV");
 
         // when
-        List<MemberDTO> list = addressBookMapper.selectAllMemberAddressesByDept(map);
+        List<MemberDTO> list = addressBookService.selectAllMemberAddressesByDept(map);
 
         // then
         assertNotNull(list);
     }
 
     @Test
-    void 사내_주소록_상세_조회_매퍼_테스트() {
+    void 사내_주소록_상세_조회_서비스_테스트() {
 
         // given
         int memberCode = 1;
 
         // when
-        MemberDTO memberDTO = addressBookMapper.selectOneMemberAddress(memberCode);
+        MemberDTO memberDTO = addressBookService.selectOneMemberAddress(memberCode);
 
         // then
         System.out.println("memberDTO = " + memberDTO);
@@ -98,33 +86,33 @@ class AddressBookMapperTest {
     }
 
     @Test
-    void 주소록_그룹_추가_매퍼_테스트() {
+    void 주소록_그룹_추가_서비스_테스트() {
 
         // given
         String team = "개발1팀";
 
         // when
-        int result = addressBookMapper.insertGroup(team);
+        int result = addressBookService.insertGroup(team);
 
         // then
         assertEquals(1, result);
     }
 
     @Test
-    void 개인_주소록_총_개수_조회_매퍼_테스트() {
+    void 개인_주소록_총_개수_조회_서비스_테스트() {
 
         // given
         int memberCode = 1;
 
         // when
-        int result = addressBookMapper.selectTotalPersonalAddresses(memberCode);
+        int result = addressBookService.selectTotalPersonalAddresses(memberCode);
 
         // then
         assertTrue(result > 0);
     }
-    
+
     @Test
-    void 개인_주소록_전체_조회_매퍼_테스트() {
+    void 개인_주소록_전체_조회_서비스_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
@@ -133,7 +121,7 @@ class AddressBookMapperTest {
         map.put("memberCode", 1);
 
         // when
-        List<AddressBookDTO> list = addressBookMapper.selectAllPersonalAddresses(map);
+        List<AddressBookDTO> list = addressBookService.selectAllPersonalAddresses(map);
 
         // then
         System.out.println("list = " + list);
@@ -141,7 +129,7 @@ class AddressBookMapperTest {
     }
 
     @Test
-    void 개인_주소록_추가_매퍼_테스트() {
+    void 개인_주소록_추가_서비스_테스트() {
 
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
@@ -155,27 +143,27 @@ class AddressBookMapperTest {
         addressBookDTO.setComPhone("02-1111-2222");
 
         // when
-        int result = addressBookMapper.insertPersonalAddress(addressBookDTO);
+        int result = addressBookService.insertPersonalAddress(addressBookDTO);
 
         // then
         assertEquals(1, result);
     }
 
     @Test
-    void 팀_주소록_총_개수_조회_매퍼_테스트() {
+    void 팀_주소록_총_개수_조회_서비스_테스트() {
 
         // given
         String team = "개발1팀";
 
         // when
-        int result = addressBookMapper.selectTotalTeamAddresses(team);
+        int result = addressBookService.selectTotalTeamAddresses(team);
 
         // then
         assertTrue(result > 0);
     }
-    
+
     @Test
-    void 팀_주소록_전체_조회_매퍼_테스트() {
+    void 팀_주소록_전체_조회_서비스_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
@@ -184,7 +172,7 @@ class AddressBookMapperTest {
         map.put("team", "개발1팀");
 
         // when
-        List<AddressBookDTO> list = addressBookMapper.selectAllTeamAddresses(map);
+        List<AddressBookDTO> list = addressBookService.selectAllTeamAddresses(map);
 
         // then
         System.out.println("list = " + list);
@@ -192,7 +180,7 @@ class AddressBookMapperTest {
     }
 
     @Test
-    void 팀공용_주소록_추가_매퍼_테스트() {
+    void 팀공용_주소록_추가_서비스_테스트() {
 
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
@@ -206,14 +194,14 @@ class AddressBookMapperTest {
         addressBookDTO.setComPhone("02-1111-2222");
 
         // when
-        int result = addressBookMapper.insertTeamAddress(addressBookDTO);
+        int result = addressBookService.insertTeamAddress(addressBookDTO);
 
         // then
         assertEquals(1, result);
     }
 
     @Test
-    void 주소록_수정_매퍼_테스트() {
+    void 주소록_수정_서비스_테스트() {
 
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
@@ -223,23 +211,23 @@ class AddressBookMapperTest {
         addressBookDTO.setCompany("커다시안패밀리");
         addressBookDTO.setDepartment("허씨");
         addressBookDTO.setComPhone("02-1111-1111");
-        addressBookDTO.setAddbookNo("1");
+        addressBookDTO.setAddbookNo("2");
 
         // when
-        int result = addressBookMapper.updateAddress(addressBookDTO);
+        int result = addressBookService.updateAddress(addressBookDTO);
 
         // then
         assertEquals(1, result);
     }
 
     @Test
-    void 주소록_삭제_매퍼_테스트() {
+    void 주소록_삭제_서비스_테스트() {
 
         // given
-        String addbookNo = "1";
+        String addbookNo = "2";
 
         // when
-        int result = addressBookMapper.deleteAddress(addbookNo);
+        int result = addressBookService.deleteAddress(addbookNo);
 
         // then
         assertEquals(1, result);
