@@ -9,7 +9,7 @@
              GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY, TEAM,
              FILE_CODE, PHONE)
         VALUES
-            ( NULL, #{deptCode}, #{jobCode}, #{taskCode}, #{memberName}, #{memberId}, #{memberPWD}, #{memberEmail},
+            ( NULL, #{ deptCode }, #{jobCode}, #{taskCode}, #{memberName}, #{memberId}, #{memberPWD}, #{memberEmail},
              #{address}, #{gender}, DEFAULT, DEFAULT, #{memberEndDate}, #{introduction}, #{significant}, DEFAULT,
              #{birthDay}, #{team}, #{fileCode}, #{Phone} )
 
@@ -26,5 +26,41 @@
         FROM TBL_MEMBER
         WHERE MEMBER_EMAIL = #{ memberEmail }
     </select>
+
+    <select id="selectMemberTotal" resultType="int">
+        SELECT
+            count(*)
+        FROM TBL_MEMBER
+
+    </select>
+
+    <select id="memberList" resultType="MemberDTO">
+        SELECT
+            MEMBER_CODE,
+            MEMBER_NAME,
+            PHONE,
+            MEMBER_EMAIL,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            ADDRESS,
+            MEMBER_HIRE_DATE,
+            STATUS
+        FROM TBL_MEMBER
+    </select>
+
+    <select id="memberDetail" resultType="MemberDTD">
+        SELECT
+
+    </select>
+
+    <select id="findByMemberId" resultType="MemberDTO">
+        SELECT
+                *
+        FROM TBL_MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+
 
 </mapper>

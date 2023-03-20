@@ -1,14 +1,14 @@
 package com.root34.aurora.common.paging;
 
-public class ResponseDtoWithPaging {
+public class ResponseDTOWithPaging {
 
     private Object data;
     private SelectCriteria pageInfo;
 
-    public ResponseDtoWithPaging() {
+    public ResponseDTOWithPaging() {
     }
 
-    public ResponseDtoWithPaging(Object data, SelectCriteria pageInfo) {
+    public ResponseDTOWithPaging(Object data, SelectCriteria pageInfo) {
         this.data = data;
         this.pageInfo = pageInfo;
     }
@@ -31,7 +31,7 @@ public class ResponseDtoWithPaging {
 
     @Override
     public String toString() {
-        return "ResponseDtoWithPaging{" +
+        return "ResponseDTOWithPaging{" +
                 "data=" + data +
                 ", pageInfo=" + pageInfo +
                 '}';

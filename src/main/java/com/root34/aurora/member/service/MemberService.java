@@ -1,10 +1,13 @@
 package com.root34.aurora.member.service;
 
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dao.MemberMapper;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -28,10 +31,22 @@ public class MemberService {
         return member;
     }
 
-//    public int selectBoardTotal() {
-//
-//        log.info("[MemberService] selectMemberTotal Start ====================");
-//
-//    }
+    public int selectMemberTotal() {
+
+        log.info("[MemberService] selectMemberTotal Start ====================");
+        int result = memberMapper.selectMemberTotal();
+
+        log.info("[MemberService] selectMemberTotal End ====================");
+        return result;
+    }
+
+    public Object memberList(SelectCriteria selectCriteria){
+
+        log.info("[MemberService] selectMemberListWithPaging Start =========================");
+        List<MemberDTO> memberList = memberMapper.memberList(selectCriteria);
+
+        log.info("MemberService selectMemberListWithPaging End =============================");
+        return memberList;
+    }
 
 }
