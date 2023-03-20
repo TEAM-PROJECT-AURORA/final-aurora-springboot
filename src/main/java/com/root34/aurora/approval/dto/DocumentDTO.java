@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public class DocumentDTO {
 
-    /**@params : 문서코드*/
+    /**@Variable : 문서코드*/
     private int docCode;
-    /**@params : 문서이름*/
+    /**@Variable : 문서이름*/
     private String docName;
 }

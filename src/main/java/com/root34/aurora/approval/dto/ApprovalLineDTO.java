@@ -11,13 +11,14 @@ import lombok.Data;
 @Data
 public class ApprovalLineDTO {
 
-    /**@params : 결재선 코드*/
+    /**@Variable : 결재선 코드*/
     private int appLineCode;
-    /**@params : 결재코드*/
+    /**@Variable : 결재코드*/
     private ApprovalDTO appCode;
-    /**@params : 사원코드*/
+    /**@Variable : 사원코드*/
     private MemberDTO MemberDto;
-    /**@params : 결재 상태*/
+    /**@Variable : 결재 상태
+     * @주의 : 결재대기 n, 결재완료 y*/
     private String appStatus;
 
 }
