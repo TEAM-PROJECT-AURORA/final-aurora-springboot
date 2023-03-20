@@ -26,4 +26,10 @@ public interface ApprovalMapper {
     ApprovalDTO selectApprove(int appCode);
     /** 결재완료 리스트 */
     List<ApprovalDTO> completedList();
+    /** 결재 수정 
+    * @param approvalDTO 결재 DTO*/
+    ApprovalDTO updateApproval(ApprovalDTO approvalDTO);
+    /** 결재 삭제 
+    * @param approvalDTO 결재 DTO*/
+    ApprovalDTO deleteApproval(ApprovalDTO approvalDTO);
 }

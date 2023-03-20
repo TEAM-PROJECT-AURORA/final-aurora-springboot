@@ -31,7 +31,7 @@ public class ApprovalService {
      @MethodName : lastList
      @Date : 4:21 PM
      @Writer : heojaehong
-     @Method Description : 최근 결재 리스트 조회
+     @Description : 최근 결재 리스트 조회
      */
     public List<ApprovalDTO> lastList() {
 
@@ -52,7 +52,7 @@ public class ApprovalService {
         @MethodName : pendingList
     	@Date : 1:42 PM
     	@Writer : heojaehong
-    	@Method Description : 미결재 리스트 메소드
+    	@Description : 미결재 리스트 메소드
     */
     public List<ApprovalDTO> pendingList() {
 
@@ -73,7 +73,7 @@ public class ApprovalService {
         @MethodName : completedList
     	@Date : 1:43 PM
     	@Writer : heojaehong
-    	@Method Description : 결재완료 리스트 메소드
+    	@Description : 결재완료 리스트 메소드
     */
     public List<ApprovalDTO> completedList() {
 
@@ -94,7 +94,7 @@ public class ApprovalService {
         @MethodName : approve
     	@Date : 4:26 PM
     	@Writer : heojaehong
-    	@Method Description : 전자결재 서류 등록
+    	@Description : 전자결재 서류 등록
     */
     public ApprovalDTO approve(ApprovalDTO approvalDTO) throws Exception { // 호출한 곳에서 예외처리
 
@@ -114,12 +114,12 @@ public class ApprovalService {
     @MethodName : detailApprove
 	@Date : 2:48 PM
 	@Writer : heojaehong
-	@Method Description : 상세정보 조회 메서드
+	@Description : 상세정보 조회 메서드
 */
     public ApprovalDTO detailApprove(@PathVariable int appCode) {
 
         log.info("[ApprovalService] detailApprove 실행 " );
-        try{
+        try {
             ApprovalDTO approvalDTO = approvalMapper.selectApprove(appCode);
             if(appCode < 0){
                 throw new Exception("해당 문서가 존재하지 않습니다.");
@@ -132,8 +132,53 @@ public class ApprovalService {
         }
     }
 
-    public ApprovalDTO updateApproval(int docCode) {
+    /**
+    @MethodName : updateApproval
+	@Date : 11:45 AM
+	@Writer : heojaehong
+	@Description : 결재수정 메서드
+*/
+    public ApprovalDTO updateApproval(ApprovalDTO approvalDTO) {
 
-        return null;
+        log.info("[ApprovalService] updateApproval 실행 " );
+        try {
+            approvalDTO = approvalMapper.updateApproval(approvalDTO);
+            int appCode = approvalDTO.getAppCode();
+            if(appCode < 0) {
+                throw new Exception("해당 문서가 존재하지 않습니다.");
+            }
+
+            return approvalDTO;
+        }
+        catch (Exception e) {
+            log.error("[ApprovalService] updateApproval method error" + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 페이지가 존재하지 않습니다.", e);
+        }
     }
+
+    /**
+    @MethodName : updateApproval
+	@Date : 11:45 AM
+	@Writer : heojaehong
+	@Description : 결재삭제 메서드
+    */
+    public ApprovalDTO deleteApproval(ApprovalDTO approvalDTO) {
+
+        log.info("[ApprovalService] deleteApproval 실행");
+        
+        try {
+            approvalDTO = approvalMapper.deleteApproval(approvalDTO);
+            int appCode = approvalDTO.getAppCode();
+
+            if(appCode < 0) {
+                throw new Exception("삭제 할 수 없습니다.");
+            }
+            return approvalDTO;
+        }catch(Exception e) {
+            log.error("[ApprovalService] deleteApproval method error" + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 서류가 없습니다.");
+
+        }
+    }
+
 }
