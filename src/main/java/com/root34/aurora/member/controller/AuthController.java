@@ -1,7 +1,7 @@
 package com.root34.aurora.member.controller;
 
 import com.root34.aurora.common.ResponseDTO;
-import com.root34.aurora.member.dto.MemberDto;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.member.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ResponseDTO> signup(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<ResponseDTO> signup(@RequestBody MemberDTO memberDto) {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "회원가입 성공", authService.signup(memberDto)));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<ResponseDTO> login(@RequestBody MemberDTO memberDto) {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", authService.login(memberDto)));
     }
