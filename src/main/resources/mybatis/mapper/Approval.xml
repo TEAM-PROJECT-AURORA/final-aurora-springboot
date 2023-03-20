@@ -8,17 +8,14 @@
         INSERT INTO TBL_APPROVAL
         (APP_CODE, DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_DATE, APP_END_DATE, APP_OPEN)
         VALUES
-        (null, #{ documentDto.docCode }, #{ memberDto.memberCode }, #{ appTitle }, #{ appDescript }, #{ appDate }, #{ appEndDate },
-         #{ appOpen } )
+            (null, #{ documentDto.docCode }, #{ memberDto.memberCode }, #{ appTitle }, #{ appDescript }, #{ appDate }, #{ appEndDate },
+             #{ appOpen } )
     </insert>
 
     <select id="lastList" parameterType="ApprovalDTO">
         select
-            ta.APP_TITLE ,
-            tal.APP_STATUS
+            *
         from TBL_APPROVAL ta
-        join TBL_APPROVAL_LINE tal
-        ON   (ta.APP_CODE = tal.APP_CODE)
         where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY)
     </select>
 
@@ -27,8 +24,8 @@
             ta.APP_TITLE ,
             tal.APP_STATUS
         from TBL_APPROVAL ta
-        join TBL_APPROVAL_LINE tal
-        ON   (ta.APP_CODE = tal.APP_CODE)
+                 join TBL_APPROVAL_LINE tal
+                      ON   (ta.APP_CODE = tal.APP_CODE)
         where tal.APP_STATUS = 'N'
     </select>
 
@@ -43,7 +40,7 @@
 
     <select id="completedList" parameterType="ApprovalDTO">
         elect
-            *
+        *
         from TBL_APPROVAL ta
                  join TBL_APPROVAL_LINE tal
                       ON   (ta.APP_CODE = tal.APP_CODE)
@@ -57,7 +54,7 @@
             APP_DATE = #{ appDate }
         where APP_CODE = #{ appCode }
     </update>
- 
+
     <delete id="deleteApproval" parameterType="ApprovalDTO">
         delete from TBL_APPROVAL
         where APP_CODE = #{ appCode }

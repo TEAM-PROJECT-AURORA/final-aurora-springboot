@@ -15,23 +15,24 @@ import java.util.List;
 @Data
 public class ApprovalDTO {
 
-    /**@params : 결재코드*/
+    /**@Variable : 결재코드*/
     private int appCode;
-    /**@params : 문서DTO*/
+    /**@Variable : 문서DTO*/
     private DocumentDTO documentDto;
-    /**@params : 사원DTO*/
+    /**@Variable : 사원DTO*/
     private MemberDTO memberDto;
-    /**@params : 결재제목*/
+    /**@Variable : 결재제목*/
     private String appTitle;
-    /**@params : 결재내용*/
+    /**@Variable : 결재내용*/
     private String appDescript;
-    /**@params : 결재일*/
+    /**@Variable : 결재일*/
     private Date appDate;
-    /**@params : 종료일*/
+    /**@Variable : 종료일*/
     private Date appEndDate;
-    /**@params : 확인여부*/
+    /**@Variable : 확인여부
+     * @주의 : 읽지 않은 상태는 n, 읽은 상태는 y*/
     private String appOpen;
-    /**@params : 결재선*/
+    /**@Variable : 결재선*/
     private List<ApprovalLineDTO> approvalLineDtoList;
 
 }
