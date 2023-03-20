@@ -1,7 +1,7 @@
 package com.root34.aurora.jwt;
 
 import com.root34.aurora.exception.TokenException;
-import com.root34.aurora.member.dto.MemberDto;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.member.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -38,7 +38,7 @@ public class TokenProvider {
     }
 
     // Authentication 객체(유저)의 권한 정보를 이용해서 토큰을 생성
-    public TokenDto generateTokenDto(MemberDto member) {
+    public TokenDto generateTokenDto(MemberDTO member) {
         log.info("[TokenProvider] generateTokenDto Start ===================================");
         log.info("[TokenProvider] {}", member.getMemberRole());
 
