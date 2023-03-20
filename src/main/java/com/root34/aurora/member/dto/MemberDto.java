@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class MemberDto implements UserDetails {
+
     private Long memberCode;
     private String memberId;
     private String memberPassword;
