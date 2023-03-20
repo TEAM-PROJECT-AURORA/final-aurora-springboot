@@ -39,6 +39,7 @@ public class MailService {
             helper.setText(mailDTO.getMailBody(), true);
 //            helper.addAttachment("my_photo.png", new ClassPathResource("my_photo.png"));
             javaMailSender.send(message);
+
         } catch (MessagingException e) {
             // 예외 처리
             return false;
