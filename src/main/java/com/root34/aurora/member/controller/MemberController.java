@@ -22,11 +22,11 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/members/{memberId}")
-    public ResponseEntity<ResponseDTO> selectMyMemberInfo(@PathVariable String memberId) {
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMyInfo(memberId)));
-    }
+//    @GetMapping("/members/{memberId}")
+//    public ResponseEntity<ResponseDTO> selectMyMemberInfo(@PathVariable String memberId) {
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMyInfo(memberId)));
+//    }
 
     @GetMapping("/members")
     public ResponseEntity<ResponseDTO> memberList(@RequestParam(name="offset", defaultValue = "1") String offset) {
@@ -47,4 +47,13 @@ public class MemberController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     }
+
+    @GetMapping("/members/{memberCode}")
+    public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
+
+
+    }
+
 }

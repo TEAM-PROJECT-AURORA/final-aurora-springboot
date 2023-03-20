@@ -29,7 +29,7 @@ public class MemberDTO implements UserDetails {
     private Date birthDay;
     private String team;
     private String fileCode;
-    private String Phone;
+    private String phone;
 
 
 

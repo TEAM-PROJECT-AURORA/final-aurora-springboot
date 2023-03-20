@@ -9,9 +9,9 @@
              GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY, TEAM,
              FILE_CODE, PHONE)
         VALUES
-            ( NULL, #{ deptCode }, #{jobCode}, #{taskCode}, #{memberName}, #{memberId}, #{memberPWD}, #{memberEmail},
-             #{address}, #{gender}, DEFAULT, DEFAULT, #{memberEndDate}, #{introduction}, #{significant}, DEFAULT,
-             #{birthDay}, #{team}, #{fileCode}, #{Phone} )
+            ( NULL, #{ deptCode }, #{ jobCode }, #{ taskCode }, #{ memberName }, #{ memberId }, #{ memberPWD }, #{ memberEmail },
+             #{ address }, #{ gender }, DEFAULT, DEFAULT, #{ memberEndDate }, #{ introduction }, #{ significant }, DEFAULT,
+             #{ birthDay }, #{ team }, #{ fileCode }, #{ phone } )
 
     </insert>
 
@@ -49,16 +49,32 @@
         FROM TBL_MEMBER
     </select>
 
-    <select id="memberDetail" resultType="MemberDTD">
+    <select id="memberDetail" resultType="MemberDTO">
         SELECT
-
+            MEMBER_CODE,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            TEAM,
+            MEMBER_NAME,
+            PHONE,
+            MEMBER_EMAIL,
+            BIRTHDAY,
+            ADDRESS,
+            STATUS,
+            MEMBER_HIRE_DATE,
+            MEMBER_END_DATE,
+            SIGNIFICANT,
+            INTRODUCTION
+        FROM TBL_MEMBER
+        WHERE MEMBER_CODE = #{ memberCode }
     </select>
 
     <select id="findByMemberId" resultType="MemberDTO">
         SELECT
                 *
         FROM TBL_MEMBER
-        WHERE MEMBER_ID = #{memberId}
+        WHERE MEMBER_ID = #{ memberId }
     </select>
 
 

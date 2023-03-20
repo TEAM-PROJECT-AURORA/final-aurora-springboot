@@ -49,4 +49,12 @@ public class MemberService {
         return memberList;
     }
 
+    public MemberDTO memberDetail(Integer memberCode) {
+
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberCode(memberCode);
+        MemberDTO result = memberMapper.memberDetail(memberDTO);
+        return result;
+    }
+
 }

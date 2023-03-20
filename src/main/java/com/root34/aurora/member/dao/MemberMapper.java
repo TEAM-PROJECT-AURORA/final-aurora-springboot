@@ -21,6 +21,8 @@ public interface MemberMapper {
 
     List<MemberDTO> memberList(SelectCriteria selectCriteria);
 
+    MemberDTO memberDetail(MemberDTO memberCode);
+
     int selectMemberTotal();
 
 }
