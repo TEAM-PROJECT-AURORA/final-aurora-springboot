@@ -5,17 +5,17 @@
 <configuration> 
 	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 --> 
 	<settings> 
-		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여부 -->
+		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여무 --> 
 		<setting name="callSettersOnNulls" value="true" /> 
 		<!-- null parameter 허용 --> 
 		<setting name="jdbcTypeForNull" value="NULL" /> 
 	</settings>
 
 	<typeAliases>
-		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
+		<!-- <typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/> -->
 	</typeAliases>
 
 	<mappers>
-		<mapper resource="MailMapper.xml" />
+		<!-- <mapper resource="addressBookMapper.xml" /> -->
 	</mappers>
 </configuration>
