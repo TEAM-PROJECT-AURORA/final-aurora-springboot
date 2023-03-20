@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.member.dao.MemberMapper">
+    <insert id="insertMember" parameterType="memberDTO">
+        INSERT INTO TBL_MEMBER
+            (MEMBER_CODE, DEPT_CODE, JOB_CODE, TASK_CODE, MEMBER_NAME, MEMBER_ID, MEMBER_PWD, MEMBER_EMAIL, ADDRESS,
+             GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY, TEAM,
+             FILE_CODE, PHONE)
+        VALUES
+            ( NULL, #{deptCode}, #{jobCode}, #{taskCode}, #{memberName}, #{memberId}, #{memberPWD}, #{memberEmail},
+             #{address}, #{gender}, DEFAULT, DEFAULT, #{memberEndDate}, #{introduction}, #{significant}, DEFAULT,
+             #{birthDay}, #{team}, #{fileCode}, #{Phone} )
+
+    </insert>
+
+    <select id="selectByEmail" resultType="MemberDTO">
+        SELECT
+                MEMBER_CODE,
+                MEMBER_ID,
+                MEMBER_NAME,
+                MEMBER_PWD,
+                MEMBER_ROLE,
+                MEMBER_EMAIL
+        FROM TBL_MEMBER
+        WHERE MEMBER_EMAIL = #{ memberEmail }
+    </select>
+
+</mapper>
