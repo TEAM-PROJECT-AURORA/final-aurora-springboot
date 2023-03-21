@@ -23,7 +23,7 @@ public interface ApprovalMapper {
     List<ApprovalDTO> pendingList();
     /** 상세 정보 조회
      * @param appCode 결재코드*/
-    ApprovalDTO selectApprove(int appCode);
+    ApprovalDTO detailApprove(int appCode);
     /** 결재완료 리스트 */
     List<ApprovalDTO> completedList();
     /** 결재 수정 

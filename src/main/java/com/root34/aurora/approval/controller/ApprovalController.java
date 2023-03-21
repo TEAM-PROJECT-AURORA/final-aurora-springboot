@@ -34,9 +34,8 @@ public class ApprovalController {
     */
     @GetMapping("/approvals")
     public ResponseEntity<ResponseDto> lastList(){
-        System.out.println();
-        ApprovalDTO approvalDTO = new ApprovalDTO();
-        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
+
+        log.info("[ApprovalController] GetMapping lastList start ");
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.lastList()));
     }
@@ -48,7 +47,9 @@ public class ApprovalController {
      @Description : 미결재 리스트 조회
      */
     @GetMapping("/approvals/pending")
-    public ResponseEntity<ResponseDto> pendingList(@RequestBody ApprovalDTO approvalDTO){
+    public ResponseEntity<ResponseDto> pendingList(){
+
+        ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.pendingList()));
@@ -61,8 +62,9 @@ public class ApprovalController {
      @Description : 결재완료 리스트 조회
      */
     @GetMapping("/approvals/completed")
-    public ResponseEntity<ResponseDto> completedList(@RequestBody ApprovalDTO approvalDTO){
+    public ResponseEntity<ResponseDto> completedList(){
 
+        ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.completedList()));
@@ -77,10 +79,7 @@ public class ApprovalController {
     @GetMapping("/approvals/{appCode}")
     public ResponseEntity<ResponseDto> detailApprove(@PathVariable int appCode){
 
-        ApprovalDTO approvalDTO = new ApprovalDTO();
-        log.info("[ApprovalController] GetMapping detailApprove: " + approvalDTO);
-
-        approvalDTO.setAppCode(appCode);
+        log.info("[ApprovalController] PathVariable detailApprove: " + appCode);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "상세정보 조회 성공", approvalService.detailApprove(appCode)));
     }
@@ -93,10 +92,10 @@ public class ApprovalController {
     */
     @PostMapping("/approvals/draft/form/{docCode}")
     public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody ApprovalDTO approvalDTO) throws Exception {
-        log.info("[ApprovalController] postMapping docCode: " + approvalDTO.getDocumentDto().getDocCode());
+        log.info("[ApprovalController] postMapping docCode: " + approvalDTO.getDocumentDTO().getDocCode());
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setDocCode(docCode);
-        approvalDTO.setDocumentDto(documentDTO);
+        approvalDTO.setDocumentDTO(documentDTO);
 
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
     }
