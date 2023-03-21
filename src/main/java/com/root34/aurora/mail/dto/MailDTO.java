@@ -14,11 +14,21 @@ import java.sql.Date;
 public class MailDTO {
 
     /**
-     * @param cartNo 장바구니 번호(고유 일련번호)
+     * @param mailCode 메일 코드
+     * @param tagCode 태그 코드
+     * @param memberCode 멤버 코드
+     * @param mailTitle 메일 제목
+     * @param mailBody 메일 내용
+     * @param sender 발신인
+     * @param recipient 수신인
+     * @param shipDate 발송일
+     * @param readStatus 읽음 상태
+     * @param importantStatus 중요 상태
+     * @param deleteStatus 삭제 상태
      */
     private long mailCode;
     private long tagCode;
-//    private long memberCode;
+    private long memberCode;
     private String mailTitle;
     private String mailBody;
     private String sender;

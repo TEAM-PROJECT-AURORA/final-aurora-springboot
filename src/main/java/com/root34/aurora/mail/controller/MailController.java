@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1")
 public class MailController {
 
-    private final MailService mailsService;
+    private final MailService mailService;
 
     public MailController(MailService mailsService) {
-        this.mailsService = mailsService;
+        this.mailService = mailsService;
     }
 
     /**
@@ -33,7 +33,7 @@ public class MailController {
     @PostMapping(value ="/mail")
     public ResponseEntity<ResponseDTO> sendMail(@RequestBody MailDTO mailDTO) {
 
-        if(mailsService.sendEmail(mailDTO)) {
+        if(mailService.sendEmail(mailDTO)) {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", true));
 
         } else {
