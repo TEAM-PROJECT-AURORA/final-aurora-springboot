@@ -12,6 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ @ClassName : MemberMapper
+ @Date : 23.03.20.
+ @Writer : 정근호
+ @Description : 회원 SQL을 호출하기 위한 인터페이스
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -29,6 +35,13 @@ public class MemberController {
 //        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMyInfo(memberId)));
 //    }
 
+
+    /**
+     * @MethodName :
+     * @Date :
+     * @Writer :
+     * @Method Description :
+     */
     @GetMapping("/members")
     public ResponseEntity<ResponseDTO> memberList(@RequestParam(name="offset", defaultValue = "1") String offset) {
 
@@ -48,7 +61,12 @@ public class MemberController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     }
-
+    /**
+     * @MethodName :
+     * @Date :
+     * @Writer :
+     * @Method Description :
+     */
     @GetMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
@@ -59,14 +77,19 @@ public class MemberController {
 
 
     }
-
+    /**
+     * @MethodName :
+     * @Date :
+     * @Writer :
+     * @Method Description :
+     */
     @PutMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberModify(@RequestBody MemberDTO memberDTO, @PathVariable int memberCode) {
 
         memberDTO.setMemberCode(memberCode);
 
         log.info("[memberService.memberDetail(memberCode))]" + memberDTO);
-       return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "업데이트 성공", memberService.memberModify(memberDTO)));
+       return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "업데이트 성공", memberService.memberModify(memberDTO)));
     }
 
 }

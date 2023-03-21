@@ -10,6 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ @ClassName : MemberMapper
+ @Date : 23.03.20.
+ @Writer : 정근호
+ @Description : 회원 SQL을 호출하기 위한 인터페이스
+ */
 @Slf4j
 @Service
 public class MemberService {
@@ -32,6 +38,12 @@ public class MemberService {
         return member;
     }
 
+    /**
+     * @MethodName : selectMemberTotal
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description :페이징 처리를 위한 매소드
+     */
     public int selectMemberTotal() {
 
         log.info("[MemberService] selectMemberTotal Start ====================");
@@ -41,33 +53,57 @@ public class MemberService {
         return result;
     }
 
+    /**
+     * @MethodName : memberList
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description :사원 전체 조회를 위한 매소드
+     */
     public Object memberList(SelectCriteria selectCriteria){
 
         log.info("[MemberService] selectMemberListWithPaging Start =========================");
         List<MemberDTO> memberList = memberMapper.memberList(selectCriteria);
 
-        log.info("MemberService selectMemberListWithPaging End =============================");
+        log.info("[MemberService] selectMemberListWithPaging End =============================");
         return memberList;
     }
 
+    /**
+     * @MethodName : memberDetail
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description : 사원의 상세 조회를 위한 매소드
+     */
     public MemberDTO memberDetail(Integer memberCode) {
 
+        log.info("[MemberService] memberDetail Start =========================");
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberCode(memberCode);
+
         MemberDTO result = memberMapper.memberDetail(memberDTO);
+
+        log.info("[MemberService] memberDetail End =============================");
         return result;
     }
+
+    /**
+     * @MethodName : memberModify
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description :사원 정보 수정을 위한 매소드
+     */
     @Transactional
     public String memberModify(MemberDTO memberDTO) {
 
         // MemberDTO modifyDTO = new Member(멤버 맵퍼.조회(멤버DTO.사원번호))
         // modifymember.set memberDTO !null
-
+        log.info("[MemberService] memberModify Start =========================");
         memberMapper.memberModify(memberDTO);
         int result = 0;
 
         result = memberMapper.memberModify(memberDTO);
 
+        log.info("[MemberService] memberModify End =============================");
         return  (result > 0 ) ? " 수정 성공" : "수정 실패 ";
     }
 

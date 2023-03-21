@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ @ClassName : MemberMapper
+ @Date : 23.03.20.
+ @Writer : 정근호
+ @Description : 회원 SQL을 호출하기 위한 인터페이스
+ */
 @Mapper
 public interface MemberMapper {
 

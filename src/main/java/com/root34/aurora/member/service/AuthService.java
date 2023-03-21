@@ -25,6 +25,12 @@ public class AuthService {
         this.tokenProvider = tokenProvider;
     }
 
+    /**
+     * @MethodName : signup
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description :사원 등록을 위한 매소드
+     */
     @Transactional
     public MemberDTO signup(MemberDTO memberDTO) {
         log.info("[AuthService] Signup Start ===================================");

@@ -26,7 +26,12 @@ public class AuthController {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "회원가입 성공", authService.signup(memberDto)));
     }
-
+    /**
+     * @MethodName :
+     * @Date :
+     * @Writer :
+     * @Method Description :
+     */
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody MemberDTO memberDto) {
 
