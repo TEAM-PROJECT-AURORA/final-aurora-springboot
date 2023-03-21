@@ -6,6 +6,7 @@ import com.root34.aurora.member.dto.MemberDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -55,6 +56,19 @@ public class MemberService {
         memberDTO.setMemberCode(memberCode);
         MemberDTO result = memberMapper.memberDetail(memberDTO);
         return result;
+    }
+    @Transactional
+    public String memberModify(MemberDTO memberDTO) {
+
+        // MemberDTO modifyDTO = new Member(멤버 맵퍼.조회(멤버DTO.사원번호))
+        // modifymember.set memberDTO !null
+
+        memberMapper.memberModify(memberDTO);
+        int result = 0;
+
+        result = memberMapper.memberModify(memberDTO);
+
+        return  (result > 0 ) ? " 수정 성공" : "수정 실패 ";
     }
 
 }

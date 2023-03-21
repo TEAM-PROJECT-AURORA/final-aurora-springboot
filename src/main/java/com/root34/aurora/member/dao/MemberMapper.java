@@ -25,4 +25,6 @@ public interface MemberMapper {
 
     int selectMemberTotal();
 
+    int memberModify(MemberDTO memberDTO);
+
 }

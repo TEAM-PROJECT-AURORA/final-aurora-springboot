@@ -23,14 +23,14 @@
                 MEMBER_PWD,
                 MEMBER_ROLE,
                 MEMBER_EMAIL
-        FROM TBL_MEMBER
-        WHERE MEMBER_EMAIL = #{ memberEmail }
+          FROM TBL_MEMBER
+         WHERE MEMBER_EMAIL = #{ memberEmail }
     </select>
 
     <select id="selectMemberTotal" resultType="int">
         SELECT
             count(*)
-        FROM TBL_MEMBER
+          FROM TBL_MEMBER
 
     </select>
 
@@ -46,36 +46,56 @@
             ADDRESS,
             MEMBER_HIRE_DATE,
             STATUS
-        FROM TBL_MEMBER
+          FROM TBL_MEMBER
     </select>
 
     <select id="memberDetail" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            TEAM,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            BIRTHDAY,
-            ADDRESS,
-            STATUS,
-            MEMBER_HIRE_DATE,
-            MEMBER_END_DATE,
-            SIGNIFICANT,
-            INTRODUCTION
-        FROM TBL_MEMBER
-        WHERE MEMBER_CODE = #{ memberCode }
+               MEMBER_CODE,
+               DEPT_CODE,
+               JOB_CODE,
+               TASK_CODE,
+               TEAM,
+               MEMBER_NAME,
+               PHONE,
+               MEMBER_EMAIL,
+               BIRTHDAY,
+               ADDRESS,
+               STATUS,
+               MEMBER_HIRE_DATE,
+               MEMBER_END_DATE,
+               SIGNIFICANT,
+               INTRODUCTION
+          FROM TBL_MEMBER
+         WHERE MEMBER_CODE = #{ memberCode }
     </select>
 
     <select id="findByMemberId" resultType="MemberDTO">
         SELECT
                 *
-        FROM TBL_MEMBER
-        WHERE MEMBER_ID = #{ memberId }
+          FROM TBL_MEMBER
+         WHERE MEMBER_ID = #{ memberId }
     </select>
+
+    <update id="memberModify" parameterType="MemberDTO">
+        UPDATE TBL_MEMBER
+           SET
+               DEPT_CODE = #{ deptCode },
+               PHONE = #{ phone },
+               JOB_CODE = #{ jobCode },
+               TASK_CODE = #{ taskCode },
+               TEAM = #{ team },
+               ADDRESS = #{ address },
+               STATUS = #{ status },
+               MEMBER_END_DATE = #{ memberEndDate },
+               SIGNIFICANT = #{ significant },
+               INTRODUCTION = #{ introduction },
+               FILE_CODE = #{ fileCode }
+
+        WHERE MEMBER_CODE = #{ memberCode }
+
+
+    </update>
 
 
 

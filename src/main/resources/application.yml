@@ -14,11 +14,11 @@ spring:
       max-request-size: 10MB
   web:
     resources:
-      static-locations: classpath:/imgs/
+      static-locations: classpath:/auroraFiles/
 
 image:
-  add-resource-locations: /imgs/
-  add-resource-handler: /imgs/**
+  add-resource-locations: /auroraFiles/
+  add-resource-handler: /auroraFiles/**
 
   image-dir: /imgs/
   image-url: http://localhost:8090/imgs/

@@ -5,6 +5,7 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -51,9 +52,21 @@ public class MemberController {
     @GetMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
+
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
 
 
+
+
+    }
+
+    @PutMapping("/members/{memberCode}")
+    public ResponseEntity<ResponseDTO> memberModify(@RequestBody MemberDTO memberDTO, @PathVariable int memberCode) {
+
+        memberDTO.setMemberCode(memberCode);
+
+        log.info("[memberService.memberDetail(memberCode))]" + memberDTO);
+       return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "업데이트 성공", memberService.memberModify(memberDTO)));
     }
 
 }
