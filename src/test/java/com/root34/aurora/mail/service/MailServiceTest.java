@@ -49,6 +49,7 @@ public class MailServiceTest {
         MailDTO mailDTO = new MailDTO();
         mailDTO.setRecipient("ssssong125@gmail.com");
 //        mailDTO.setRecipient("jgh337337@gmail.com");
+//        mailDTO.setRecipient("os@gmail.com");
         mailDTO.setMailTitle("Test Title");
         mailDTO.setMailBody("Test Body");
 //        MockMultipartFile file = new MockMultipartFile("file", "testAuroraImage.jpg", "image/jpg",
