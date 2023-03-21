@@ -15,6 +15,8 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @Slf4j
 @SpringBootTest
 public class MailServiceTest {
@@ -24,14 +26,20 @@ public class MailServiceTest {
     @Value("${file.file-url}")
     private String FILE_URL;
 
-    private final MailConfig mailConfig;
+//    private final MailConfig mailConfig;
     private final JavaMailSender javaMailSender;
 
     @Autowired
-    public MailServiceTest(JavaMailSender javaMailSender, MailConfig mailConfig) {
+    public MailServiceTest(/*JavaMailSender javaMailSender, */MailConfig mailConfig) {
 
-        this.mailConfig = mailConfig;
+//        this.mailConfig = mailConfig;
         this.javaMailSender = mailConfig.javaMailSender();
+    }
+
+    @Test
+    public void 메일_서비스_의존성_주입_테스트() {
+
+        assertNotNull(javaMailSender);
     }
 
     @Test
@@ -39,8 +47,8 @@ public class MailServiceTest {
 
         // given
         MailDTO mailDTO = new MailDTO();
-//        mailDTO.setRecipient("ssssong125@gmail.com");
-        mailDTO.setRecipient("jgh337337@gmail.com");
+        mailDTO.setRecipient("ssssong125@gmail.com");
+//        mailDTO.setRecipient("jgh337337@gmail.com");
         mailDTO.setMailTitle("Test Title");
         mailDTO.setMailBody("Test Body");
 //        MockMultipartFile file = new MockMultipartFile("file", "testAuroraImage.jpg", "image/jpg",

@@ -17,7 +17,7 @@ public class MailMapperTest {
     private MailMapper mailMapper;
 
     @Test
-    public void 맵퍼_의존성_주입_테스트() {
+    public void 메일_맵퍼_의존성_주입_테스트() {
 
         assertNotNull(mailMapper);
     }

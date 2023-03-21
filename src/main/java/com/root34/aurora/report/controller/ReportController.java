@@ -28,7 +28,7 @@ public class ReportController {
      */
 //    @ApiOperation(value = "보고 조회") // Swagger
     @Transactional
-    @PostMapping(value ="/mail")
+    @PostMapping(value ="/reports")
     public ResponseEntity<ResponseDTO> getAllReportList() {
 
         long memberCode = 1;

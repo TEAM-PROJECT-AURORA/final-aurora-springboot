@@ -33,7 +33,7 @@
          LIMIT #{ startRow }, #{ limit }
     </select>
     <!--비정기 보고 목록 조회-->
-    <select id="getRoutineReportList" parameterType="SelectCriteria" resultType="ReportDTO">
+    <select id="getCasualReportList" parameterType="SelectCriteria" resultType="ReportDTO">
         SELECT *
           FROM TBL_REPORT
          WHERE COMPLETION_STATUS = 'N'
