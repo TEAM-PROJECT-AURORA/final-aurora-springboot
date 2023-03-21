@@ -1,6 +1,7 @@
 package com.root34.aurora.addressBook.controller;
 
 import com.root34.aurora.FinalAuroraSpringbootApplication;
+import com.root34.aurora.addressBook.dto.AddressBookDTO;
 import com.root34.aurora.common.ResponseDTO;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,29 @@ class AddressBookControllerTest {
     }
 
     @Test
+    void 개인_주소록_추가_컨트롤러_테스트() {
+
+        // given
+        AddressBookDTO addressBookDTO = new AddressBookDTO();
+        addressBookDTO.setName("킹수용");
+        addressBookDTO.setGroupCode("1");
+        addressBookDTO.setMemberCode(1);
+        addressBookDTO.setPhone("010-2222-4444");
+        addressBookDTO.setEmail("test3@test.com");
+        addressBookDTO.setCompany("오컴퍼니");
+        addressBookDTO.setDepartment("개발부");
+        addressBookDTO.setComPhone("02-111-2223");
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.insertPersonalAddress(addressBookDTO);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("개인 주소록 추가 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
+
+    @Test
     void 팀_주소록_전체_조회_컨트롤러_테스트() {
 
         // given
@@ -112,6 +136,66 @@ class AddressBookControllerTest {
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("조회 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
+
+    @Test
+    void 팀_주소록_추가_컨트롤러_테스트() {
+
+        // given
+        AddressBookDTO addressBookDTO = new AddressBookDTO();
+        addressBookDTO.setName("킹수용");
+        addressBookDTO.setGroupCode("1");
+        addressBookDTO.setTeam("개발1팀");
+        addressBookDTO.setPhone("010-2222-4444");
+        addressBookDTO.setEmail("test3@test.com");
+        addressBookDTO.setCompany("오컴퍼니");
+        addressBookDTO.setDepartment("개발부");
+        addressBookDTO.setComPhone("02-111-2223");
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.insertTeamAddress(addressBookDTO);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("팀 주소록 추가 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
+
+    @Test
+    void 주소록_수정_컨트롤러_테스트() {
+
+        // given
+        AddressBookDTO address = new AddressBookDTO();
+        address.setName("허카다시안");
+        address.setPhone("010-1111-1111");
+        address.setEmail("heoCasadian@test.com");
+        address.setCompany("커다시안패밀리");
+        address.setDepartment("허씨");
+        address.setComPhone("02-1111-1111");
+        String addBookNo = "4";
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.updateAddress(address, addBookNo);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("주소록 수정 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
+
+    @Test
+    void 주소록_삭제_컨트롤러_테스트() {
+
+        // given
+        String addBookNo = "4";
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.deleteAddress(addBookNo);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("주소록 삭제 성공", response.getBody().getMessage());
         assertNotNull(response.getBody().getData());
     }
 }

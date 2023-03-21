@@ -139,10 +139,10 @@ public class AddressBookService {
     }
 
     @Transactional
-    public int updateAddress(AddressBookDTO addressBookDTO) {
+    public int updateAddress(Map map) {
 
         log.info("[addressBookService] updateAddress Start ===================================");
-        int result = addressBookMapper.updateAddress(addressBookDTO);
+        int result = addressBookMapper.updateAddress(map);
 
         log.info("[addressBookService] updateAddress End ===================================");
         return result;

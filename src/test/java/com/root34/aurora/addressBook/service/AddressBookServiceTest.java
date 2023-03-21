@@ -204,17 +204,19 @@ class AddressBookServiceTest {
     void 주소록_수정_서비스_테스트() {
 
         // given
-        AddressBookDTO addressBookDTO = new AddressBookDTO();
-        addressBookDTO.setName("허카다시안");
-        addressBookDTO.setPhone("010-1111-1111");
-        addressBookDTO.setEmail("heoCasadian@test.com");
-        addressBookDTO.setCompany("커다시안패밀리");
-        addressBookDTO.setDepartment("허씨");
-        addressBookDTO.setComPhone("02-1111-1111");
-        addressBookDTO.setAddbookNo("2");
+        AddressBookDTO address = new AddressBookDTO();
+        address.setName("허카다시안");
+        address.setPhone("010-1111-1111");
+        address.setEmail("heoCasadian@test.com");
+        address.setCompany("커다시안패밀리");
+        address.setDepartment("허씨");
+        address.setComPhone("02-1111-1111");
+        Map map = new HashMap();
+        map.put("address", address);
+        map.put("addBookNo", "3");
 
         // when
-        int result = addressBookService.updateAddress(addressBookDTO);
+        int result = addressBookService.updateAddress(map);
 
         // then
         assertEquals(1, result);
@@ -224,10 +226,10 @@ class AddressBookServiceTest {
     void 주소록_삭제_서비스_테스트() {
 
         // given
-        String addbookNo = "2";
+        String addBookNo = "2";
 
         // when
-        int result = addressBookService.deleteAddress(addbookNo);
+        int result = addressBookService.deleteAddress(addBookNo);
 
         // then
         assertEquals(1, result);

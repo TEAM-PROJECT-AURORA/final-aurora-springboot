@@ -3,7 +3,7 @@ package com.root34.aurora.addressBook.dto;
 import lombok.Data;
 
 /**
-	@ClassName : AddressbookDTO
+	@ClassName : AddressBookDTO
 	@Date : 2023-03-14
 	@Writer : 오승재
 	@Description : 주소록 정보를 담은 DTO
@@ -12,7 +12,7 @@ import lombok.Data;
 public class AddressBookDTO {
 
     /**
-     * @param addbookNo 주소록번호
+     * @param addBookNo 주소록번호
      * @param groupCode 그룹 코드
      * @param groupName 그룹명
      * @param memberCode 사원 코드
@@ -24,7 +24,7 @@ public class AddressBookDTO {
      * @param department 부서
      * @param comPhone 회사전화
      */
-    private String addbookNo;
+    private String addBookNo;
     private String groupCode;
     private String groupName;
     private int memberCode;

@@ -41,7 +41,7 @@ public interface AddressBookMapper {
 
 	int insertTeamAddress(AddressBookDTO addressBookDTO);
 
-	int updateAddress(AddressBookDTO addressBookDTO);
+	int updateAddress(Map map);
 
 	int deleteAddress(String addbookNo);
 }

@@ -115,18 +115,18 @@
         VALUES
             (#{ name }, #{ groupCode }, #{ team }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
     </insert>
-    <update id="updateAddress" parameterType="addressBookDTO">
+    <update id="updateAddress" parameterType="map">
         UPDATE TBL_ADDRESS_BOOK
-           SET NAME = #{ name },
-               PHONE = #{ phone },
-               EMAIL = #{ email },
-               COMPANY = #{ company },
-               DEPARTMENT = #{ department },
-               COM_PHONE = #{ comPhone }
-         WHERE ADDBOOK_NO = #{ addbookNo }
+           SET NAME = #{ address.name },
+               PHONE = #{ address.phone },
+               EMAIL = #{ address.email },
+               COMPANY = #{ address.company },
+               DEPARTMENT = #{ address.department },
+               COM_PHONE = #{ address.comPhone }
+         WHERE ADDBOOK_NO = #{ addBookNo }
     </update>
     <delete id="deleteAddress" parameterType="String">
         DELETE FROM TBL_ADDRESS_BOOK
-         WHERE ADDBOOK_NO = #{ addbookNo }
+         WHERE ADDBOOK_NO = #{ addBookNo }
     </delete>
 </mapper>

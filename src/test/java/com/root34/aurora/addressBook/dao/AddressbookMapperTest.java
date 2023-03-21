@@ -216,17 +216,19 @@ class AddressBookMapperTest {
     void 주소록_수정_매퍼_테스트() {
 
         // given
-        AddressBookDTO addressBookDTO = new AddressBookDTO();
-        addressBookDTO.setName("허카다시안");
-        addressBookDTO.setPhone("010-1111-1111");
-        addressBookDTO.setEmail("heoCasadian@test.com");
-        addressBookDTO.setCompany("커다시안패밀리");
-        addressBookDTO.setDepartment("허씨");
-        addressBookDTO.setComPhone("02-1111-1111");
-        addressBookDTO.setAddbookNo("1");
+        AddressBookDTO address = new AddressBookDTO();
+        address.setName("허킴");
+        address.setPhone("010-1111-1111");
+        address.setEmail("heoCasadian@test.com");
+        address.setCompany("커다시안패밀리");
+        address.setDepartment("허씨");
+        address.setComPhone("02-1111-1111");
+        Map map = new HashMap();
+        map.put("address", address);
+        map.put("addBookNo", "3");
 
         // when
-        int result = addressBookMapper.updateAddress(addressBookDTO);
+        int result = addressBookMapper.updateAddress(map);
 
         // then
         assertEquals(1, result);
@@ -236,10 +238,10 @@ class AddressBookMapperTest {
     void 주소록_삭제_매퍼_테스트() {
 
         // given
-        String addbookNo = "1";
+        String addBookNo = "1";
 
         // when
-        int result = addressBookMapper.deleteAddress(addbookNo);
+        int result = addressBookMapper.deleteAddress(addBookNo);
 
         // then
         assertEquals(1, result);
