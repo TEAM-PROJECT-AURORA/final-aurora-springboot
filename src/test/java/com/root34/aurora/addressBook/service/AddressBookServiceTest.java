@@ -92,10 +92,10 @@ class AddressBookServiceTest {
         String team = "개발1팀";
 
         // when
-        int result = addressBookService.insertGroup(team);
+        String result = addressBookService.insertGroup(team);
 
         // then
-        assertEquals(1, result);
+        assertEquals("그룹 추가 성공", result);
     }
 
     @Test
@@ -143,10 +143,10 @@ class AddressBookServiceTest {
         addressBookDTO.setComPhone("02-1111-2222");
 
         // when
-        int result = addressBookService.insertPersonalAddress(addressBookDTO);
+        String  result = addressBookService.insertPersonalAddress(addressBookDTO);
 
         // then
-        assertEquals(1, result);
+        assertEquals("개인 주소록 추가 성공", result);
     }
 
     @Test
@@ -194,10 +194,10 @@ class AddressBookServiceTest {
         addressBookDTO.setComPhone("02-1111-2222");
 
         // when
-        int result = addressBookService.insertTeamAddress(addressBookDTO);
+        String result = addressBookService.insertTeamAddress(addressBookDTO);
 
         // then
-        assertEquals(1, result);
+        assertEquals("팀 주소록 추가 성공", result);
     }
 
     @Test
@@ -216,10 +216,10 @@ class AddressBookServiceTest {
         map.put("addBookNo", "3");
 
         // when
-        int result = addressBookService.updateAddress(map);
+        String result = addressBookService.updateAddress(map);
 
         // then
-        assertEquals(1, result);
+        assertEquals("주소록 수정 성공", result);
     }
 
     @Test
@@ -229,9 +229,9 @@ class AddressBookServiceTest {
         String addBookNo = "2";
 
         // when
-        int result = addressBookService.deleteAddress(addBookNo);
+        String result = addressBookService.deleteAddress(addBookNo);
 
         // then
-        assertEquals(1, result);
+        assertEquals("주소록 삭제 성공", result);
     }
 }

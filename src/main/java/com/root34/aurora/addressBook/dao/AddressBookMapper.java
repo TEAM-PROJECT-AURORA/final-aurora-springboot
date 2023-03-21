@@ -43,5 +43,5 @@ public interface AddressBookMapper {
 
 	int updateAddress(Map map);
 
-	int deleteAddress(String addbookNo);
+	int deleteAddress(String addBookNo);
 }

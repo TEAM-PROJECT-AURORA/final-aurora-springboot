@@ -73,13 +73,13 @@ public class AddressBookService {
     }
 
     @Transactional
-    public int insertGroup(String groupName) {
+    public String insertGroup(String groupName) {
 
         log.info("[addressBookService] insertGroup Start ===================================");
         int result = addressBookMapper.insertGroup(groupName);
 
         log.info("[addressBookService] insertGroup End ===================================");
-        return result;
+        return (result > 0)? "그룹 추가 성공" : "그룹 추가 실패";
     }
 
     public int selectTotalPersonalAddresses(int MemberCode) {
@@ -101,13 +101,13 @@ public class AddressBookService {
     }
 
     @Transactional
-    public int insertPersonalAddress(AddressBookDTO addressBookDTO) {
+    public String insertPersonalAddress(AddressBookDTO addressBookDTO) {
 
         log.info("[addressBookService] insertPersonalAddress Start ===================================");
         int result = addressBookMapper.insertPersonalAddress(addressBookDTO);
 
         log.info("[addressBookService] insertPersonalAddress End ===================================");
-        return result;
+        return (result > 0)? "개인 주소록 추가 성공" : "개인 주소록 추가 실패";
     }
 
     public int selectTotalTeamAddresses(String team) {
@@ -129,32 +129,32 @@ public class AddressBookService {
     }
 
     @Transactional
-    public int insertTeamAddress(AddressBookDTO addressBookDTO) {
+    public String insertTeamAddress(AddressBookDTO addressBookDTO) {
 
         log.info("[addressBookService] insertTeamAddress Start ===================================");
         int result = addressBookMapper.insertTeamAddress(addressBookDTO);
 
         log.info("[addressBookService] insertTeamAddress End ===================================");
-        return result;
+        return (result > 0)? "팀 주소록 추가 성공" : "팀 주소록 추가 실패";
     }
 
     @Transactional
-    public int updateAddress(Map map) {
+    public String updateAddress(Map map) {
 
         log.info("[addressBookService] updateAddress Start ===================================");
         int result = addressBookMapper.updateAddress(map);
 
         log.info("[addressBookService] updateAddress End ===================================");
-        return result;
+        return (result > 0)? "주소록 수정 성공" : "주소록 수정 실패";
     }
 
     @Transactional
-    public int deleteAddress(String addbookNo) {
+    public String deleteAddress(String addbookNo) {
 
         log.info("[addressBookService] deleteAddress Start ===================================");
         int result = addressBookMapper.deleteAddress(addbookNo);
 
         log.info("[addressBookService] deleteAddress End ===================================");
-        return result;
+        return (result > 0)? "주소록 삭제 성공" : "주소록 삭제 실패";
     }
 }

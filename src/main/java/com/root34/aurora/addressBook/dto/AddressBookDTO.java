@@ -12,28 +12,47 @@ import lombok.Data;
 public class AddressBookDTO {
 
     /**
-     * @param addBookNo 주소록번호
-     * @param groupCode 그룹 코드
-     * @param groupName 그룹명
-     * @param memberCode 사원 코드
-     * @param team 소속팀
-     * @param name 이름
-     * @param phone 전화번호
-     * @param email 이메일
-     * @param company 회사
-     * @param department 부서
-     * @param comPhone 회사전화
-     */
+    	* @variable 주소록번호
+    */
     private String addBookNo;
+    /**
+    	* @variable 그룹 코드
+    */
     private String groupCode;
+    /**
+    	* @variable 그룹명 
+    */
     private String groupName;
+    /**
+    	* @variable 사원 코드 
+    */
     private int memberCode;
+    /**
+    	* @variable 소속팀 
+    */
     private String team;
+    /**
+    	* @variable 이름 
+    */
     private String name;
+    /**
+    	* @variable 전화번호 
+    */
     private String phone;
+    /**
+    	* @variable 이메일 
+    */
     private String email;
+    /**
+    	* @variable 회사
+    */
     private String company;
+    /**
+    	* @variable 부서 
+    */
     private String department;
+    /**
+    	* @variable 회사 전화 
+    */
     private String comPhone;
-
 }

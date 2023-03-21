@@ -89,8 +89,8 @@
     <select id="selectTotalTeamAddresses" parameterType="String" resultType="_int">
         SELECT
             COUNT(*)
-        FROM TBL_ADDRESS_BOOK
-        WHERE TEAM = #{ team }
+          FROM TBL_ADDRESS_BOOK
+         WHERE TEAM = #{ team }
     </select>
     <select id="selectAllTeamAddresses" parameterType="map" resultType="addressBookDTO">
         SELECT
@@ -104,10 +104,10 @@
             A.COMPANY,
             A.DEPARTMENT,
             A.COM_PHONE
-        FROM TBL_ADDRESS_BOOK A
-        JOIN TBL_ADDRESS_GROUP B
-          ON A.GROUP_CODE = B.GROUP_CODE
-       WHERE A.TEAM = #{ team }
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON A.GROUP_CODE = B.GROUP_CODE
+         WHERE A.TEAM = #{ team }
     </select>
     <insert id="insertTeamAddress" parameterType="addressBookDTO">
         INSERT INTO TBL_ADDRESS_BOOK
