@@ -15,6 +15,7 @@
 		<typeAlias alias="ApprovalDTO" type="com.root34.aurora.approval.dto.ApprovalDTO"/>
 		<typeAlias alias="ApprovalLineDTO" type="com.root34.aurora.approval.dto.ApprovalLineDTO"/>
 		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
+		<typeAlias alias="MemberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 	</typeAliases>
 
 	<mappers>

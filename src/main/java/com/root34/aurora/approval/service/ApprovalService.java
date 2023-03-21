@@ -37,6 +37,7 @@ public class ApprovalService {
 
         try {
             List<ApprovalDTO> approvalDtoList = approvalMapper.lastList();
+            log.info("[ApprovalService] lastList :" + approvalDtoList);
             if (approvalDtoList == null) {
                 throw new Exception("목록이 없습니다.");
             }
@@ -120,7 +121,8 @@ public class ApprovalService {
 
         log.info("[ApprovalService] detailApprove 실행 " );
         try {
-            ApprovalDTO approvalDTO = approvalMapper.selectApprove(appCode);
+            ApprovalDTO approvalDTO = approvalMapper.detailApprove(appCode);
+            log.info("approvalDTO : " + approvalDTO);
             if(appCode < 0){
                 throw new Exception("해당 문서가 존재하지 않습니다.");
             }

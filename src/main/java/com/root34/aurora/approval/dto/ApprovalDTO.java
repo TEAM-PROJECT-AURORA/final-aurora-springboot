@@ -17,10 +17,6 @@ public class ApprovalDTO {
 
     /**@Variable : 결재코드*/
     private int appCode;
-    /**@Variable : 문서DTO*/
-    private DocumentDTO documentDto;
-    /**@Variable : 사원DTO*/
-    private MemberDTO memberDto;
     /**@Variable : 결재제목*/
     private String appTitle;
     /**@Variable : 결재내용*/
@@ -34,5 +30,9 @@ public class ApprovalDTO {
     private String appOpen;
     /**@Variable : 결재선*/
     private List<ApprovalLineDTO> approvalLineDtoList;
+    /**@Variable : 문서DTO*/
+    private DocumentDTO documentDTO;
+    /**@Variable : 사원DTO*/
+    private MemberDTO memberDTO;
 
 }

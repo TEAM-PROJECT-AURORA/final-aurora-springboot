@@ -44,10 +44,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-test {
-    failFast = true
-    maxParallelForks = 1
-    testLogging {
-        events 'passed', 'skipped', 'failed'
-    }
-}
+
