@@ -1,5 +1,6 @@
 package com.root34.aurora.mail.service;
 
+import com.root34.aurora.configuration.MailConfig;
 import com.root34.aurora.mail.dto.MailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,10 +19,13 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailService {
 
+    private final MailConfig mailConfig;
     private final JavaMailSender javaMailSender;
 
     @Autowired
-    public MailService(JavaMailSender javaMailSender) {
+    public MailService(MailConfig mailConfig, JavaMailSender javaMailSender) {
+
+        this.mailConfig = mailConfig;
         this.javaMailSender = javaMailSender;
     }
 

@@ -18,7 +18,7 @@ public class MailDTO {
      */
     private long mailCode;
     private long tagCode;
-    private long memberCode;
+//    private long memberCode;
     private String mailTitle;
     private String mailBody;
     private String sender;
