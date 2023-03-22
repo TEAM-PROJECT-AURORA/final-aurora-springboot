@@ -1,9 +1,11 @@
 package com.root34.aurora.report.dao;
 
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dto.ReportDTO;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  @ClassName : ReportMapper
@@ -14,9 +16,11 @@ import java.util.ArrayList;
 @Mapper
 public interface ReportMapper {
 
-    int registerReportMap(ReportDTO reportDTO);
+    int registerReport(ReportDTO reportDTO); // 보고서 작성
 
-    ArrayList<ReportDTO> getRoutineReportList(Long memberCode);
+    int registerReporter(HashMap<String, Object> parameter);
 
-    ArrayList<ReportDTO> getCasualReportList(Long memberCode);
+    int getReportCount(HashMap<String, Object> searchConditions); // 조건별 보고 갯수 조회
+
+    List<ReportDTO> selectReportListWithPaging(SelectCriteria selectCriteria); // 조건별 보고 목록 조회
 }

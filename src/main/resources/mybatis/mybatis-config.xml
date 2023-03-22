@@ -14,6 +14,7 @@
 	<typeAliases>
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
+		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
 	</typeAliases>
 
 	<mappers>
