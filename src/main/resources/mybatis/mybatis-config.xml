@@ -13,11 +13,13 @@
 
 	<typeAliases>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="memberMapper.xml"/>
+		<mapper resource="attendanceMapper.xml"/>
 
 	</mappers>
 </configuration>

@@ -42,7 +42,7 @@ public class MemberService {
      * @MethodName : selectMemberTotal
      * @Date : 23.03.20.
      * @Writer : 정근호
-     * @Method Description :페이징 처리를 위한 매소드
+     * @Description :페이징 처리를 위한 매소드
      */
     public int selectMemberTotal() {
 
@@ -57,7 +57,7 @@ public class MemberService {
      * @MethodName : memberList
      * @Date : 23.03.20.
      * @Writer : 정근호
-     * @Method Description :사원 전체 조회를 위한 매소드
+     * @Description :사원 전체 조회를 위한 매소드
      */
     public Object memberList(SelectCriteria selectCriteria){
 
@@ -72,7 +72,7 @@ public class MemberService {
      * @MethodName : memberDetail
      * @Date : 23.03.20.
      * @Writer : 정근호
-     * @Method Description : 사원의 상세 조회를 위한 매소드
+     * @Description : 사원의 상세 조회를 위한 매소드
      */
     public MemberDTO memberDetail(Integer memberCode) {
 
@@ -90,7 +90,7 @@ public class MemberService {
      * @MethodName : memberModify
      * @Date : 23.03.20.
      * @Writer : 정근호
-     * @Method Description :사원 정보 수정을 위한 매소드
+     * @Description :사원 정보 수정을 위한 매소드
      */
     @Transactional
     public String memberModify(MemberDTO memberDTO) {
@@ -111,7 +111,7 @@ public class MemberService {
      * @MethodName : selectMemberListAboutName
      * @Date : 23.03.22.
      * @Writer : 정근호
-     * @Method Description : 이름으로 사원 검색
+     * @Description : 이름으로 사원 검색
      */
     public List<MemberDTO> selectMemberListAboutName(String search) {
 
@@ -129,7 +129,7 @@ public class MemberService {
      * @MethodName : selectMemberListAboutEmail
      * @Date : 23.03.22.
      * @Writer : 정근호
-     * @Method Description : 이메일로 사원 검색
+     * @Description : 이메일로 사원 검색
      */
     public List<MemberDTO> selectMemberListAboutEmail(String search) {
 
@@ -148,7 +148,7 @@ public class MemberService {
      * @MethodName : selectMemberListAboutDept
      * @Date : 23.03.22.
      * @Writer : 정근호
-     * @Method Description : 부서별 사원 검색
+     * @Description : 부서별 사원 검색
      */
     public List<MemberDTO> selectMemberListAboutDept(String search) {
 
@@ -166,7 +166,7 @@ public class MemberService {
      * @MethodName : selectMemberListAboutJob
      * @Date : 23.03.22.
      * @Writer : 정근호
-     * @Method Description : 직위별 사원 검색
+     * @Description : 직위별 사원 검색
      */
     public List<MemberDTO> selectMemberListAboutJob(String search) {
 
@@ -184,7 +184,7 @@ public class MemberService {
      * @MethodName : selectMemberListAboutTask
      * @Date : 23.03.22.
      * @Writer : 정근호
-     * @Method Description : 직무별 사원 검색
+     * @Description : 직무별 사원 검색
      */
     public List<MemberDTO> selectMemberListAboutTask(String search) {
 

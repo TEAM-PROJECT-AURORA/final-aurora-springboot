@@ -29,7 +29,7 @@ public class AuthService {
      * @MethodName : signup
      * @Date : 23.03.20.
      * @Writer : 정근호
-     * @Method Description :사원 등록을 위한 매소드
+     * @Description :사원 등록을 위한 매소드
      */
     @Transactional
     public MemberDTO signup(MemberDTO memberDTO) {

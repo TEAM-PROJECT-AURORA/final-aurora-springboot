@@ -30,7 +30,7 @@ public class AuthController {
      * @MethodName :
      * @Date :
      * @Writer :
-     * @Method Description :
+     * @Description :
      */
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody MemberDTO memberDto) {
