@@ -40,8 +40,8 @@ public interface MemberMapper {
     List<MemberDTO> selectMemberListAboutDept(String search);
 
     List<MemberDTO> selectMemberListAboutJob(String search);
-//
-//    List<MemberDTO> selectMemberListAboutEmail();
+
+    List<MemberDTO> selectMemberListAboutTask(String search);
 //
 //    List<MemberDTO> selectMemberListAboutEmail();
 

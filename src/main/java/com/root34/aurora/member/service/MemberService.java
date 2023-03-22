@@ -123,12 +123,12 @@ public class MemberService {
 
         log.info("[MemberService] selectMemberListAboutEmail Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> MemberListAboutEmail = memberMapper.selectMemberListAboutEmail(search);
-        log.info("[MemberService] selectMemberListAboutEmail : " + MemberListAboutEmail);
+        List<MemberDTO> memberListAboutEmail = memberMapper.selectMemberListAboutEmail(search);
+        log.info("[MemberService] selectMemberListAboutEmail : " + memberListAboutEmail);
 
         log.info("[MemberService] selectMemberListAboutEmail End =============================");
 
-        return MemberListAboutEmail;
+        return memberListAboutEmail;
 
     }
 
@@ -136,23 +136,35 @@ public class MemberService {
 
         log.info("[MemberService] selectMemberListAboutDept Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> MemberListAboutDept = memberMapper.selectMemberListAboutDept(search);
-        log.info("[MemberService] selectMemberListAboutDept : " + MemberListAboutDept);
+        List<MemberDTO> memberListAboutDept = memberMapper.selectMemberListAboutDept(search);
+        log.info("[MemberService] selectMemberListAboutDept : " + memberListAboutDept);
 
         log.info("[MemberService] selectMemberListAboutDept End =============================");
 
-        return MemberListAboutDept;
+        return memberListAboutDept;
     }
 
     public List<MemberDTO> selectMemberListAboutJob(String search) {
 
         log.info("[MemberService] selectMemberListAboutJob Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> MemberListAboutJob = memberMapper.selectMemberListAboutJob(search);
-        log.info("[MemberService] selectMemberListAboutJob : " + MemberListAboutJob);
+        List<MemberDTO> memberListAboutJob = memberMapper.selectMemberListAboutJob(search);
+        log.info("[MemberService] selectMemberListAboutJob : " + memberListAboutJob);
 
         log.info("[MemberService] selectMemberListAboutJob End =============================");
 
-        return MemberListAboutJob;
+        return memberListAboutJob;
+    }
+
+    public List<MemberDTO> selectMemberListAboutTask(String search) {
+
+        log.info("[MemberService] selectMemberListAboutTask Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListAboutTask = memberMapper.selectMemberListAboutTask(search);
+        log.info("[MemberService] selectMemberListAboutTask : " + memberListAboutTask);
+
+        log.info("[MemberService] selectMemberListAboutTask End =============================");
+
+        return memberListAboutTask;
     }
 }

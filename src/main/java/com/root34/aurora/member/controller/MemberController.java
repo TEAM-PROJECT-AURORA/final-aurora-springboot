@@ -120,6 +120,12 @@ public class MemberController {
         log.info("[memberService.selectMemberListAboutJob(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search)));
 
+    }
 
+    @GetMapping("/members/task")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutTask(@RequestParam(name="task", defaultValue = "all") String search) {
+
+        log.info("[memberService.selectMemberListAboutTask(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutTask(search)));
     }
 }
