@@ -36,7 +36,7 @@ public class AuthService {
         }
 
         log.info("[AuthService] Member Signup Start ==============================");
-        memberDto.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
+        memberDto.setMemberPWD(passwordEncoder.encode(memberDto.getMemberPWD()));
         log.info("[AuthService] Member {}", memberDto);
         int result = memberMapper.insertMember(memberDto);
         log.info("[AuthService] Member Insert Result {}", result > 0 ? "회원 가입 성공" : "회원 가입 실패");
@@ -56,7 +56,7 @@ public class AuthService {
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디 또는 비밀번호입니다"));
 
         // 2. 비밀번호 매칭
-        if (!passwordEncoder.matches(memberDto.getMemberPassword(), member.getMemberPassword())) {
+        if (!passwordEncoder.matches(memberDto.getMemberPWD(), member.getMemberPWD())) {
             log.info("[AuthService] Password Match Fail!!!!!!!!!!!!");
             throw new LoginFailedException("잘못된 아이디 또는 비밀번호입니다");
         }

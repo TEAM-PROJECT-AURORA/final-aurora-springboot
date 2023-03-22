@@ -198,4 +198,19 @@ class AddressBookControllerTest {
         assertEquals("주소록 삭제 성공", response.getBody().getMessage());
         assertNotNull(response.getBody().getData());
     }
+
+    @Test
+    void 개인_주소록_그룹_조회_컨트롤러_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.selectPersonalGroups(memberCode);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("개인 그룹 조회 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
 }

@@ -2,6 +2,7 @@ package com.root34.aurora.addressBook.service;
 
 import com.root34.aurora.FinalAuroraSpringbootApplication;
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
@@ -49,7 +50,7 @@ class AddressBookServiceTest {
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
 
         // when
-        List<MemberDTO> list = addressBookService.selectAllMemberAddresses(selectCriteria);
+        List<AddressBookDTO> list = addressBookService.selectAllMemberAddresses(selectCriteria);
 
         // then
         assertNotNull(list);
@@ -65,7 +66,7 @@ class AddressBookServiceTest {
         map.put("deptCode", "DEV");
 
         // when
-        List<MemberDTO> list = addressBookService.selectAllMemberAddressesByDept(map);
+        List<AddressBookDTO> list = addressBookService.selectAllMemberAddressesByDept(map);
 
         // then
         assertNotNull(list);
@@ -233,5 +234,18 @@ class AddressBookServiceTest {
 
         // then
         assertEquals("주소록 삭제 성공", result);
+    }
+
+    @Test
+    void 개인_주소록_그룹_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        List<AddressGroupDTO> list = addressBookService.selectPersonalGroups(memberCode);
+
+        // then
+        assertNotNull(list);
     }
 }

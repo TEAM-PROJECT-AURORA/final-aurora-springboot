@@ -8,16 +8,18 @@
             COUNT(*)
           FROM TBL_MEMBER
     </select>
-    <select id="selectAllMemberAddresses" parameterType="selectCriteria" resultType="memberDTO">
+    <select id="selectAllMemberAddresses" parameterType="selectCriteria" resultType="addressBookDTO">
         SELECT
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            '회사',
-            DEPT_CODE,
-            '회사 전화'
-          FROM TBL_MEMBER
-         LIMIT ${ startRow - 1 }, #{ limit }
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            '우리 회사' AS COMPANY,
+            B.DEPT_NAME AS DEPARTMENT,
+            A.PHONE AS COM_PHONE
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         LIMIT ${ startRow }, #{ limit }
     </select>
     <select id="selectTotalMemberAddressesByDept" resultType="_int">
         SELECT
@@ -25,17 +27,19 @@
           FROM TBL_MEMBER
          WHERE DEPT_CODE = #{ deptCode }
     </select>
-    <select id="selectAllMemberAddressesByDept" parameterType="map" resultType="memberDTO">
+    <select id="selectAllMemberAddressesByDept" parameterType="map" resultType="addressBookDTO">
         SELECT
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            '회사',
-            DEPT_CODE,
-            '회사 전화'
-          FROM TBL_MEMBER
-         WHERE DEPT_CODE = #{ deptCode }
-         LIMIT ${ selectCriteria.startRow - 1 }, #{ selectCriteria.limit }
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            '우리 회사' AS COMPANY,
+            B.DEPT_NAME AS DEPARTMENT,
+            A.PHONE AS COM_PHONE
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         WHERE A.DEPT_CODE = #{ deptCode }
+         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
     <select id="selectOneMemberAddress" parameterType="_int" resultType="memberDTO">
         SELECT
@@ -78,7 +82,7 @@
           JOIN TBL_ADDRESS_GROUP B
             ON B.GROUP_CODE = B.GROUP_CODE
          WHERE A.MEMBER_CODE = #{ memberCode }
-         LIMIT ${ selectCriteria.startRow - 1 }, #{ selectCriteria.limit }
+         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
     <insert id="insertPersonalAddress" parameterType="addressBookDTO">
         INSERT INTO TBL_ADDRESS_BOOK
@@ -129,4 +133,13 @@
         DELETE FROM TBL_ADDRESS_BOOK
          WHERE ADDBOOK_NO = #{ addBookNo }
     </delete>
+    <select id="selectPersonalGroups" parameterType="_int" resultType="addressGroupDTO">
+        SELECT
+            DISTINCT A.GROUP_CODE,
+            B.GROUP_NAME
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON A.GROUP_CODE = B.GROUP_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+    </select>
 </mapper>

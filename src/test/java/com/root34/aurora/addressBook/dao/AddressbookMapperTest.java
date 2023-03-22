@@ -2,6 +2,7 @@ package com.root34.aurora.addressBook.dao;
 
 import com.root34.aurora.FinalAuroraSpringbootApplication;
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
@@ -48,7 +49,7 @@ class AddressBookMapperTest {
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
 
         // when
-        List<MemberDTO> list = addressBookMapper.selectAllMemberAddresses(selectCriteria);
+        List<AddressBookDTO> list = addressBookMapper.selectAllMemberAddresses(selectCriteria);
 
         // then
         assertNotNull(list);
@@ -77,7 +78,7 @@ class AddressBookMapperTest {
         map.put("deptCode", "DEV");
 
         // when
-        List<MemberDTO> list = addressBookMapper.selectAllMemberAddressesByDept(map);
+        List<AddressBookDTO> list = addressBookMapper.selectAllMemberAddressesByDept(map);
 
         // then
         assertNotNull(list);
@@ -219,7 +220,7 @@ class AddressBookMapperTest {
         AddressBookDTO address = new AddressBookDTO();
         address.setName("허킴");
         address.setPhone("010-1111-1111");
-        address.setEmail("heoCasadian@test.com");
+        address.setEmail("heoCadasian@test.com");
         address.setCompany("커다시안패밀리");
         address.setDepartment("허씨");
         address.setComPhone("02-1111-1111");
@@ -245,5 +246,18 @@ class AddressBookMapperTest {
 
         // then
         assertEquals(1, result);
+    }
+
+    @Test
+    void 개인_주소록_그룹_조회_매퍼_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        List<AddressGroupDTO> list = addressBookMapper.selectPersonalGroups(memberCode);
+
+        // then
+        assertNotNull(list);
     }
 }

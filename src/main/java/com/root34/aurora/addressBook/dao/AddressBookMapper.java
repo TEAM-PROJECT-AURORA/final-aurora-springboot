@@ -1,6 +1,7 @@
 package com.root34.aurora.addressBook.dao;
 
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,11 +20,11 @@ public interface AddressBookMapper {
 
 	int selectTotalMemberAddresses();
 
-	List<MemberDTO> selectAllMemberAddresses(SelectCriteria selectCriteria);
+	List<AddressBookDTO> selectAllMemberAddresses(SelectCriteria selectCriteria);
 
 	int selectTotalMemberAddressesByDept(String deptCode);
 
-	List<MemberDTO> selectAllMemberAddressesByDept(Map map);
+	List<AddressBookDTO> selectAllMemberAddressesByDept(Map map);
 
 	MemberDTO selectOneMemberAddress(int memberCode);
 
@@ -44,4 +45,6 @@ public interface AddressBookMapper {
 	int updateAddress(Map map);
 
 	int deleteAddress(String addBookNo);
+
+	List<AddressGroupDTO> selectPersonalGroups(int memberCode);
 }

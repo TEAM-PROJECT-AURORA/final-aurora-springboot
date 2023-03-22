@@ -2,6 +2,7 @@ package com.root34.aurora.addressBook.service;
 
 import com.root34.aurora.addressBook.dao.AddressBookMapper;
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +37,10 @@ public class AddressBookService {
         return result;
     }
 
-    public List<MemberDTO> selectAllMemberAddresses(SelectCriteria selectCriteria) {
+    public List<AddressBookDTO> selectAllMemberAddresses(SelectCriteria selectCriteria) {
 
         log.info("[addressBookService] selectAllMemberAddresses Start ===================================");
-        List<MemberDTO> addresses = addressBookMapper.selectAllMemberAddresses(selectCriteria);
+        List<AddressBookDTO> addresses = addressBookMapper.selectAllMemberAddresses(selectCriteria);
 
         log.info("[addressBookService] selectAllMemberAddresses End ===================================");
         return addresses;
@@ -54,10 +55,10 @@ public class AddressBookService {
         return result;
     }
 
-    public List<MemberDTO> selectAllMemberAddressesByDept(Map map) {
+    public List<AddressBookDTO> selectAllMemberAddressesByDept(Map map) {
 
         log.info("[addressBookService] selectAllMemberAddressesByDept Start ===================================");
-        List<MemberDTO> addresses = addressBookMapper.selectAllMemberAddressesByDept(map);
+        List<AddressBookDTO> addresses = addressBookMapper.selectAllMemberAddressesByDept(map);
 
         log.info("[addressBookService] selectAllMemberAddressesByDept End ===================================");
         return addresses;
@@ -156,5 +157,15 @@ public class AddressBookService {
 
         log.info("[addressBookService] deleteAddress End ===================================");
         return (result > 0)? "주소록 삭제 성공" : "주소록 삭제 실패";
+    }
+
+    public List<AddressGroupDTO> selectPersonalGroups(int memberCode) {
+
+        log.info("[addressBookService] selectPersonalGroups Start ===================================");
+        List<AddressGroupDTO> list = addressBookMapper.selectPersonalGroups(memberCode);
+
+        log.info("[addressBookService] selectPersonalGroups End ===================================");
+
+        return list;
     }
 }
