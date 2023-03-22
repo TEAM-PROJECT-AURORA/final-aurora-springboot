@@ -37,10 +37,10 @@ public class MemberController {
 
 
     /**
-     * @MethodName :
-     * @Date :
-     * @Writer :
-     * @Method Description :
+     * @MethodName : memberList
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description : 사원 리스트 출력 및 페이징 처리
      */
     @GetMapping("/members")
     public ResponseEntity<ResponseDTO> memberList(@RequestParam(name="offset", defaultValue = "1") String offset) {
@@ -61,26 +61,24 @@ public class MemberController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     }
+
     /**
-     * @MethodName :
-     * @Date :
-     * @Writer :
-     * @Method Description :
+     * @MethodName : memberDetail
+     * @Date :23.03.20.
+     * @Writer : 정근호
+     * @Method Description : 사원 상세정보 조회
      */
     @GetMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
-
-
-
-
     }
+
     /**
-     * @MethodName :
-     * @Date :
-     * @Writer :
-     * @Method Description :
+     * @MethodName : memberModify
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Method Description : 사원 정보 수정
      */
     @PutMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberModify(@RequestBody MemberDTO memberDTO, @PathVariable int memberCode) {
@@ -91,14 +89,26 @@ public class MemberController {
        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "업데이트 성공", memberService.memberModify(memberDTO)));
     }
 
+    /**
+     * @MethodName : selectSearchListAboutName
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 이름으로 사원 검색
+     */
     @GetMapping("/members/search")
-    public ResponseEntity<ResponseDTO> selectSearchList(@RequestParam(name="name", defaultValue = "all") String search) {
+    public ResponseEntity<ResponseDTO> selectSearchListAboutName(@RequestParam(name="name", defaultValue = "all") String search) {
 
-        log.info("[memberService.selectSearchMemberList(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectSearchMemberList(search)));
+        log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search)));
 
     }
 
+    /**
+     * @MethodName : selectMemberListAboutEmail
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 이메일로 사원 검색
+     */
     @GetMapping("/members/email")
     public ResponseEntity<ResponseDTO> selectMemberListAboutEmail(@RequestParam(name="email", defaultValue = "all") String search) {
 
@@ -106,6 +116,12 @@ public class MemberController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search)));
     }
 
+    /**
+     * @MethodName : selectMemberListAboutDept
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 부서별 사원 검색
+     */
     @GetMapping("/members/dept")
     public ResponseEntity<ResponseDTO> selectMemberListAboutDept(@RequestParam(name="dept", defaultValue = "all") String search) {
 
@@ -114,6 +130,12 @@ public class MemberController {
 
     }
 
+    /**
+     * @MethodName : selectMemberListAboutJob
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 직위별 사원 검색
+     */
     @GetMapping("/members/job")
     public ResponseEntity<ResponseDTO> selectMemberListAboutJob(@RequestParam(name="job", defaultValue = "all") String search) {
 
@@ -122,6 +144,12 @@ public class MemberController {
 
     }
 
+    /**
+     * @MethodName :selectMemberListAboutTask
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 직무별 사원 검색
+     */
     @GetMapping("/members/task")
     public ResponseEntity<ResponseDTO> selectMemberListAboutTask(@RequestParam(name="task", defaultValue = "all") String search) {
 

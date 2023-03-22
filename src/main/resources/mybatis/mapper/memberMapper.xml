@@ -97,7 +97,7 @@
 
     </update>
 
-    <select id="memberListWithSearchValue" resultType="MemberDTO">
+    <select id="selectMemberListAboutName" resultType="MemberDTO">
         SELECT
                 MEMBER_CODE,
                 MEMBER_NAME,

@@ -107,18 +107,30 @@ public class MemberService {
         return  (result > 0 ) ? " 수정 성공" : "수정 실패 ";
     }
 
-    public List<MemberDTO> selectSearchMemberList(String search) {
+    /**
+     * @MethodName : selectMemberListAboutName
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 이름으로 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutName(String search) {
 
         log.info("[MemberService] selectSearchMemberList Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> memberListWithSearchValues = memberMapper.memberListWithSearchValue(search);
-        log.info("[MemberService] selectSearchMemberList : " + memberListWithSearchValues);
+        List<MemberDTO> selectMemberListAboutName = memberMapper.selectMemberListAboutName(search);
+        log.info("[MemberService] selectSearchMemberList : " + selectMemberListAboutName);
 
         log.info("[MemberService] selectSearchMemberList End =============================");
 
-        return memberListWithSearchValues;
+        return selectMemberListAboutName;
     }
 
+    /**
+     * @MethodName : selectMemberListAboutEmail
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 이메일로 사원 검색
+     */
     public List<MemberDTO> selectMemberListAboutEmail(String search) {
 
         log.info("[MemberService] selectMemberListAboutEmail Start =========================");
@@ -132,6 +144,12 @@ public class MemberService {
 
     }
 
+    /**
+     * @MethodName : selectMemberListAboutDept
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 부서별 사원 검색
+     */
     public List<MemberDTO> selectMemberListAboutDept(String search) {
 
         log.info("[MemberService] selectMemberListAboutDept Start =========================");
@@ -144,6 +162,12 @@ public class MemberService {
         return memberListAboutDept;
     }
 
+    /**
+     * @MethodName : selectMemberListAboutJob
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 직위별 사원 검색
+     */
     public List<MemberDTO> selectMemberListAboutJob(String search) {
 
         log.info("[MemberService] selectMemberListAboutJob Start =========================");
@@ -156,6 +180,12 @@ public class MemberService {
         return memberListAboutJob;
     }
 
+    /**
+     * @MethodName : selectMemberListAboutTask
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Method Description : 직무별 사원 검색
+     */
     public List<MemberDTO> selectMemberListAboutTask(String search) {
 
         log.info("[MemberService] selectMemberListAboutTask Start =========================");

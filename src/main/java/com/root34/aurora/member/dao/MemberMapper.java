@@ -33,7 +33,7 @@ public interface MemberMapper {
 
     int memberModify(MemberDTO memberDTO);
 
-    List<MemberDTO> memberListWithSearchValue(String search);
+    List<MemberDTO> selectMemberListAboutName(String search);
 
     List<MemberDTO> selectMemberListAboutEmail(String search);
 
