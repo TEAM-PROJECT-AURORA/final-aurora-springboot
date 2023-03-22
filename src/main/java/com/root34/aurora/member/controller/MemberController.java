@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- @ClassName : MemberMapper
+ @ClassName : MemberController
  @Date : 23.03.20.
  @Writer : 정근호
- @Description : 회원 SQL을 호출하기 위한 인터페이스
+ @Description : 인사관리 컨트롤러
  */
 @Slf4j
 @RestController
@@ -91,5 +91,27 @@ public class MemberController {
         log.info("[memberService.memberDetail(memberCode))]" + memberDTO);
        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "업데이트 성공", memberService.memberModify(memberDTO)));
     }
+
+    @GetMapping("/members/search")
+    public ResponseEntity<ResponseDTO> selectSearchList(@RequestParam(name="name", defaultValue = "all") String search) {
+
+        log.info("[memberService.selectSearchMemberList(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectSearchMemberList(search)));
+
+    }
+
+    @GetMapping("/members/email")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutEmail(@RequestParam(name="email", defaultValue = "all") String search) {
+        log.info("[memberService.selectMemberListAboutEmail(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search)));
+    }
+
+    @GetMapping("/members/dept")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutDept(@RequestParam(name="dept", defaultValue = "all") String search) {
+        log.info("[memberService.selectMemberListAboutDept(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search)));
+
+    }
+
 
 }

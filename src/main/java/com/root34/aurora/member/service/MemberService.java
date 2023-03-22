@@ -107,4 +107,40 @@ public class MemberService {
         return  (result > 0 ) ? " 수정 성공" : "수정 실패 ";
     }
 
+    public List<MemberDTO> selectSearchMemberList(String search) {
+
+        log.info("[MemberService] selectSearchMemberList Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListWithSearchValues = memberMapper.memberListWithSearchValue(search);
+        log.info("[MemberService] selectSearchMemberList : " + memberListWithSearchValues);
+
+        log.info("[MemberService] selectSearchMemberList End =============================");
+
+        return memberListWithSearchValues;
+    }
+
+    public List<MemberDTO> selectMemberListAboutEmail(String search) {
+
+        log.info("[MemberService] selectMemberListAboutEmail Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> MemberListAboutEmail = memberMapper.selectMemberListAboutEmail(search);
+        log.info("[MemberService] selectMemberListAboutEmail : " + MemberListAboutEmail);
+
+        log.info("[MemberService] selectMemberListAboutEmail End =============================");
+
+        return MemberListAboutEmail;
+
+    }
+
+    public List<MemberDTO> selectMemberListAboutDept(String search) {
+
+        log.info("[MemberService] selectMemberListAboutDept Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> MemberListAboutDept = memberMapper.selectMemberListAboutDept(search);
+        log.info("[MemberService] selectMemberListAboutDept : " + MemberListAboutDept);
+
+        log.info("[MemberService] selectMemberListAboutDept End =============================");
+
+        return MemberListAboutDept;
+    }
 }
