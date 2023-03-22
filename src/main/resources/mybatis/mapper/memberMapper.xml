@@ -157,6 +157,26 @@
         ORDER BY MEMBER_CODE
     </select>
 
+    <select id="selectMemberListAboutJob" resultType="MemberDTO">
+        SELECT
+            MEMBER_CODE,
+            MEMBER_NAME,
+            PHONE,
+            MEMBER_EMAIL,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            ADDRESS,
+            MEMBER_HIRE_DATE,
+            STATUS
+
+        FROM TBL_MEMBER
+
+        WHERE JOB_CODE LIKE CONCAT ('%', #{ search } ,'%')
+          AND STATUS = '재직'
+        ORDER BY MEMBER_CODE
+    </select>
+
 
 
 

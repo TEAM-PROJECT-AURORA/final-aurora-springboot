@@ -70,7 +70,6 @@ public class MemberController {
     @GetMapping("/members/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
-
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
 
 
@@ -102,16 +101,25 @@ public class MemberController {
 
     @GetMapping("/members/email")
     public ResponseEntity<ResponseDTO> selectMemberListAboutEmail(@RequestParam(name="email", defaultValue = "all") String search) {
+
         log.info("[memberService.selectMemberListAboutEmail(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search)));
     }
 
     @GetMapping("/members/dept")
     public ResponseEntity<ResponseDTO> selectMemberListAboutDept(@RequestParam(name="dept", defaultValue = "all") String search) {
+
         log.info("[memberService.selectMemberListAboutDept(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search)));
 
     }
 
+    @GetMapping("/members/job")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutJob(@RequestParam(name="job", defaultValue = "all") String search) {
 
+        log.info("[memberService.selectMemberListAboutJob(search))]" + search);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search)));
+
+
+    }
 }

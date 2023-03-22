@@ -143,4 +143,16 @@ public class MemberService {
 
         return MemberListAboutDept;
     }
+
+    public List<MemberDTO> selectMemberListAboutJob(String search) {
+
+        log.info("[MemberService] selectMemberListAboutJob Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> MemberListAboutJob = memberMapper.selectMemberListAboutJob(search);
+        log.info("[MemberService] selectMemberListAboutJob : " + MemberListAboutJob);
+
+        log.info("[MemberService] selectMemberListAboutJob End =============================");
+
+        return MemberListAboutJob;
+    }
 }
