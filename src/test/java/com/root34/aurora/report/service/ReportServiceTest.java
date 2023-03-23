@@ -1,7 +1,8 @@
-package com.root34.aurora.report.dao;
+package com.root34.aurora.report.service;
 
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import org.junit.jupiter.api.Test;
@@ -12,14 +13,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ReportMapperTest {
+public class ReportServiceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportMapperTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ReportServiceTest.class);
     private final int MEMBER_CODE = 1;
     private final String REPORT_TYPE = "Routine";
     private final char COMPLETION_STATUS = 'N';
@@ -36,7 +40,7 @@ public class ReportMapperTest {
     @Test
     @Transactional
     @Rollback(false)
-    void 보고_작성_맵퍼_테스트() {
+    void 보고_작성_서비스_테스트() {
 
         // given
         ReportDTO reportDTO = new ReportDTO();
@@ -73,7 +77,7 @@ public class ReportMapperTest {
     }
 
     @Test
-    void 보고_갯수_조회_맵퍼_테스트() {
+    void 정기_보고_갯수_조회_맵퍼_테스트() {
 
         // given
         HashMap<String, Object> conditions = new HashMap<>();
@@ -89,7 +93,7 @@ public class ReportMapperTest {
     }
 
     @Test
-    void 보고_목록_조회_맵퍼_테스트() {
+    void 완료되지_않은_정기_보고_목록_조회_맵퍼_테스트() {
 
         // given
         HashMap<String, Object> searchConditions = new HashMap<>();
@@ -123,38 +127,24 @@ public class ReportMapperTest {
     }
 
     @Test
-    void 최근_정기보고_3개_조회_맵퍼_테스트() {
+    void 정기보고_최근_3개_회차_목록_조회_서비스_테스트() {
 
         // given
         int memberCode = MEMBER_CODE;
 
-        // when
-        List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
-
-        // then
-        log.info("recentRoutineReportCodeList.size() : " + recentRoutineReportCodeList.size());
-        log.info("recentRoutineReportCodeList : " + recentRoutineReportCodeList);
-
-        assertNotEquals(recentRoutineReportCodeList.size(), 0);
-    }
-
-    @Test
-    void 요약_정기보고_회차_목록_조회_맵퍼_테스트() {
-
-        // given
-        List<Long> reportCodeList = Arrays.asList(3L, 2L, 1L);
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        searchConditions.put("memberCode", MEMBER_CODE);
+        searchConditions.put("reportType", REPORT_TYPE);
+        searchConditions.put("completionStatus", COMPLETION_STATUS);
 
         HashMap<String, List<ReportRoundDTO>> resultMap = new LinkedHashMap<>();
 
-//        List<Long> reportCodeList = new ArrayList<>();
-//        reportCodeList.add(12L);
-//        reportCodeList.add(11L);
-//        reportCodeList.add(10L);
-
         // when
-        for(int i = 0; i < reportCodeList.size(); i++) {
+        List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
 
-            List<ReportRoundDTO> result = reportMapper.selectReportRoundListByReportCode(reportCodeList.get(i));
+        for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
+
+            List<ReportRoundDTO> result = reportMapper.selectReportRoundListByReportCode(recentRoutineReportCodeList.get(i));
             String resultName = "result" + (i + 1);
             resultMap.put(resultName, result);
         }
@@ -162,23 +152,14 @@ public class ReportMapperTest {
         List<ReportRoundDTO> routineList2 = resultMap.get("result2");
         List<ReportRoundDTO> routineList3 = resultMap.get("result3");
 
+        List<ReportDTO> casualList = reportMapper.selectCasualReportListByMemberCode(memberCode);
+
+
         // then
         assertNotNull(routineList1);
         assertNotNull(routineList2);
         assertNotNull(routineList3);
+        assertNotNull(casualList);
+
     }
-
-    @Test
-    void 비정기보고_목록_조회_맵퍼_테스트() {
-
-        // given
-        int memberCode = MEMBER_CODE;
-
-        // when
-        List<ReportDTO> casualReportList = reportMapper.selectCasualReportListByMemberCode(memberCode);
-
-        // then
-        assertNotNull(casualReportList);
-    }
-
 }

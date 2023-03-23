@@ -76,6 +76,21 @@ public class TokenProvider {
                 .getSubject();
     }
 
+    public String getMemberCodeFromToken(String accessToken) {
+
+        // 토큰에서 Payload 부분을 파싱하고 서명을 검증합니다.
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+
+        // "memberCode" 클레임에서 값을 추출합니다.
+        String memberCode = (String) claims.get("memberCode");
+
+        return memberCode;
+    }
+
     // Token 에 담겨있는 정보를 이용해 Authentication 객체 리턴
     public Authentication getAuthentication(String accessToken) {
 

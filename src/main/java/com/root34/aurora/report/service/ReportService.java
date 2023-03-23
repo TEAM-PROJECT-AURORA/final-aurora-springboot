@@ -52,7 +52,7 @@ public class ReportService {
         return result > 0 && count == memberList.size();
     }
 
-    public ArrayList<Object> getAllReportList(long memberCode) {
+    public ArrayList<Object> getReportSummary(long memberCode) {
 
         ArrayList<Object> allReportList = new ArrayList<>();
 //        allReportList.add(reportMapper.selectRoutineReportList(memberCode));
