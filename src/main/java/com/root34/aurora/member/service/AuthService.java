@@ -4,8 +4,8 @@ import com.root34.aurora.exception.DuplicatedUsernameException;
 import com.root34.aurora.exception.LoginFailedException;
 import com.root34.aurora.jwt.TokenProvider;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDto;
-import com.root34.aurora.member.dto.TokenDto;
+import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.TokenDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class AuthService {
     }
 
     @Transactional
-    public MemberDto signup(MemberDto memberDto) {
+    public MemberDTO signup(MemberDTO memberDto) {
         log.info("[AuthService] Signup Start ===================================");
         log.info("[AuthService] MemberRequestDto {}", memberDto);
 
@@ -47,12 +47,12 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(MemberDto memberDto) {
+    public TokenDTO login(MemberDTO memberDto) {
         log.info("[AuthService] Login Start ===================================");
         log.info("[AuthService] {}", memberDto);
 
         // 1. 아이디 조회
-        MemberDto member = memberMapper.findByMemberId(memberDto.getMemberId())
+        MemberDTO member = memberMapper.findByMemberId(memberDto.getMemberId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디 또는 비밀번호입니다"));
 
         // 2. 비밀번호 매칭
@@ -62,7 +62,7 @@ public class AuthService {
         }
 
         // 3. 토큰 발급
-        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        TokenDTO tokenDto = tokenProvider.generateTokenDto(member);
         log.info("[AuthService] tokenDto {}", tokenDto);
 
         log.info("[AuthService] Login End ===================================");

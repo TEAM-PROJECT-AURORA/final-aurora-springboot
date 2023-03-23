@@ -66,7 +66,8 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/recipes/**").permitAll()// 레시피 누구나 접근 가능
                 .antMatchers("/api/v1/categories/**").permitAll()// 레시피 누구나 접근 가능
                 .antMatchers("/api/v1/recipes-recommend/**").hasRole("ADMIN")
-                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")// 나머지 api 는 전부 인증 필요
+//                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")// 나머지 api 는 전부 인증 필요
+                .antMatchers("/api/**").permitAll() // 이거는 임시로 해둠 모두 권한 있게, 나중에 위에껄로 바궈야댐
                 .and()
                 .cors()
                 .and()

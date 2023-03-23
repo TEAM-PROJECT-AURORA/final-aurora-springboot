@@ -1,18 +1,15 @@
 package com.root34.aurora.member.dto;
 
-
-
-
-public class TokenDto {
+public class TokenDTO {
     private String grantType;
     private String memberName;
     private String accessToken;
     private Long accessTokenExpiresIn;
 
-    public TokenDto() {
+    public TokenDTO() {
     }
 
-    public TokenDto(String grantType, String memberName, String accessToken, Long accessTokenExpiresIn) {
+    public TokenDTO(String grantType, String memberName, String accessToken, Long accessTokenExpiresIn) {
         this.grantType = grantType;
         this.memberName = memberName;
         this.accessToken = accessToken;

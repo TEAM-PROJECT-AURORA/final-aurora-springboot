@@ -3,11 +3,11 @@ package com.root34.aurora.exception.dto;
 import org.springframework.http.HttpStatus;
 
 
-public class ApiExceptionDto {
+public class ApiExceptionDTO {
     private int state;
     private String message;
 
-    public ApiExceptionDto(HttpStatus state, String message){
+    public ApiExceptionDTO(HttpStatus state, String message){
         this.state = state.value();
         this.message = message;
     }
