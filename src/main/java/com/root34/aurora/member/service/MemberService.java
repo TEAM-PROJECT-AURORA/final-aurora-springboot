@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- @ClassName : MemberMapper
+ @ClassName : MemberService
  @Date : 23.03.20.
  @Writer : 정근호
- @Description : 회원 SQL을 호출하기 위한 인터페이스
+ @Description :
  */
 @Slf4j
 @Service

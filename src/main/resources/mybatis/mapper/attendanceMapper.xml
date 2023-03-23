@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.attendance.dao.AttendanceMapper">
+
+    <select id="getAttendance" resultType="hashMap">
+        SELECT
+            SUM(CASE WHEN TARDY = 'Y' THEN 1 ELSE 0 END) AS TARDY,
+            SUM(CASE WHEN EARLY_OFF = 'Y' THEN 1 ELSE 0 END) AS EARLY_OFF,
+            SUM(CASE WHEN TRUANCY = 'Y' THEN 1 ELSE 0 END) AS TRUANCY,
+            SUM(CASE WHEN ABSENCE = 'Y' THEN 1 ELSE 0 END) AS ABSENCE
+          FROM TBL_ATTENDANCE
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+
+<!--    <insert id="insertWorkTime" parameterType="attendanceDTO">-->
+<!--        INSERT INTO TBL_ATTENDANCE-->
+<!--            (WORK_TIME, WORK_STATUS , MEMBER_CODE , TARDY)-->
+<!--        VALUES-->
+<!--            (#{ workTime, jdbcType=TIMESTAMP  }, '근무' , #{ memberCode } , 'N')-->
+<!--        ON DUPLICATE KEY UPDATE TARDY = CASE WHEN TIME(VALUES(#{ workTime })) > '18:30:00' THEN 'Y' ELSE TARDY END;-->
+
+<!--          -->
+<!--    </insert>-->
+
+    <insert id="insertWorkTime" parameterType="attendanceDTO">
+        INSERT INTO TBL_ATTENDANCE (member_code, work_time, work_status, tardy)
+        VALUES (#{memberCode}, #{workTime, jdbcType=TIMESTAMP}, '근무', IF(TIME(#{workTime, jdbcType=TIMESTAMP}) > '20:30:00', 'Y', 'N'))
+            ON DUPLICATE KEY UPDATE tardy = IF(TIME(VALUES(work_time)) > '20:30:00', 'Y', tardy);
+    </insert>
+
+<!--        <update id="insertWorkTime" parameterType="attendanceDTO">-->
+<!--            UPDATE TBL_ATTENDANCE-->
+<!--               SET-->
+<!--                   WORK_TIME = #{ workTime, jdbcType=TIMESTAMP },-->
+<!--                   WORK_STATUS = '근무'-->
+<!--             WHERE MEMBER_CODE = #{ memberCode }-->
+<!--               AND (SELECT MAX(ATT_CODE) FROM TBL_ATTENDANCE)-->
+<!--               AND -->
+
+
+<!--        </update>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

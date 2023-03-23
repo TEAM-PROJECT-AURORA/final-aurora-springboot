@@ -36,4 +36,5 @@ public class AttendanceDTO {
 	 private String workStatus; //디폴트값 퇴근
 	 private LocalDate attRegDate; //근무 날짜
 
+
 }
