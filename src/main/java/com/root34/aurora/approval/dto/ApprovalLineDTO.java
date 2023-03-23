@@ -13,12 +13,13 @@ public class ApprovalLineDTO {
 
     /**@Variable : 결재선 코드*/
     private int appLineCode;
-    /**@Variable : 결재코드*/
-    private ApprovalDTO appCode;
-    /**@Variable : 사원코드*/
-    private MemberDTO MemberDto;
+
     /**@Variable : 결재 상태
      * @주의 : 결재대기 n, 결재완료 y*/
     private String appStatus;
+    /**@Variable : 결재코드*/
+    private int appCode;
+    /**@Variable : 사원코드*/
+    private MemberDTO memberDTO;
 
 }

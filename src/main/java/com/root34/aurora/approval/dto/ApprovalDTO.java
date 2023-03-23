@@ -28,8 +28,6 @@ public class ApprovalDTO {
     /**@Variable : 확인여부
      * @주의 : 읽지 않은 상태는 n, 읽은 상태는 y*/
     private String appOpen;
-    /**@Variable : 결재선*/
-    private List<ApprovalLineDTO> approvalLineDtoList;
     /**@Variable : 문서DTO*/
     private DocumentDTO documentDTO;
     /**@Variable : 사원DTO*/

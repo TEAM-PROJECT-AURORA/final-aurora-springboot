@@ -1,9 +1,11 @@
 package com.root34.aurora.approval.dao;
 
 import com.root34.aurora.approval.dto.ApprovalDTO;
+import com.root34.aurora.approval.dto.ApprovalLineDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  @FileName : ApprovalMapper
@@ -30,6 +32,9 @@ public interface ApprovalMapper {
     * @param approvalDTO 결재 DTO*/
     ApprovalDTO updateApproval(ApprovalDTO approvalDTO);
     /** 결재 삭제 
-    * @param approvalDTO 결재 DTO*/
-    ApprovalDTO deleteApproval(ApprovalDTO approvalDTO);
+    * @param deleteMap 다중삭제를 위한 deleteMap*/
+    int deleteApproval(Map<String, Object> deleteMap);
+    /** 결재선 추가
+     * @param approvalLineDTOList 결재선 DTO 리스트*/
+    int setLineApproval(List<ApprovalLineDTO> approvalLineDTOList);
 }

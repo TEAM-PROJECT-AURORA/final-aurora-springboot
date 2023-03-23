@@ -2,14 +2,17 @@ package com.root34.aurora.approval.service;
 
 import com.root34.aurora.approval.dao.ApprovalMapper;
 import com.root34.aurora.approval.dto.ApprovalDTO;
+import com.root34.aurora.approval.dto.ApprovalLineDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  @FileName : ApprovalService
@@ -91,26 +94,6 @@ public class ApprovalService {
         }
     }
 
-    /**
-        @MethodName : approve
-    	@Date : 4:26 PM
-    	@Writer : heojaehong
-    	@Description : 전자결재 서류 등록
-    */
-    public ApprovalDTO approve(ApprovalDTO approvalDTO) throws Exception { // 호출한 곳에서 예외처리
-
-        try {
-            int result = approvalMapper.insertApprove(approvalDTO);
-            if(result == 0){
-                throw new Exception("제출 실패!");
-            }
-
-            return approvalDTO;
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
 /**
     @MethodName : detailApprove
 	@Date : 2:48 PM
@@ -164,23 +147,61 @@ public class ApprovalService {
 	@Writer : heojaehong
 	@Description : 결재삭제 메서드
     */
-    public ApprovalDTO deleteApproval(ApprovalDTO approvalDTO) {
+    @Transactional
+    public int deleteApproval(Map<String, Object> deleteApprove) {
 
         log.info("[ApprovalService] deleteApproval 실행");
         
         try {
-            approvalDTO = approvalMapper.deleteApproval(approvalDTO);
-            int appCode = approvalDTO.getAppCode();
-
-            if(appCode < 0) {
-                throw new Exception("삭제 할 수 없습니다.");
-            }
-            return approvalDTO;
+             int result = approvalMapper.deleteApproval(deleteApprove);
+             return result;
         }catch(Exception e) {
-            log.error("[ApprovalService] deleteApproval method error" + e.getMessage());
+            log.error("[ApprovalService] deleteApproval 실행 오류" + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 서류가 없습니다.");
 
         }
     }
 
+    /**
+     @MethodName : approve
+     @Date : 4:26 PM
+     @Writer : heojaehong
+     @Description : 전자결재 서류 등록
+     */
+    public ApprovalDTO approve(ApprovalDTO approvalDTO) { // 호출한 곳에서 예외처리
+
+        try {
+            log.info("[ApprovalService] approve 실행");
+            int result = approvalMapper.insertApprove(approvalDTO);
+            if(result == 0){
+                throw new Exception("제출 실패!");
+            }
+
+            return approvalDTO;
+        } catch (Exception e) {
+            log.error("error 발생! 등록 실패 : " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일시적인 오류로 등록에 실패했습니다.",e);
+        }
+    }
+    /**
+     @FileName : ApprovalService
+     @Date : 8:45 PM
+     @작성자 : heojaehong
+     @Description  : 결재선 추가를 위한 서비스 메소드
+     */
+    public int setLineApproval(List<ApprovalLineDTO> approvalLineDTOList) {
+
+        try {
+            log.info("[ApprovalService] setLineApproval 실행");
+            int result = approvalMapper.setLineApproval(approvalLineDTOList);
+
+            if(result == 0) {
+                throw new Exception("결재선 작성에 실패 했습니다.");
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("error 발생! 결재선 작성에 실패 했습니다. : " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 접근!", e);
+        }
+    }
 }

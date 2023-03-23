@@ -20,6 +20,17 @@
         </association>
     </resultMap>
 
+    <resultMap id="approvalLineResultMap" type="com.root34.aurora.approval.dto.ApprovalLineDTO">
+        <id property="appLineCode" column="APP_LINE_CODE"/>
+        <result property="appStatus" column="APP_STATUS"/>
+        <association property="approvalDTO" resultMap="approvalResultMap">
+            <id property="appCode" column="APP_CODE"/>
+        </association>
+        <association property="memberDTO" resultMap="memberResultMap">
+            <id property="memberCode" column="MEMBER_CODE"/>
+        </association>
+    </resultMap>
+
     <resultMap id="documentResultMap" type="com.root34.aurora.approval.dto.DocumentDTO">
         <id property="docCode" column="DOC_CODE"/>
         <result property="docName" column="DOC_NAME"/>
@@ -34,21 +45,26 @@
         <result property="memberRole" column="MEMBER_ROLE"/>
     </resultMap>
 
-    <insert id="insertApprove" parameterType="ApprovalDTO">
+    <insert id="insertApprove" parameterType="com.root34.aurora.approval.dto.ApprovalDTO">
         INSERT INTO TBL_APPROVAL
-        (APP_CODE, DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_DATE, APP_END_DATE, APP_OPEN)
+        (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_END_DATE, APP_OPEN)
         VALUES
-            (null, #{ documentDto.docCode }, #{ memberDto.memberCode }, #{ appTitle }, #{ appDescript }, #{ appDate }, #{ appEndDate },
+            (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appEndDate },
              #{ appOpen } )
+    </insert>
+
+    <insert id="setLineApproval" parameterType="list">
+        INSERT INTO TBL_APPROVAL_LINE
+        (APP_CODE, MEMBER_CODE, APP_STATUS)
+        VALUES
+            <foreach collection="list" item="approvalLine" separator=",">
+                (#{ approvalLine.appCode }, #{ approvalLine.memberDTO.memberCode }, #{ approvalLine.appStatus })
+            </foreach>
     </insert>
 
     <select id="lastList" resultMap="approvalResultMap">
         SELECT
-            tm.MEMBER_NAME ,
-            td.DOC_NAME ,
-            ta.APP_TITLE ,
-            ta.APP_DATE ,
-            ta.APP_END_DATE
+            *
         from TBL_APPROVAL ta
                  JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
                  JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
@@ -88,9 +104,9 @@
             APP_DATE = #{ appDate }
         where APP_CODE = #{ appCode }
     </update>
-
-    <delete id="deleteApproval" parameterType="ApprovalDTO">
-        delete from TBL_APPROVAL
-        where APP_CODE = #{ appCode }
+<!-- 삭제시 결제선까지 같이 제거 -->
+    <delete id="deleteApproval" parameterType="map">
+        delete from TBL_APPROVAL where APP_CODE = #{ appCode };
+        delete from TBL_APPROVAL_LINE where APP_CODE = #{ appCode }
     </delete>
 </mapper>
