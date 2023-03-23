@@ -59,10 +59,6 @@ public class MemberDTO implements UserDetails {
     private String fileCode;
     private String phone;
 
-
-
-
-
     // 이하 코드는 security 를 위한 용도
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -100,6 +96,4 @@ public class MemberDTO implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }

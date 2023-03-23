@@ -2,6 +2,8 @@ package com.root34.aurora.common.paging;
 
 import lombok.Data;
 
+import java.util.HashMap;
+
 @Data
 public class SelectCriteria {
 
@@ -17,9 +19,7 @@ public class SelectCriteria {
     private String searchCondition;		// 검색 조건
     private String searchValue;			// 검색어
     private String orderCondition;		// 정렬 조건
-
-    public SelectCriteria() {
-    }
+    private HashMap<String, Object> searchConditions; // 다중 검색 조건
 
     public SelectCriteria(int pageNo, int totalCount, int limit, int buttonAmount, int maxPage, int startPage, int endPage, int startRow, int endRow) {
         this.pageNo = pageNo;
@@ -33,7 +33,9 @@ public class SelectCriteria {
         this.endRow = endRow;
     }
 
-    public SelectCriteria(int pageNo, int totalCount, int limit, int buttonAmount, int maxPage, int startPage, int endPage, int startRow, int endRow, String searchCondition, String searchValue, String orderCondition) {
+    public SelectCriteria(int pageNo, int totalCount, int limit, int buttonAmount, int maxPage, int startPage, int endPage,
+                          int startRow, int endRow, String searchCondition, String searchValue, String orderCondition) {
+
         this.pageNo = pageNo;
         this.totalCount = totalCount;
         this.limit = limit;
@@ -46,5 +48,23 @@ public class SelectCriteria {
         this.searchCondition = searchCondition;
         this.searchValue = searchValue;
         this.orderCondition = orderCondition;
+    }
+
+    public SelectCriteria(int pageNo, int totalCount, int limit, int buttonAmount, int maxPage, int startPage, int endPage,
+                          int startRow, int endRow, String searchCondition, String searchValue, String orderCondition, HashMap<String, Object> searchConditions) {
+
+        this.pageNo = pageNo;
+        this.totalCount = totalCount;
+        this.limit = limit;
+        this.buttonAmount = buttonAmount;
+        this.maxPage = maxPage;
+        this.startPage = startPage;
+        this.endPage = endPage;
+        this.startRow = startRow;
+        this.endRow = endRow;
+        this.searchCondition = searchCondition;
+        this.searchValue = searchValue;
+        this.orderCondition = orderCondition;
+        this.searchConditions = searchConditions;
     }
 }

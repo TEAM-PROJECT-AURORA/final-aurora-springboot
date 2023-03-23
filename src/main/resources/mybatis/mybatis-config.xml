@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration
-    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
-	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 -->
-	<settings>
-		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여무 -->
-		<setting name="callSettersOnNulls" value="true" />
-		<!-- null parameter 허용 -->
-		<setting name="jdbcTypeForNull" value="NULL" />
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE configuration 
+    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+<configuration> 
+	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 --> 
+	<settings> 
+		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여부 -->
+		<setting name="callSettersOnNulls" value="true" /> 
+		<!-- null parameter 허용 --> 
+		<setting name="jdbcTypeForNull" value="NULL" /> 
 	</settings>
 
 	<typeAliases>
@@ -20,6 +20,9 @@
 		<typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/>
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
+		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
+		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
+		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
 	</typeAliases>
 
 	<mappers>
@@ -27,5 +30,7 @@
 		<mapper resource="attendanceMapper.xml"/>
 		<mapper resource="addressBookMapper.xml" />
 		<mapper resource="Approval.xml"/>
+		<mapper resource="MailMapper.xml" />
+		<mapper resource="ReportMapper.xml" />
 	</mappers>
 </configuration>
