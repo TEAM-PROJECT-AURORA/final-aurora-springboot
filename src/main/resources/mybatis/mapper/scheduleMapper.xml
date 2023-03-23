@@ -16,11 +16,12 @@
             S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
-        FROM TBL_SCHEDULE S
-        JOIN TBL_SCHEDULE_CATEGORY C
-          ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
-        JOIN TBL_MEMBER M
-          ON (S.MEMBER_CODE = M.MEMBER_CODE)
+          FROM TBL_SCHEDULE S
+          JOIN TBL_SCHEDULE_CATEGORY C
+            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
+          JOIN TBL_MEMBER M
+            ON (S.MEMBER_CODE = M.MEMBER_CODE)
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <select id = "selectScheduleCalendarAboutWeek" resultType = "ScheduleDTO">
@@ -35,11 +36,12 @@
             S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
-        FROM TBL_SCHEDULE S
-        JOIN TBL_SCHEDULE_CATEGORY C
-          ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
-        JOIN TBL_MEMBER M
-          ON (S.MEMBER_CODE = M.MEMBER_CODE)
+          FROM TBL_SCHEDULE S
+          JOIN TBL_SCHEDULE_CATEGORY C
+            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
+          JOIN TBL_MEMBER M
+            ON (S.MEMBER_CODE = M.MEMBER_CODE)
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <select id = "selectScheduleCalendarAboutDay" resultType = "ScheduleDTO">
@@ -54,11 +56,12 @@
             S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
-        FROM TBL_SCHEDULE S
-        JOIN TBL_SCHEDULE_CATEGORY C
-          ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
-        JOIN TBL_MEMBER M
-          ON (S.MEMBER_CODE = M.MEMBER_CODE)
+          FROM TBL_SCHEDULE S
+          JOIN TBL_SCHEDULE_CATEGORY C
+            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
+          JOIN TBL_MEMBER M
+            ON (S.MEMBER_CODE = M.MEMBER_CODE)
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <select id = "selectSchedule" resultType="ScheduleDTO">
@@ -73,11 +76,12 @@
             S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
-        FROM TBL_SCHEDULE S
-        JOIN TBL_SCHEDULE_CATEGORY C
-          ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
-        JOIN TBL_MEMBER M
-          ON (S.MEMBER_CODE = M.MEMBER_CODE)
+          FROM TBL_SCHEDULE S
+          JOIN TBL_SCHEDULE_CATEGORY C
+            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
+          JOIN TBL_MEMBER M
+            ON (S.MEMBER_CODE = M.MEMBER_CODE)
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <insert id = "insertSchedule" parameterType="ScheduleDTO">
