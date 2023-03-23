@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.schedule.dao.ScheduleMapper">
+
+    <select id = "selectScheduleCalendarAboutMonth" resultType = "ScheduleDTO">
+        SELECT
+            SCHEDULE_CODE,
+            MEMBER_CODE,
+            SCHEDULE_CATEGORY_CODE,
+            SCHEDULE_NAME,
+            SCHEDULE_START_DAY,
+            SCHEDULE_END_DAY,
+            SCHEDULE_START_TIME,
+            SCHEDULE_END_TIME,
+            SCHEDULE_PLACE,
+            SCHEDULE_CONTENT
+        FROM TBL_SCHEDULE
+    </select>
+
+    <select id = "selectScheduleCalendarAboutWeek" resultType = "ScheduleDTO">
+        SELECT
+            SCHEDULE_CODE,
+            MEMBER_CODE,
+            SCHEDULE_CATEGORY_CODE,
+            SCHEDULE_NAME,
+            SCHEDULE_START_DAY,
+            SCHEDULE_END_DAY,
+            SCHEDULE_START_TIME,
+            SCHEDULE_END_TIME,
+            SCHEDULE_PLACE,
+            SCHEDULE_CONTENT
+        FROM TBL_SCHEDULE
+    </select>
+
+    <select id = "selectScheduleCalendarAboutDay" resultType = "ScheduleDTO">
+        SELECT
+            SCHEDULE_CODE,
+            MEMBER_CODE,
+            SCHEDULE_CATEGORY_CODE,
+            SCHEDULE_NAME,
+            SCHEDULE_START_DAY,
+            SCHEDULE_END_DAY,
+            SCHEDULE_START_TIME,
+            SCHEDULE_END_TIME,
+            SCHEDULE_PLACE,
+            SCHEDULE_CONTENT
+        FROM TBL_SCHEDULE
+    </select>
+
+    <insert id = "insertSchedule" parameterType="ScheduleDTO">
+        INSERT INTO TBL_SCHEDULE
+            (
+                MEMBER_CODE,
+                SCHEDULE_CATEGORY_CODE,
+                SCHEDULE_NAME,
+                SCHEDULE_PLACE,
+                SCHEDULE_CONTENT
+            )
+        VALUES
+            (
+                #{ memberCode },
+                #{ scheduleCategoryCode },
+                #{ scheduleName },
+                #{ schedulePlace },
+                #{ scheduleContent }
+            )
+    </insert>
+
+    <update id = "updateSchedule" parameterType = "ScheduleDTO">
+        UPDATE TBL_SCHEDULE
+        SET
+            MEMBER_CODE = #{ memberCode },
+            SCHEDULE_CATEGORY_CODE = #{ scheduleCategoryCode },
+            SCHEDULE_NAME = #{ scheduleName },
+            SCHEDULE_START_DAY = #{ scheduleStartDay },
+            SCHEDULE_END_DAY = #{ scheduleEndDay },
+            SCHEDULE_START_TIME = #{ scheduleStartTime },
+            SCHEDULE_END_TIME = #{ scheduleEndTime },
+            SCHEDULE_PLACE = #{ schedulePlace },
+            SCHEDULE_CONTENT = #{ scheduleContent }
+        WHERE SCHEDULE_CODE = #{ scheduleCode }
+    </update>
+</mapper>
