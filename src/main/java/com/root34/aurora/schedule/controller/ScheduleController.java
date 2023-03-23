@@ -35,11 +35,18 @@ public class ScheduleController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutDay()));
     }
 
+    @GetMapping("/schedules/calendar/{scheduleCode}")
+    public ResponseEntity<ResponseDTO> selectScheduleDetail(@PathVariable int scheduleCode) {
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"일정 상세정보 조회 성공", scheduleService.selectSchedule(scheduleCode)));
+    }
+
     @PostMapping(value = "/schedules/calendar")
     public ResponseEntity<ResponseDTO> insertSchedule(@RequestBody ScheduleDTO scheduleDTO) {
 //    public ResponseEntity<ResponseDTO> insertSchedule(@ModelAttribute ScheduleDTO scheduleDTO) {
 
         log.info("[ScheduleController] PostMapping scheduleDTO : " + scheduleDTO);
+
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일정 입력 성공", scheduleService.insertSchedule(scheduleDTO)));
     }
 
@@ -48,9 +55,15 @@ public class ScheduleController {
 //    public ResponseEntity<ResponseDTO> updateSchedule(@ModelAttribute ScheduleDTO scheduleDTO) {
 
         log.info("[ScheduleController] PostMapping scheduleDTO : " + scheduleDTO);
+
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일정 업데이트 성공", scheduleService.updateSchedule(scheduleDTO)));
     }
 
+    @DeleteMapping(value = "/schedules/calendar/{scheduleCode}")
+    public ResponseEntity<ResponseDTO> deleteSchedule(@PathVariable int scheduleCode) {
 
+        log.info("[ScheduleController] DeleteMapping scheduleCode : " + scheduleCode);
 
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일정 삭제 성공", scheduleService.deleteSchedule(scheduleCode)));
+    }
 }

@@ -8,14 +8,17 @@ import java.util.List;
 @Mapper
 public interface ScheduleMapper {
 
-
-    int insertSchedule(ScheduleDTO scheduleDTO);
-
-    int updateSchedule(ScheduleDTO scheduleDTO);
-
     List<ScheduleDTO> selectScheduleCalendarAboutMonth();
 
     List<ScheduleDTO> selectScheduleCalendarAboutWeek();
 
     List<ScheduleDTO> selectScheduleCalendarAboutDay();
+
+    ScheduleDTO selectSchedule(int scheduleCode);
+
+    int insertSchedule(ScheduleDTO scheduleDTO);
+
+    int updateSchedule(ScheduleDTO scheduleDTO);
+
+    int deleteSchedule(int scheduleCode);
 }

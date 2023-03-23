@@ -5,7 +5,6 @@ import lombok.Data;
 import java.sql.Time;
 import java.sql.Date;
 
-//@NoArgsConstructor
 @Data
 public class ScheduleDTO {
 

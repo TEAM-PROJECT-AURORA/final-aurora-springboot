@@ -43,6 +43,15 @@ public class ScheduleService {
         return selectScheduleCalendarAboutDay;
     }
 
+    public ScheduleDTO selectSchedule(int scheduleCode) {
+
+        log.info("[ScheduleService] selectSchedule Start ====================");
+        ScheduleDTO scheduleDTO = scheduleMapper.selectSchedule(scheduleCode);
+        log.info("[ScheduleService] selectSchedule End ====================");
+
+        return scheduleDTO;
+    }
+
     @Transactional
     public Object insertSchedule(ScheduleDTO scheduleDTO) {
 
@@ -51,6 +60,7 @@ public class ScheduleService {
         int result = 0;
         result = scheduleMapper.insertSchedule(scheduleDTO);
         log.info("[ScheduleService] insertSchedule End ====================");
+        log.info("[ScheduleService] result > 0 성공 : " + result);
 
         return (result > 0) ? "일정 입력 성공" : "일정 입력 실패";
     }
@@ -63,7 +73,20 @@ public class ScheduleService {
         int result = 0;
         result = scheduleMapper.updateSchedule(scheduleDTO);
         log.info("[ScheduleService] updateSchedule End ====================");
+        log.info("[ScheduleService] result > 0 성공 : " + result);
 
         return (result > 0) ? "일정 업데이트 성공" : "일정 업데이트 실패";
+    }
+
+    public Object deleteSchedule(int scheduleCode) {
+
+        log.info("[ScheduleService] deleteSchedule Start ====================");
+        log.info("[ScheduleService] scheduleCode : " + scheduleCode);
+        int result = 0;
+        result = scheduleMapper.deleteSchedule(scheduleCode);
+        log.info("[ScheduleService] deleteSchedule End ====================");
+        log.info("[ScheduleService] result > 0 성공 : " + result);
+
+        return (result > 0) ? "일정 삭제 성공" : "일정 삭제 실패";
     }
 }
