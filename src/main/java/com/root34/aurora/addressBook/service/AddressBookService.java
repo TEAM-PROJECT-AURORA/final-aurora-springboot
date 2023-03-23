@@ -74,69 +74,41 @@ public class AddressBookService {
     }
 
     @Transactional
-    public String insertGroup(String groupName) {
+    public String insertGroup(AddressGroupDTO addressGroupDTO) {
 
         log.info("[addressBookService] insertGroup Start ===================================");
-        int result = addressBookMapper.insertGroup(groupName);
+        int result = addressBookMapper.insertGroup(addressGroupDTO);
 
         log.info("[addressBookService] insertGroup End ===================================");
         return (result > 0)? "그룹 추가 성공" : "그룹 추가 실패";
     }
 
-    public int selectTotalPersonalAddresses(int MemberCode) {
+    public int selectTotalGroupAddresses(String groupCode) {
 
-        log.info("[addressBookService] selectTotalPersonalAddresses Start ===================================");
-        int result = addressBookMapper.selectTotalPersonalAddresses(MemberCode);
+        log.info("[addressBookService] selectTotalGroupAddresses Start ===================================");
+        int result = addressBookMapper.selectTotalGroupAddresses(groupCode);
 
-        log.info("[addressBookService] selectTotalPersonalAddresses End ===================================");
+        log.info("[addressBookService] selectTotalGroupAddresses End ===================================");
         return result;
     }
 
-    public List<AddressBookDTO> selectAllPersonalAddresses(Map map) {
+    public List<AddressBookDTO> selectAllGroupAddresses(Map map) {
 
-        log.info("[addressBookService] selectAllPersonalAddresses Start ===================================");
-        List<AddressBookDTO> list = addressBookMapper.selectAllPersonalAddresses(map);
+        log.info("[addressBookService] selectAllGroupAddresses Start ===================================");
+        List<AddressBookDTO> list = addressBookMapper.selectAllGroupAddresses(map);
 
-        log.info("[addressBookService] selectAllPersonalAddresses End ===================================");
+        log.info("[addressBookService] selectAllGroupAddresses End ===================================");
         return list;
     }
 
     @Transactional
-    public String insertPersonalAddress(AddressBookDTO addressBookDTO) {
+    public String insertGroupAddress(AddressBookDTO addressBookDTO) {
 
-        log.info("[addressBookService] insertPersonalAddress Start ===================================");
-        int result = addressBookMapper.insertPersonalAddress(addressBookDTO);
+        log.info("[addressBookService] insertGroupAddress Start ===================================");
+        int result = addressBookMapper.insertGroupAddress(addressBookDTO);
 
-        log.info("[addressBookService] insertPersonalAddress End ===================================");
-        return (result > 0)? "개인 주소록 추가 성공" : "개인 주소록 추가 실패";
-    }
-
-    public int selectTotalTeamAddresses(String team) {
-
-        log.info("[addressBookService] selectTotalTeamAddresses Start ===================================");
-        int result = addressBookMapper.selectTotalTeamAddresses(team);
-
-        log.info("[addressBookService] selectTotalTeamAddresses End ===================================");
-        return result;
-    }
-
-    public List<AddressBookDTO> selectAllTeamAddresses(Map map) {
-
-        log.info("[addressBookService] selectAllTeamAddresses Start ===================================");
-        List<AddressBookDTO> list = addressBookMapper.selectAllTeamAddresses(map);
-
-        log.info("[addressBookService] selectAllTeamAddresses End ===================================");
-        return list;
-    }
-
-    @Transactional
-    public String insertTeamAddress(AddressBookDTO addressBookDTO) {
-
-        log.info("[addressBookService] insertTeamAddress Start ===================================");
-        int result = addressBookMapper.insertTeamAddress(addressBookDTO);
-
-        log.info("[addressBookService] insertTeamAddress End ===================================");
-        return (result > 0)? "팀 주소록 추가 성공" : "팀 주소록 추가 실패";
+        log.info("[addressBookService] insertGroupAddress End ===================================");
+        return (result > 0)? "그룹 주소록 추가 성공" : "그룹 주소록 추가 실패";
     }
 
     @Transactional
@@ -165,6 +137,16 @@ public class AddressBookService {
         List<AddressGroupDTO> list = addressBookMapper.selectPersonalGroups(memberCode);
 
         log.info("[addressBookService] selectPersonalGroups End ===================================");
+
+        return list;
+    }
+
+    public List<AddressGroupDTO> selectTeamGroups(int memberCode) {
+
+        log.info("[addressBookService] selectTeamGroups Start ===================================");
+        List<AddressGroupDTO> list = addressBookMapper.selectTeamGroups(memberCode);
+
+        log.info("[addressBookService] selectTeamGroups End ===================================");
 
         return list;
     }

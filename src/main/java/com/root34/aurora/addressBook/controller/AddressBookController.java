@@ -1,13 +1,13 @@
 package com.root34.aurora.addressBook.controller;
 
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.addressBook.service.AddressBookService;
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -98,37 +98,37 @@ public class AddressBookController {
     	* @Description : 그룹 추가
     */
     @PostMapping("/address-book/group")
-    public ResponseEntity<ResponseDTO> insertGroup(@RequestBody JSONObject object) {
+    public ResponseEntity<ResponseDTO> insertGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
 
-        String groupName = (String) object.get("groupName");
-        log.info("[AddressBookController] insertGroup : " + groupName);
+        log.info("[AddressBookController] insertGroup : " + addressGroupDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 추가 성공", addressBookService.insertGroup(groupName)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 추가 성공", addressBookService.insertGroup(addressGroupDTO)));
     }
 
     /**
     	* @MethodName : selectAllPersonalAddressesWithPaging
     	* @Date : 2023-03-21
     	* @Writer : 오승재
-    	* @Description : 개인 주소록 전체 조회
+    	* @Description : 그룹 주소록 전체 조회
     */
-    @GetMapping("/address-book/personal/{memberCode}")
-    public ResponseEntity<ResponseDTO> selectAllPersonalAddressesWithPaging(@RequestParam String offset, @PathVariable int memberCode) {
+    @GetMapping("/address-book/groups/{groupCode}")
+    public ResponseEntity<ResponseDTO> selectAllGroupAddressesWithPaging(@RequestParam String offset, @PathVariable String groupCode) {
 
-        log.info("[AddressBookController] selectAllPersonalAddressesWithPaging : " + offset);
-        int totalCount = addressBookService.selectTotalPersonalAddresses(memberCode);
-        int limit = 15;
+        log.info("[AddressBookController] selectAllGroupAddressesWithPaging : " + offset);
+        int totalCount = addressBookService.selectTotalGroupAddresses(groupCode);
+        int limit = 20;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
         map.put("selectCriteria", selectCriteria);
-        map.put("memberCode", memberCode);
+        map.put("groupCode", groupCode);
 
         log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+        log.info("[AddressBookController] totalCount : " + totalCount);
 
         ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
         responseDtoWithPaging.setPageInfo(selectCriteria);
-        responseDtoWithPaging.setData(addressBookService.selectAllPersonalAddresses(map));
+        responseDtoWithPaging.setData(addressBookService.selectAllGroupAddresses(map));
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
     }
@@ -137,55 +137,14 @@ public class AddressBookController {
     	* @MethodName : insertPersonalAddress
     	* @Date : 2023-03-21
     	* @Writer : 오승재
-    	* @Description : 개인 주소록 추가
+    	* @Description : 그룹 주소록 추가
     */
-    @PostMapping("/address-book/personal")
-    public ResponseEntity<ResponseDTO> insertPersonalAddress(@RequestBody AddressBookDTO addressBookDTO) {
+    @PostMapping("/address-book/groups")
+    public ResponseEntity<ResponseDTO> insertGroupAddress(@RequestBody AddressBookDTO addressBookDTO) {
 
-        log.info("[AddressBookController] insertPersonalAddress : " + addressBookDTO);
+        log.info("[AddressBookController] insertGroupAddress : " + addressBookDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "개인 주소록 추가 성공", addressBookService.insertPersonalAddress(addressBookDTO)));
-    }
-
-    /**
-    	* @MethodName : selectAllTeamAddressesWithPaging
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 팀 주소록 전체 조회
-    */
-    @GetMapping("/address-book/team/{team}")
-    public ResponseEntity<ResponseDTO> selectAllTeamAddressesWithPaging(@RequestParam String offset, @PathVariable String team) {
-
-        log.info("[AddressBookController] selectAllTeamAddressesWithPaging : " + offset);
-        int totalCount = addressBookService.selectTotalTeamAddresses(team);
-        int limit = 15;
-        int buttonAmount = 5;
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
-        Map map = new HashMap();
-        map.put("selectCriteria", selectCriteria);
-        map.put("team", team);
-
-        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
-
-        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
-        responseDtoWithPaging.setPageInfo(selectCriteria);
-        responseDtoWithPaging.setData(addressBookService.selectAllTeamAddresses(map));
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
-    }
-
-    /**
-    	* @MethodName : insertTeamAddress
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 팀 주소록 추가
-    */
-    @PostMapping("/address-book/team")
-    public ResponseEntity<ResponseDTO> insertTeamAddress(@RequestBody AddressBookDTO addressBookDTO) {
-
-        log.info("[AddressBookController] insertTeamAddress : " + addressBookDTO);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "팀 주소록 추가 성공", addressBookService.insertTeamAddress(addressBookDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 주소록 추가 성공", addressBookService.insertGroupAddress(addressBookDTO)));
     }
 
     /**
@@ -225,11 +184,25 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 개인 주소록 그룹 조회
     */
-    @GetMapping("/address-book/{memberCode}/groups")
+    @GetMapping("/address-book/personal-groups/{memberCode}")
     public ResponseEntity<ResponseDTO> selectPersonalGroups(@PathVariable int memberCode) {
 
         log.info("[AddressBookController] selectPersonalGroups : " + memberCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "개인 그룹 조회 성공", addressBookService.selectPersonalGroups(memberCode)));
+    }
+
+    /**
+    	* @MethodName : selectTeamGroups
+    	* @Date : 2023-03-23
+    	* @Writer : 오승재
+    	* @Description : 팀 주소록 그룹 조회
+    */
+    @GetMapping("/address-book/team-groups/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectTeamGroups(@PathVariable int memberCode) {
+
+        log.info("[AddressBookController] selectTeamGroups : " + memberCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "팀 그룹 조회 성공", addressBookService.selectTeamGroups(memberCode)));
     }
 }

@@ -19,7 +19,7 @@
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
-         LIMIT ${ startRow }, #{ limit }
+         LIMIT #{ startRow }, #{ limit }
     </select>
     <select id="selectTotalMemberAddressesByDept" resultType="_int">
         SELECT
@@ -39,8 +39,28 @@
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
          WHERE A.DEPT_CODE = #{ deptCode }
-         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
+    <insert id="insertGroup" parameterType="addressGroupDTO">
+        INSERT INTO TBL_ADDRESS_GROUP
+            (GROUP_NAME
+        <if test="memberCode != null and memberCode != ''">
+            ,MEMBER_CODE
+        </if>
+        <if test="team != null and team != ''">
+            ,TEAM
+        </if>
+             )
+        VALUES
+            (#{ groupName }
+        <if test="memberCode != null and memberCode != ''">
+            ,#{ memberCode }
+        </if>
+        <if test="team != null and team != ''">
+            ,#{ team }
+        </if>
+            )
+    </insert>
     <select id="selectOneMemberAddress" parameterType="_int" resultType="memberDTO">
         SELECT
             MEMBER_CODE,
@@ -56,52 +76,17 @@
           FROM TBL_MEMBER
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
-    <insert id="insertGroup" parameterType="String">
-        INSERT INTO TBL_ADDRESS_GROUP
-        VALUES
-            (NULL, #{ groupName })
-    </insert>
-    <select id="selectTotalPersonalAddresses" parameterType="_int" resultType="_int">
+    <select id="selectTotalGroupAddresses" parameterType="String" resultType="_int">
         SELECT
             COUNT(*)
           FROM TBL_ADDRESS_BOOK
-         WHERE MEMBER_CODE = #{ memberCode }
+         WHERE GROUP_CODE = #{ groupCode }
     </select>
-    <select id="selectAllPersonalAddresses" parameterType="map" resultType="addressBookDTO">
+    <select id="selectAllGroupAddresses" parameterType="map" resultType="addressBookDTO">
         SELECT
             A.ADDBOOK_NO,
             A.GROUP_CODE,
             B.GROUP_NAME,
-            A.NAME,
-            A.PHONE,
-            A.EMAIL,
-            A.COMPANY,
-            A.DEPARTMENT,
-            A.COM_PHONE
-          FROM TBL_ADDRESS_BOOK A
-          JOIN TBL_ADDRESS_GROUP B
-            ON B.GROUP_CODE = B.GROUP_CODE
-         WHERE A.MEMBER_CODE = #{ memberCode }
-         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
-    </select>
-    <insert id="insertPersonalAddress" parameterType="addressBookDTO">
-        INSERT INTO TBL_ADDRESS_BOOK
-            (NAME, GROUP_CODE, MEMBER_CODE, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
-        VALUES
-            (#{ name }, #{ groupCode }, #{ memberCode }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
-    </insert>
-    <select id="selectTotalTeamAddresses" parameterType="String" resultType="_int">
-        SELECT
-            COUNT(*)
-          FROM TBL_ADDRESS_BOOK
-         WHERE TEAM = #{ team }
-    </select>
-    <select id="selectAllTeamAddresses" parameterType="map" resultType="addressBookDTO">
-        SELECT
-            A.ADDBOOK_NO,
-            A.GROUP_CODE,
-            B.GROUP_NAME,
-            A.TEAM,
             A.NAME,
             A.PHONE,
             A.EMAIL,
@@ -111,13 +96,14 @@
           FROM TBL_ADDRESS_BOOK A
           JOIN TBL_ADDRESS_GROUP B
             ON A.GROUP_CODE = B.GROUP_CODE
-         WHERE A.TEAM = #{ team }
+         WHERE A.GROUP_CODE = #{ groupCode }
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
-    <insert id="insertTeamAddress" parameterType="addressBookDTO">
+    <insert id="insertGroupAddress" parameterType="addressBookDTO">
         INSERT INTO TBL_ADDRESS_BOOK
-        (NAME, GROUP_CODE, TEAM, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
+            (NAME, GROUP_CODE, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
         VALUES
-            (#{ name }, #{ groupCode }, #{ team }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
+            (#{ name }, #{ groupCode }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
     </insert>
     <update id="updateAddress" parameterType="map">
         UPDATE TBL_ADDRESS_BOOK
@@ -135,11 +121,19 @@
     </delete>
     <select id="selectPersonalGroups" parameterType="_int" resultType="addressGroupDTO">
         SELECT
-            DISTINCT A.GROUP_CODE,
-            B.GROUP_NAME
-          FROM TBL_ADDRESS_BOOK A
-          JOIN TBL_ADDRESS_GROUP B
-            ON A.GROUP_CODE = B.GROUP_CODE
-         WHERE A.MEMBER_CODE = #{ memberCode }
+            GROUP_CODE,
+            GROUP_NAME
+          FROM TBL_ADDRESS_GROUP
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectTeamGroups" parameterType="_int" resultType="addressGroupDTO">
+        SELECT
+            GROUP_CODE,
+            GROUP_NAME
+          FROM TBL_ADDRESS_GROUP
+         WHERE TEAM = (SELECT
+                           TEAM
+                         FROM TBL_MEMBER
+                        WHERE MEMBER_CODE = #{ memberCode })
     </select>
 </mapper>

@@ -90,39 +90,41 @@ class AddressBookServiceTest {
     void 주소록_그룹_추가_서비스_테스트() {
 
         // given
-        String team = "개발1팀";
+        AddressGroupDTO addressGroupDTO = new AddressGroupDTO();
+        addressGroupDTO.setGroupName("주소록 그룹 테스트3");
+        addressGroupDTO.setMemberCode(1);
 
         // when
-        String result = addressBookService.insertGroup(team);
+        String result = addressBookService.insertGroup(addressGroupDTO);
 
         // then
         assertEquals("그룹 추가 성공", result);
     }
 
     @Test
-    void 개인_주소록_총_개수_조회_서비스_테스트() {
+    void 그룹_주소록_총_개수_조회_서비스_테스트() {
 
         // given
-        int memberCode = 1;
+        String groupCode = "1";
 
         // when
-        int result = addressBookService.selectTotalPersonalAddresses(memberCode);
+        int result = addressBookService.selectTotalGroupAddresses(groupCode);
 
         // then
         assertTrue(result > 0);
     }
 
     @Test
-    void 개인_주소록_전체_조회_서비스_테스트() {
+    void 그룹_주소록_전체_조회_서비스_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
         Map map = new HashMap();
         map.put("selectCriteria", selectCriteria);
-        map.put("memberCode", 1);
+        map.put("groupCode", "1");
 
         // when
-        List<AddressBookDTO> list = addressBookService.selectAllPersonalAddresses(map);
+        List<AddressBookDTO> list = addressBookService.selectAllGroupAddresses(map);
 
         // then
         System.out.println("list = " + list);
@@ -130,12 +132,11 @@ class AddressBookServiceTest {
     }
 
     @Test
-    void 개인_주소록_추가_서비스_테스트() {
+    void 그룹_주소록_추가_서비스_테스트() {
 
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
         addressBookDTO.setGroupCode("1");
-        addressBookDTO.setMemberCode(1);
         addressBookDTO.setName("허재홍");
         addressBookDTO.setPhone("010-2222-3333");
         addressBookDTO.setEmail("lupy@test.com");
@@ -144,61 +145,10 @@ class AddressBookServiceTest {
         addressBookDTO.setComPhone("02-1111-2222");
 
         // when
-        String  result = addressBookService.insertPersonalAddress(addressBookDTO);
+        String  result = addressBookService.insertGroupAddress(addressBookDTO);
 
         // then
-        assertEquals("개인 주소록 추가 성공", result);
-    }
-
-    @Test
-    void 팀_주소록_총_개수_조회_서비스_테스트() {
-
-        // given
-        String team = "개발1팀";
-
-        // when
-        int result = addressBookService.selectTotalTeamAddresses(team);
-
-        // then
-        assertTrue(result > 0);
-    }
-
-    @Test
-    void 팀_주소록_전체_조회_서비스_테스트() {
-
-        // given
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
-        Map map = new HashMap();
-        map.put("selectCriteria", selectCriteria);
-        map.put("team", "개발1팀");
-
-        // when
-        List<AddressBookDTO> list = addressBookService.selectAllTeamAddresses(map);
-
-        // then
-        System.out.println("list = " + list);
-        assertNotNull(list);
-    }
-
-    @Test
-    void 팀공용_주소록_추가_서비스_테스트() {
-
-        // given
-        AddressBookDTO addressBookDTO = new AddressBookDTO();
-        addressBookDTO.setGroupCode("1");
-        addressBookDTO.setTeam("개발1팀");
-        addressBookDTO.setName("허재홍");
-        addressBookDTO.setPhone("010-2222-3333");
-        addressBookDTO.setEmail("lupy@test.com");
-        addressBookDTO.setCompany("뽀로로");
-        addressBookDTO.setDepartment("루피담당");
-        addressBookDTO.setComPhone("02-1111-2222");
-
-        // when
-        String result = addressBookService.insertTeamAddress(addressBookDTO);
-
-        // then
-        assertEquals("팀 주소록 추가 성공", result);
+        assertEquals("그룹 주소록 추가 성공", result);
     }
 
     @Test
@@ -244,6 +194,19 @@ class AddressBookServiceTest {
 
         // when
         List<AddressGroupDTO> list = addressBookService.selectPersonalGroups(memberCode);
+
+        // then
+        assertNotNull(list);
+    }
+
+    @Test
+    void 팀_주소록_그룹_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        List<AddressGroupDTO> list = addressBookService.selectTeamGroups(memberCode);
 
         // then
         assertNotNull(list);

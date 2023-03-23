@@ -2,8 +2,8 @@ package com.root34.aurora.addressBook.controller;
 
 import com.root34.aurora.FinalAuroraSpringbootApplication;
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.common.ResponseDTO;
-import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,12 +71,12 @@ class AddressBookControllerTest {
     void 주소록_그룹_추가_컨트롤러_테스트() {
 
         // given
-        String groupName = "주소록 그룹 테스트2";
-        JSONObject object = new JSONObject();
-        object.put("groupName", groupName);
+        AddressGroupDTO addressGroupDTO = new AddressGroupDTO();
+        addressGroupDTO.setGroupName("주소록 그룹 테스트2");
+        addressGroupDTO.setMemberCode(1);
 
         // when
-        ResponseEntity<ResponseDTO> response = addressBookController.insertGroup(object);
+        ResponseEntity<ResponseDTO> response = addressBookController.insertGroup(addressGroupDTO);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -85,14 +85,14 @@ class AddressBookControllerTest {
     }
 
     @Test
-    void 개인_주소록_전체_조회_컨트롤러_테스트() {
+    void 그룹_주소록_전체_조회_컨트롤러_테스트() {
 
         // given
         String offset = "1";
-        int memberCode = 1;
+        String groupCode = "1";
 
         // when
-        ResponseEntity<ResponseDTO> response = addressBookController.selectAllPersonalAddressesWithPaging(offset, memberCode);
+        ResponseEntity<ResponseDTO> response = addressBookController.selectAllGroupAddressesWithPaging(offset, groupCode);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -101,13 +101,12 @@ class AddressBookControllerTest {
     }
 
     @Test
-    void 개인_주소록_추가_컨트롤러_테스트() {
+    void 그룹_주소록_추가_컨트롤러_테스트() {
 
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
         addressBookDTO.setName("킹수용");
         addressBookDTO.setGroupCode("1");
-        addressBookDTO.setMemberCode(1);
         addressBookDTO.setPhone("010-2222-4444");
         addressBookDTO.setEmail("test3@test.com");
         addressBookDTO.setCompany("오컴퍼니");
@@ -115,50 +114,11 @@ class AddressBookControllerTest {
         addressBookDTO.setComPhone("02-111-2223");
 
         // when
-        ResponseEntity<ResponseDTO> response = addressBookController.insertPersonalAddress(addressBookDTO);
+        ResponseEntity<ResponseDTO> response = addressBookController.insertGroupAddress(addressBookDTO);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("개인 주소록 추가 성공", response.getBody().getMessage());
-        assertNotNull(response.getBody().getData());
-    }
-
-    @Test
-    void 팀_주소록_전체_조회_컨트롤러_테스트() {
-
-        // given
-        String offset = "1";
-        String team = "개발1팀";
-
-        // when
-        ResponseEntity<ResponseDTO> response = addressBookController.selectAllTeamAddressesWithPaging(offset, team);
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("조회 성공", response.getBody().getMessage());
-        assertNotNull(response.getBody().getData());
-    }
-
-    @Test
-    void 팀_주소록_추가_컨트롤러_테스트() {
-
-        // given
-        AddressBookDTO addressBookDTO = new AddressBookDTO();
-        addressBookDTO.setName("킹수용");
-        addressBookDTO.setGroupCode("1");
-        addressBookDTO.setTeam("개발1팀");
-        addressBookDTO.setPhone("010-2222-4444");
-        addressBookDTO.setEmail("test3@test.com");
-        addressBookDTO.setCompany("오컴퍼니");
-        addressBookDTO.setDepartment("개발부");
-        addressBookDTO.setComPhone("02-111-2223");
-
-        // when
-        ResponseEntity<ResponseDTO> response = addressBookController.insertTeamAddress(addressBookDTO);
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("팀 주소록 추가 성공", response.getBody().getMessage());
+        assertEquals("그룹 주소록 추가 성공", response.getBody().getMessage());
         assertNotNull(response.getBody().getData());
     }
 
@@ -211,6 +171,21 @@ class AddressBookControllerTest {
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("개인 그룹 조회 성공", response.getBody().getMessage());
+        assertNotNull(response.getBody().getData());
+    }
+
+    @Test
+    void 팀_주소록_그룹_조회_컨트롤러_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        ResponseEntity<ResponseDTO> response = addressBookController.selectTeamGroups(memberCode);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("팀 그룹 조회 성공", response.getBody().getMessage());
         assertNotNull(response.getBody().getData());
     }
 }
