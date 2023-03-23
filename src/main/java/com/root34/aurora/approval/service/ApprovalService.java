@@ -36,10 +36,10 @@ public class ApprovalService {
      @Writer : heojaehong
      @Description : 최근 결재 리스트 조회
      */
-    public List<ApprovalDTO> lastList() {
+    public List<ApprovalDTO> lastList(int memberCode) {
 
         try {
-            List<ApprovalDTO> approvalDtoList = approvalMapper.lastList();
+            List<ApprovalDTO> approvalDtoList = approvalMapper.lastList(memberCode);
             log.info("[ApprovalService] lastList :" + approvalDtoList);
             if (approvalDtoList == null) {
                 throw new Exception("목록이 없습니다.");
@@ -58,10 +58,10 @@ public class ApprovalService {
     	@Writer : heojaehong
     	@Description : 미결재 리스트 메소드
     */
-    public List<ApprovalDTO> pendingList() {
+    public List<ApprovalDTO> pendingList(int memberCode) {
 
         try {
-            List<ApprovalDTO> pendingList = approvalMapper.pendingList();
+            List<ApprovalDTO> pendingList = approvalMapper.pendingList(memberCode);
             if(pendingList == null){
                 throw new Exception("조회할 목록이 없습니다.");
             }
@@ -79,10 +79,10 @@ public class ApprovalService {
     	@Writer : heojaehong
     	@Description : 결재완료 리스트 메소드
     */
-    public List<ApprovalDTO> completedList() {
+    public List<ApprovalDTO> completedList(int memberCode) {
 
         try {
-            List<ApprovalDTO> pendingList = approvalMapper.completedList();
+            List<ApprovalDTO> pendingList = approvalMapper.completedList(memberCode);
             if(pendingList == null){
                 throw new Exception("조회할 목록이 없습니다.");
             }
