@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.report.dao.ReportMapper">
     <!--보고서 등록-->
-    <insert id="registerReport" parameterType="reportDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerReport" parameterType="ReportDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO TBL_REPORT
             ( MEMBER_CODE, REPORT_TYPE, REPORT_TITLE, REPORT_INFO, REPORT_CYCLE )
         VALUES
@@ -81,16 +81,33 @@
         ORDER BY REPORT_CODE DESC
         LIMIT 10
     </select>
+    <!--보고 회차 정원 조회-->
+    <select id="getReportRoundCapacity" parameterType="Long" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_REPORTER
+        WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--보고 회차 등록-->
+    <insert id="registerReportRound" parameterType="ReportRoundDTO">
+        INSERT INTO TBL_REPORT_ROUND
+            ( REPORT_CODE, ROUND_TITLE, ROUND_BODY, CAPACITY )
+        VALUES
+            ( #{ reportCode }, #{ roundTitle }, #{roundBody }, #{ capacity } )
+    </insert>
     <!--보고 수정-->
     <update id="updateReport" parameterType="ReportDTO">
         UPDATE TBL_REPORT
-           SET REPORT_CODE = #{ reportCode },
-               REPORT_TITLE = #{ reportTitle },
+           SET REPORT_TITLE = #{ reportTitle },
                REPORT_INFO = #{ reportInfo },
                REPORT_CYCLE = #{ reportCycle },
-               COMPLEION_STATUS = #{ completionStatus }
+               COMPLETION_STATUS = #{ completionStatus }
          WHERE REPORT_CODE = #{ reportCode }
     </update>
+    <!--보고자 삭제-->
+    <delete id="deleteReporter" parameterType="Long">
+        DELETE FROM TBL_REPORTER
+         WHERE REPORT_CODE = #{ reportCode };
+    </delete>
     <!--보고 읽음-->
     <update id="readReport" parameterType="Long">
         UPDATE TBL_REPORT

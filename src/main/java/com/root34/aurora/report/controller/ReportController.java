@@ -3,6 +3,7 @@ package com.root34.aurora.report.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.report.dto.ReportDTO;
+import com.root34.aurora.report.dto.ReportRoundDTO;
 import com.root34.aurora.report.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,50 +38,107 @@ public class ReportController {
 	* @MethodName : registerReport
 	* @Date : 2023-03-22
 	* @Writer : 김수용
-	* @Description : 보고 작성 요청을 처리해줄 메소드
+	* @Description : 보고 작성
 */
-//    @ApiOperation(value = "보고서 작성")
+//    @ApiOperation(value = "보고 작성")
     @Transactional
     @PostMapping(value = "/reports")
-//    public ResponseEntity<ResponseDTO> registerReport(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String, Object> requestData) {
     public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
 
-//        String jwtToken = authorizationHeader.substring(7); // "Bearer" 제거
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        int memberCode = authentication.get
-        int memberCode = (int)request.getAttribute("memberCode");
+        log.info("[ReportController] registerReport");
+        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+        if(memberList.size() == 0) {
+            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 작성 실패! - 보고자를 등록해주세요", null));
+        }
+        log.info("[ReportController] memberList : " + memberList);
 
-        log.info("memberCode : " + memberCode);
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
 
         ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
-        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+        reportDTO.setMemberCode(memberCode);
+        log.info("[ReportController] reportDTO : " + reportDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공", reportService.registerReport(reportDTO, memberList)));
     }
 
     /**
-     * @MethodName :
-     * @Date :
-     * @Writer :
-     * @Method Description :
-     */
-//    @ApiOperation(value = "보고 조회") // Swagger
+    	* @MethodName : getAllReportList
+    	* @Date : 2023-03-23
+    	* @Writer : 김수용
+    	* @Description : 전체 보고 조회 - 보고 메인 페이지용
+    */
+//    @ApiOperation(value = "전체 보고 조회") // Swagger
     @Transactional
     @GetMapping(value ="/reports")
-    public ResponseEntity<ResponseDTO> getAllReportList() {
+    public ResponseEntity<ResponseDTO> getAllReportList(HttpServletRequest request) {
 
-//        log.info("[BoardService] selectBoardListWithPaging Start ===================================");
-        long memberCode = 1;
+        log.info("[ReportController] getAllReportList");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
 
-        if(reportService.getReportSummary(memberCode).size() == 0) {
+        HashMap<String, Object> response = reportService.getReportSummary(memberCode);
+        log.info("[ReportController] response : " + response);
+
+        if(((List)response.get("routineList1")).size() == 0 && ((List)response.get("casualList")).size() == 0) {
+            log.info("[ReportController] getAllReportList : 조회된 보고서가 없습니다." );
 //            log.info("[BoardService] selectBoardListWithPaging End ===================================");
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회된 보고서가 없습니다.", true));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회된 보고서가 없습니다.", null));
         } else {
 //            log.info("[BoardService] selectBoardListWithPaging End ===================================");
+            log.info("[ReportController] getAllReportList : 전체 보고서 목록 조회 성공");
 //            return ResponseEntity.internalServerError().body(ResponseDTO.status(HttpStatus.InternalServerError));
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 보고서 목록 조회 성공", false));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 보고서 목록 조회 성공", response));
         }
     }
 
-//    보고 등록시 보고자 0명이면 돌려보내기
+    /**
+    	* @MethodName : registerReportRound
+    	* @Date : 2023-03-23
+    	* @Writer : 김수용
+    	* @Description : 보고 회차 등록
+    */
+//    @ApiOperation(value = "보고 회차 등록") // Swagger
+    @Transactional
+    @PostMapping(value ="/reports/routines")
+    public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
+
+        log.info("[ReportController] registerReportRound");
+        log.info("[ReportController] ReportRoundDTO : " + reportRoundDTO);
+
+        return reportService.registerReportRound(reportRoundDTO)?
+                ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고 회차 등록 성공", true))
+                : ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고 회차 등록 실패!", false));
+    }
+
+    /**
+    	* @MethodName : updateReport
+    	* @Date : 2023-03-23
+    	* @Writer : 김수용
+    	* @Description : 보고 수정
+    */
+    //    @ApiOperation(value = "보고 수정") // Swagger
+    @Transactional
+    @PutMapping(value ="/reports")
+    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
+
+        log.info("[ReportController] updateReport");
+        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+        if(memberList.size() == 0) {
+            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
+        }
+        log.info("[ReportController] memberList : " + memberList);
+
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+
+        ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
+        reportDTO.setMemberCode(memberCode);
+        log.info("[ReportController] reportDTO : " + reportDTO);
+
+        return reportService.updateReport(reportDTO, memberList)?
+                ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공", true))
+                : ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고 수정 실패!", false));
+    }
+
 }

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration scan="true" scanPeriod="30 seconds">
-
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%-5level %d{HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
 
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -39,10 +37,10 @@
 <!--    </appender>-->
 
     <!-- root레벨 설정 -->
-    <root level="DEBUG">
+<!--    <root level="DEBUG">-->
+    <root level="INFO">
         <appender-ref ref="console" />
 <!--        <appender-ref ref="stash" />-->
         <appender-ref ref="ROLLING" />
     </root>
-
 </configuration>

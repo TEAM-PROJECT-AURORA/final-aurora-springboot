@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {//OncePerRequestFilter 인�
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // 23.03.23 김수용 memberCode 추출하기위해 추가함
-                String memberCode = tokenProvider.getMemberCodeFromToken(jwt);
+                Integer memberCode = tokenProvider.getMemberCodeFromToken(jwt);
                 request.setAttribute("memberCode", memberCode);
             }
             filterChain.doFilter(request, response);

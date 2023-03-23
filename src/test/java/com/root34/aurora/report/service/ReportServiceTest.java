@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,7 @@ public class ReportServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(ReportServiceTest.class);
     private final int MEMBER_CODE = 1;
-    private final String REPORT_TYPE = "Routine";
+    private final String REPORT_TYPE = "Casual";
     private final char COMPLETION_STATUS = 'N';
 
     @Autowired
@@ -44,8 +44,8 @@ public class ReportServiceTest {
 
         // given
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setMemberCode(1);
-        reportDTO.setReportType("Routine");
+        reportDTO.setMemberCode(MEMBER_CODE);
+        reportDTO.setReportType(REPORT_TYPE);
         reportDTO.setReportTitle("TestReportTitle");
         reportDTO.setReportInfo("TestReportInfo");
         reportDTO.setReportCycle("Mon");
@@ -137,7 +137,7 @@ public class ReportServiceTest {
         searchConditions.put("reportType", REPORT_TYPE);
         searchConditions.put("completionStatus", COMPLETION_STATUS);
 
-        HashMap<String, List<ReportRoundDTO>> resultMap = new LinkedHashMap<>();
+        HashMap<String, List<ReportRoundDTO>> resultMap = new HashMap<>();
 
         // when
         List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
@@ -162,4 +162,76 @@ public class ReportServiceTest {
         assertNotNull(casualList);
 
     }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_회차_등록_서비스_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        ReportRoundDTO reportRoundDTO = new ReportRoundDTO();
+        reportRoundDTO.setReportCode(1);
+        reportRoundDTO.setRoundBody("보고 회차 등록 Test");
+
+        LocalDate currentDate = LocalDate.now();
+        String today = currentDate + " 정기 보고";
+        reportRoundDTO.setRoundTitle(today);
+
+        // when
+        int capacity = reportMapper.getReportRoundCapacity(reportCode);
+        reportRoundDTO.setCapacity(capacity);
+        int result = reportMapper.registerReportRound(reportRoundDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_수정_서비스_테스트() {
+
+        // given
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setReportCode(2L);
+        reportDTO.setReportTitle("Modified Title");
+        reportDTO.setReportInfo("Modified Information");
+        reportDTO.setMemberCode(2);
+        reportDTO.setReportCycle("Tue");
+        reportDTO.setCompletionStatus('N');
+
+        List<Integer> memberList = new ArrayList<>();
+        memberList.add(1);
+
+        Long reportCode = reportDTO.getReportCode();
+
+        // when
+        int result1 = reportMapper.updateReport(reportDTO);
+        int result2 = reportMapper.deleteReporter(reportCode);
+
+        int count = 0;
+
+        for (Integer listItem : memberList) {
+            HashMap<String, Object> parameter = new HashMap<>();
+            parameter.put("reportCode", reportCode);
+            parameter.put("listItem", listItem);
+
+            reportMapper.registerReporter(parameter);
+
+            count++;
+        }
+
+        // then
+        assertEquals(1, result1);
+        assertNotEquals(0, result2);
+        assertNotEquals(0, count);
+    }
 }
+
+//
+//        // then
+//        assertEquals(1, result);
+//        assertEquals(memberList.size(), count);

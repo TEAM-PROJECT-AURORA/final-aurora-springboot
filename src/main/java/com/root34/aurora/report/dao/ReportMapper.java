@@ -31,4 +31,11 @@ public interface ReportMapper {
 
     List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 10개 조회
 
+    int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
+
+    int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
+
+    int updateReport(ReportDTO reportDTO); // 보고 수정
+
+    int deleteReporter(Long reportCode); // 보고자 삭제
 }

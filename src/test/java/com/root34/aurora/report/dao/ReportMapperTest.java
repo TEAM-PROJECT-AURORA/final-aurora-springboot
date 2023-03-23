@@ -181,4 +181,73 @@ public class ReportMapperTest {
         assertNotNull(casualReportList);
     }
 
+    @Test
+    void 보고_회차_정원_조회_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        int capacity = reportMapper.getReportRoundCapacity(reportCode);
+
+        // then
+        assertEquals(2, capacity);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_회차_등록_맵퍼_테스트() {
+
+        // given
+        ReportRoundDTO reportRoundDTO = new ReportRoundDTO();
+        reportRoundDTO.setReportCode(1);
+        reportRoundDTO.setRoundTitle("보고");
+        reportRoundDTO.setRoundBody("보고 회차 등록 Test");
+        reportRoundDTO.setCapacity(2);
+
+        // when
+        int result = reportMapper.registerReportRound(reportRoundDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_수정_맵퍼_테스트() {
+
+        // given
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setReportCode(1L);
+        reportDTO.setReportTitle("Modified Title");
+        reportDTO.setReportInfo("Modified Information");
+        reportDTO.setMemberCode(2);
+        reportDTO.setReportCycle("Tue");
+        reportDTO.setCompletionStatus('N');
+
+        // when
+        int result = reportMapper.updateReport(reportDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고자_삭제_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        int result = reportMapper.deleteReporter(reportCode);
+
+        // then
+        assertNotEquals(0, result);
+    }
+
 }
