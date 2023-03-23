@@ -4,8 +4,8 @@ import com.root34.aurora.exception.DuplicatedUsernameException;
 import com.root34.aurora.exception.LoginFailedException;
 import com.root34.aurora.jwt.TokenProvider;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDto;
-import com.root34.aurora.member.dto.TokenDto;
+import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.TokenDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,49 +25,55 @@ public class AuthService {
         this.tokenProvider = tokenProvider;
     }
 
+    /**
+     * @MethodName : signup
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Description :사원 등록을 위한 매소드
+     */
     @Transactional
-    public MemberDto signup(MemberDto memberDto) {
+    public MemberDTO signup(MemberDTO memberDTO) {
         log.info("[AuthService] Signup Start ===================================");
-        log.info("[AuthService] MemberRequestDto {}", memberDto);
+        log.info("[AuthService] MemberRequestDto {}", memberDTO);
 
-        if(memberMapper.selectByEmail(memberDto.getMemberEmail()) != null) {
+        if(memberMapper.selectByEmail(memberDTO.getMemberEmail()) != null) {
             log.info("[AuthService] 이메일이 중복됩니다.");
             throw new DuplicatedUsernameException("이메일이 중복됩니다.");
         }
 
         log.info("[AuthService] Member Signup Start ==============================");
-        memberDto.setMemberPassword(passwordEncoder.encode(memberDto.getMemberPassword()));
-        log.info("[AuthService] Member {}", memberDto);
-        int result = memberMapper.insertMember(memberDto);
+        memberDTO.setMemberPWD(passwordEncoder.encode(memberDTO.getMemberPWD()));
+        log.info("[AuthService] Member {}", memberDTO);
+        int result = memberMapper.insertMember(memberDTO);
         log.info("[AuthService] Member Insert Result {}", result > 0 ? "회원 가입 성공" : "회원 가입 실패");
 
         log.info("[AuthService] Signup End ==============================");
 
-        return memberDto;
+        return memberDTO;
     }
 
     @Transactional
-    public TokenDto login(MemberDto memberDto) {
+    public TokenDTO login(MemberDTO memberDTO) {
         log.info("[AuthService] Login Start ===================================");
-        log.info("[AuthService] {}", memberDto);
+        log.info("[AuthService] {}", memberDTO);
 
         // 1. 아이디 조회
-        MemberDto member = memberMapper.findByMemberId(memberDto.getMemberId())
+        MemberDTO member = memberMapper.findByMemberId(memberDTO.getMemberId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디 또는 비밀번호입니다"));
 
         // 2. 비밀번호 매칭
-        if (!passwordEncoder.matches(memberDto.getMemberPassword(), member.getMemberPassword())) {
+        if (!passwordEncoder.matches(memberDTO.getMemberPWD(), member.getMemberPWD())) {
             log.info("[AuthService] Password Match Fail!!!!!!!!!!!!");
             throw new LoginFailedException("잘못된 아이디 또는 비밀번호입니다");
         }
 
         // 3. 토큰 발급
-        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-        log.info("[AuthService] tokenDto {}", tokenDto);
+        TokenDTO tokenDTO = tokenProvider.generateTokenDto(member);
+        log.info("[AuthService] tokenDto {}", tokenDTO);
 
         log.info("[AuthService] Login End ===================================");
 
-        return tokenDto;
+        return tokenDTO;
     }
 
 }
