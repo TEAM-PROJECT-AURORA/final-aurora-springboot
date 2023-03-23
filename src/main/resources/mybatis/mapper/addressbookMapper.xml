@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.addressBook.dao.AddressBookMapper">
+    <select id="selectTotalMemberAddresses" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER
+    </select>
+    <select id="selectAllMemberAddresses" parameterType="selectCriteria" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            '우리 회사' AS COMPANY,
+            B.DEPT_NAME AS DEPARTMENT,
+            A.PHONE AS COM_PHONE
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         LIMIT ${ startRow }, #{ limit }
+    </select>
+    <select id="selectTotalMemberAddressesByDept" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER
+         WHERE DEPT_CODE = #{ deptCode }
+    </select>
+    <select id="selectAllMemberAddressesByDept" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            '우리 회사' AS COMPANY,
+            B.DEPT_NAME AS DEPARTMENT,
+            A.PHONE AS COM_PHONE
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         WHERE A.DEPT_CODE = #{ deptCode }
+         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <select id="selectOneMemberAddress" parameterType="_int" resultType="memberDTO">
+        SELECT
+            MEMBER_CODE,
+            MEMBER_NAME,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            MEMBER_EMAIL,
+            INTRODUCTION,
+            BIRTHDAY,
+            TEAM,
+            PHONE
+          FROM TBL_MEMBER
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <insert id="insertGroup" parameterType="String">
+        INSERT INTO TBL_ADDRESS_GROUP
+        VALUES
+            (NULL, #{ groupName })
+    </insert>
+    <select id="selectTotalPersonalAddresses" parameterType="_int" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ADDRESS_BOOK
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectAllPersonalAddresses" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            A.ADDBOOK_NO,
+            A.GROUP_CODE,
+            B.GROUP_NAME,
+            A.NAME,
+            A.PHONE,
+            A.EMAIL,
+            A.COMPANY,
+            A.DEPARTMENT,
+            A.COM_PHONE
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON B.GROUP_CODE = B.GROUP_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+         LIMIT ${ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <insert id="insertPersonalAddress" parameterType="addressBookDTO">
+        INSERT INTO TBL_ADDRESS_BOOK
+            (NAME, GROUP_CODE, MEMBER_CODE, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
+        VALUES
+            (#{ name }, #{ groupCode }, #{ memberCode }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
+    </insert>
+    <select id="selectTotalTeamAddresses" parameterType="String" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ADDRESS_BOOK
+         WHERE TEAM = #{ team }
+    </select>
+    <select id="selectAllTeamAddresses" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            A.ADDBOOK_NO,
+            A.GROUP_CODE,
+            B.GROUP_NAME,
+            A.TEAM,
+            A.NAME,
+            A.PHONE,
+            A.EMAIL,
+            A.COMPANY,
+            A.DEPARTMENT,
+            A.COM_PHONE
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON A.GROUP_CODE = B.GROUP_CODE
+         WHERE A.TEAM = #{ team }
+    </select>
+    <insert id="insertTeamAddress" parameterType="addressBookDTO">
+        INSERT INTO TBL_ADDRESS_BOOK
+        (NAME, GROUP_CODE, TEAM, PHONE, EMAIL, COMPANY, DEPARTMENT, COM_PHONE)
+        VALUES
+            (#{ name }, #{ groupCode }, #{ team }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ comPhone })
+    </insert>
+    <update id="updateAddress" parameterType="map">
+        UPDATE TBL_ADDRESS_BOOK
+           SET NAME = #{ address.name },
+               PHONE = #{ address.phone },
+               EMAIL = #{ address.email },
+               COMPANY = #{ address.company },
+               DEPARTMENT = #{ address.department },
+               COM_PHONE = #{ address.comPhone }
+         WHERE ADDBOOK_NO = #{ addBookNo }
+    </update>
+    <delete id="deleteAddress" parameterType="String">
+        DELETE FROM TBL_ADDRESS_BOOK
+         WHERE ADDBOOK_NO = #{ addBookNo }
+    </delete>
+    <select id="selectPersonalGroups" parameterType="_int" resultType="addressGroupDTO">
+        SELECT
+            DISTINCT A.GROUP_CODE,
+            B.GROUP_NAME
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON A.GROUP_CODE = B.GROUP_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+    </select>
+</mapper>
