@@ -4,7 +4,7 @@ import com.root34.aurora.approval.dto.ApprovalDTO;
 import com.root34.aurora.approval.dto.ApprovalLineDTO;
 import com.root34.aurora.approval.dto.DocumentDTO;
 import com.root34.aurora.approval.service.ApprovalService;
-import com.root34.aurora.common.ResponseDto;
+import com.root34.aurora.common.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +39,11 @@ public class ApprovalController {
     	@Description : 최근 리스트 조회
     */
     @GetMapping("/approvals")
-    public ResponseEntity<ResponseDto> lastList(){
+    public ResponseEntity<ResponseDTO> lastList(){
 
         log.info("[ApprovalController] GetMapping lastList start ");
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.lastList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.lastList()));
     }
 
     /**
@@ -53,12 +53,12 @@ public class ApprovalController {
      @Description : 미결재 리스트 조회
      */
     @GetMapping("/approvals/pending")
-    public ResponseEntity<ResponseDto> pendingList(){
+    public ResponseEntity<ResponseDTO> pendingList(){
 
         ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.pendingList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.pendingList()));
     }
 
     /**
@@ -68,12 +68,12 @@ public class ApprovalController {
      @Description : 결재완료 리스트 조회
      */
     @GetMapping("/approvals/completed")
-    public ResponseEntity<ResponseDto> completedList(){
+    public ResponseEntity<ResponseDTO> completedList(){
 
         ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.completedList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.completedList()));
     }
 
     /**
@@ -83,11 +83,11 @@ public class ApprovalController {
     	@Description : 결재 상세정보 조회
     */
     @GetMapping("/approvals/{appCode}")
-    public ResponseEntity<ResponseDto> detailApprove(@PathVariable int appCode){
+    public ResponseEntity<ResponseDTO> detailApprove(@PathVariable int appCode){
 
         log.info("[ApprovalController] PathVariable detailApprove: " + appCode);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "상세정보 조회 성공", approvalService.detailApprove(appCode)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세정보 조회 성공", approvalService.detailApprove(appCode)));
     }
 
     /**
@@ -97,11 +97,11 @@ public class ApprovalController {
     	@Description : 결재 수정
     */
     @PutMapping("approvals/{appCode}")
-    public ResponseEntity<ResponseDto> updateApproval(@PathVariable int appCode, @RequestBody ApprovalDTO approvalDTO){
+    public ResponseEntity<ResponseDTO> updateApproval(@PathVariable int appCode, @RequestBody ApprovalDTO approvalDTO){
 
         approvalDTO.setAppCode(appCode);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "수정 성공", approvalService.updateApproval(approvalDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정 성공", approvalService.updateApproval(approvalDTO)));
     }
 
     /**
@@ -111,11 +111,11 @@ public class ApprovalController {
     	@Description : 결재 삭제
     */
     @DeleteMapping("approvals/{appCode}")
-    public ResponseEntity<ResponseDto> deleteApproval(@PathVariable int appCode) {
+    public ResponseEntity<ResponseDTO> deleteApproval(@PathVariable int appCode) {
         Map<String, Object> deleteMap = new HashMap<>();
         deleteMap.put("appCode", appCode);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "삭제 성공", approvalService.deleteApproval(deleteMap)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제 성공", approvalService.deleteApproval(deleteMap)));
     }
 
     /**
@@ -125,13 +125,13 @@ public class ApprovalController {
      @Description : 결재서류 생성을 위한 메소드
      */
     @PostMapping("/approvals/draft/form/{docCode}")
-    public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody @Valid ApprovalDTO approvalDTO) {
+    public ResponseEntity<ResponseDTO> approve(@PathVariable int docCode, @RequestBody @Valid ApprovalDTO approvalDTO) {
         log.info("[ApprovalController] postMapping docCode: ");
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setDocCode(docCode);
         approvalDTO.setDocumentDTO(documentDTO);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
     }
 
     /**
@@ -141,13 +141,13 @@ public class ApprovalController {
      @Description : 결재선 생성을 위한 메소드
      */
     @PostMapping("/approvals/draft/form/line/{appCode}")
-    public ResponseEntity<ResponseDto> setLineApproval(@PathVariable int appCode, @RequestBody List<ApprovalLineDTO> approvalLineDTOList) {
+    public ResponseEntity<ResponseDTO> setLineApproval(@PathVariable int appCode, @RequestBody List<ApprovalLineDTO> approvalLineDTOList) {
         log.info("[ApprovalController] postMapping setLineApproval ");
 
         for(ApprovalLineDTO approvalLineDTO : approvalLineDTOList) {
             approvalLineDTO.setAppCode(appCode);
         }
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.setLineApproval(approvalLineDTOList)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",approvalService.setLineApproval(approvalLineDTOList)));
     }
 }

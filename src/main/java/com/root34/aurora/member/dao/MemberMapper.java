@@ -1,10 +1,10 @@
 package com.root34.aurora.member.dao;
 
-import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Optional;
 
 
