@@ -1,6 +1,7 @@
 package com.root34.aurora.approval.controller;
 
 import com.root34.aurora.approval.dto.ApprovalDTO;
+import com.root34.aurora.approval.dto.ApprovalLineDTO;
 import com.root34.aurora.approval.dto.DocumentDTO;
 import com.root34.aurora.approval.service.ApprovalService;
 import com.root34.aurora.common.ResponseDto;
@@ -8,6 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  @FileName : ApprovalController
@@ -85,22 +91,6 @@ public class ApprovalController {
     }
 
     /**
-        @MethodName : approve
-    	@Date : 3:07 PM
-    	@Writer : heojaehong
-    	@Description : 결재서류 생성을 위한 메소드
-    */
-    @PostMapping("/approvals/draft/form/{docCode}")
-    public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody ApprovalDTO approvalDTO) throws Exception {
-        log.info("[ApprovalController] postMapping docCode: " + approvalDTO.getDocumentDTO().getDocCode());
-        DocumentDTO documentDTO = new DocumentDTO();
-        documentDTO.setDocCode(docCode);
-        approvalDTO.setDocumentDTO(documentDTO);
-
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
-    }
-
-    /**
         @MethodName : updateApproval
     	@Date : 2:10 PM
     	@Writer : heojaehong
@@ -121,8 +111,43 @@ public class ApprovalController {
     	@Description : 결재 삭제
     */
     @DeleteMapping("approvals/{appCode}")
-    public ResponseEntity<ResponseDto> deleteApproval(@PathVariable int appCode,@RequestBody ApprovalDTO approvalDTO) {
+    public ResponseEntity<ResponseDto> deleteApproval(@PathVariable int appCode) {
+        Map<String, Object> deleteMap = new HashMap<>();
+        deleteMap.put("appCode", appCode);
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "삭제 성공", approvalService.deleteApproval(approvalDTO)));
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "삭제 성공", approvalService.deleteApproval(deleteMap)));
+    }
+
+    /**
+     @MethodName : approve
+     @Date : 3:07 PM
+     @Writer : heojaehong
+     @Description : 결재서류 생성을 위한 메소드
+     */
+    @PostMapping("/approvals/draft/form/{docCode}")
+    public ResponseEntity<ResponseDto> approve(@PathVariable int docCode, @RequestBody @Valid ApprovalDTO approvalDTO) {
+        log.info("[ApprovalController] postMapping docCode: ");
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setDocCode(docCode);
+        approvalDTO.setDocumentDTO(documentDTO);
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.approve(approvalDTO)));
+    }
+
+    /**
+     @MethodName : approve
+     @Date : 3:07 PM
+     @Writer : heojaehong
+     @Description : 결재선 생성을 위한 메소드
+     */
+    @PostMapping("/approvals/draft/form/line/{appCode}")
+    public ResponseEntity<ResponseDto> setLineApproval(@PathVariable int appCode, @RequestBody List<ApprovalLineDTO> approvalLineDTOList) {
+        log.info("[ApprovalController] postMapping setLineApproval ");
+
+        for(ApprovalLineDTO approvalLineDTO : approvalLineDTOList) {
+            approvalLineDTO.setAppCode(appCode);
+        }
+
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"등록 성공",approvalService.setLineApproval(approvalLineDTOList)));
     }
 }
