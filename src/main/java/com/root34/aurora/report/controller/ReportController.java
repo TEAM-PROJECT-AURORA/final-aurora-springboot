@@ -165,12 +165,12 @@ public class ReportController {
     }
 
     /**
-     * @MethodName : selectRoutineReportList
+     * @MethodName : selectCompletedRoutineReportList
      * @Date : 2023-03-24
      * @Writer : 김수용
      * @Description : 완료된 정기보고 목록 조회
      */
-//    @ApiOperation(value = "정기보고 목록 조회") // Swagger
+//    @ApiOperation(value = "완료된 정기보고 목록 조회") // Swagger
     @GetMapping(value ="/reports/routine/completed")
     public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
@@ -187,4 +187,26 @@ public class ReportController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
+    /**
+     * @MethodName : selectCasualReportList
+     * @Date : 2023-03-24
+     * @Writer : 김수용
+     * @Description : 비정기보고 목록 조회
+     */
+//    @ApiOperation(value = "비정기보고 목록 조회") // Swagger
+    @GetMapping(value ="/reports/casual/active")
+    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request, @RequestParam int offset) {
+
+        log.info("[ReportController] selectCasualReportList");
+        log.info("[ReportController] offset : " + offset);
+
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        searchConditions.put("memberCode", memberCode);
+        searchConditions.put("reportType", "Casual");
+        searchConditions.put("completionStatus", 'N');
+        log.info("[ReportController] searchConditions : " + searchConditions);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+    }
 }
