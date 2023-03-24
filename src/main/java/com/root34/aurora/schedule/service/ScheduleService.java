@@ -78,6 +78,7 @@ public class ScheduleService {
         return (result > 0) ? "일정 업데이트 성공" : "일정 업데이트 실패";
     }
 
+    @Transactional
     public Object deleteSchedule(int scheduleCode) {
 
         log.info("[ScheduleService] deleteSchedule Start ====================");

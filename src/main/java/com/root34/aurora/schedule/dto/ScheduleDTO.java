@@ -8,7 +8,7 @@ import java.sql.Date;
 @Data
 public class ScheduleDTO {
 
-    private int scheduleCode;
+    private int scheduleCode; // schedule_code
     private int memberCode;
     private int scheduleCategoryCode;
     private String scheduleName;

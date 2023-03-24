@@ -1,17 +1,17 @@
 package com.root34.aurora.worklog.dao;
 
-import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.worklog.dto.DayWorklogDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DayWorklogMapper {
-    
-    int selectDayWorklogTotal();
 
-    List<DayWorklogDTO> selectDayWorklogListWithPaging(SelectCriteria selectCriteria);
+    int selectDayWorklogTotal(int memberCode);
+
+    List<DayWorklogDTO> selectDayWorklogListWithPaging(Map map);
 
     DayWorklogDTO selectDayWorklog(int dayWorklogCode);
 

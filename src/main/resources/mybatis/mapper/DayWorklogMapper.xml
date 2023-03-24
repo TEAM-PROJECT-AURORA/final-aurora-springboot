@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.worklog.dao.DayWorklogMapper">
+
+    <select id = "selectDayWorklogTotal" parameterType="_int" resultType = "_int">
+        SELECT
+            count(*)
+          FROM TBL_DAY_WORKLOG
+
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+
+    <select id = "selectDayWorklogListWithPaging" parameterType="map" resultType="DayWorklogDTO">
+        SELECT
+            D.DAY_WORKLOG_CODE,
+            M.MEMBER_CODE,
+            D.DAY_REPORTING_DATE,
+            D.MORNING_DAY_CONTENT,
+            D.AFTERNOON_DAY_CONTENT,
+            D.MORNING_DAY_NOTE,
+            D.AFTERNOON_DAY_NOTE,
+            D.DAY_SPECIAL_NOTE
+          FROM TBL_DAY_WORKLOG D
+          JOIN TBL_MEMBER M
+            ON D.MEMBER_CODE = M.MEMBER_CODE
+         WHERE D.MEMBER_CODE = #{ memberCode }
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+
+    <select id = "selectDayWorklog" parameterType="_int" resultType="DayWorklogDTO">
+        SELECT
+            D.DAY_WORKLOG_CODE,
+            M.MEMBER_CODE,
+            D.DAY_REPORTING_DATE,
+            D.MORNING_DAY_CONTENT,
+            D.AFTERNOON_DAY_CONTENT,
+            D.MORNING_DAY_NOTE,
+            D.AFTERNOON_DAY_NOTE,
+            D.DAY_SPECIAL_NOTE
+          FROM TBL_DAY_WORKLOG D
+          JOIN TBL_MEMBER M
+            ON D.MEMBER_CODE = M.MEMBER_CODE
+         WHERE D.DAY_WORKLOG_CODE = #{ dayWorklogCode }
+         ORDER BY D.DAY_WORKLOG_CODE DESC
+    </select>
+
+    <insert id="insertDayWorklog" parameterType="DayWorklogDTO">
+        INSERT INTO TBL_DAY_WORKLOG
+            (
+            MEMBER_CODE,
+            MORNING_DAY_CONTENT,
+            AFTERNOON_DAY_CONTENT,
+            MORNING_DAY_NOTE,
+            AFTERNOON_DAY_NOTE,
+            DAY_SPECIAL_NOTE
+            )
+        VALUES
+            (
+             #{ memberCode },
+             #{ morningDayContent },
+             #{ afternoonDayContent },
+             #{ morningDayNote },
+             #{ afternoonDayNote },
+             #{ daySpecialNote}
+            )
+    </insert>
+
+    <update id = "updateDayWorklog" parameterType="DayWorklogDTO">
+        UPDATE TBL_DAY_WORKLOG
+           SET
+               MEMBER_CODE = #{ memberCode },
+               MORNING_DAY_CONTENT = #{ morningDayContent },
+               AFTERNOON_DAY_CONTENT = #{ afternoonDayContent },
+               MORNING_DAY_NOTE = #{ morningDayNote },
+               AFTERNOON_DAY_NOTE = #{ afternoonDayNote },
+               DAY_SPECIAL_NOTE = #{ daySpecialNote }
+         WHERE DAY_WORKLOG_CODE = #{ dayWorklogCode }
+    </update>
+
+    <delete id = "deleteDayWorklog" parameterType="DayWorklogDTO">
+        DELETE FROM TBL_DAY_WORKLOG
+         WHERE DAY_WORKLOG_CODE = #{ dayWorklogCode }
+    </delete>
+
+</mapper>

@@ -44,7 +44,6 @@ public class ScheduleController {
     @PostMapping(value = "/schedules/calendar")
     public ResponseEntity<ResponseDTO> insertSchedule(@RequestBody ScheduleDTO scheduleDTO) {
 //    public ResponseEntity<ResponseDTO> insertSchedule(@ModelAttribute ScheduleDTO scheduleDTO) {
-
         log.info("[ScheduleController] PostMapping scheduleDTO : " + scheduleDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일정 입력 성공", scheduleService.insertSchedule(scheduleDTO)));

@@ -1,6 +1,5 @@
 package com.root34.aurora.worklog.service;
 
-import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.worklog.dao.DayWorklogMapper;
 import com.root34.aurora.worklog.dto.DayWorklogDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -17,19 +17,19 @@ public class DayWorklogService {
 
     public DayWorklogService(DayWorklogMapper dayWorklogMapper) { this.dayWorklogMapper = dayWorklogMapper; }
 
-    public int selectDayWorklogTotal() {
+    public int selectDayWorklogTotal(int memberCode) {
 
         log.info("[DayWorklogService] selectDayWorklogTotal Start ====================");
-        int result = dayWorklogMapper.selectDayWorklogTotal();
+        int result = dayWorklogMapper.selectDayWorklogTotal(memberCode);
         log.info("[DayWorklogService] selectDayWorklogTotal End ====================");
 
         return result;
     }
 
-    public Object selectDayWorklogListWithPaging(SelectCriteria selectCriteria) {
+    public Object selectDayWorklogListWithPaging(Map map) {
 
         log.info("[DayWorklogService] selectDayWorklogListWithPaging Start ====================");
-        List<DayWorklogDTO> dayWorklogList = dayWorklogMapper.selectDayWorklogListWithPaging(selectCriteria);
+        List<DayWorklogDTO> dayWorklogList = dayWorklogMapper.selectDayWorklogListWithPaging(map);
         log.info("[DayWorklogService] selectDayWorklogListWithPaging End ====================");
 
         return dayWorklogList;
@@ -70,6 +70,7 @@ public class DayWorklogService {
         return (result > 0) ? "일일 업무일지 업데이트 성공" : "일일 업무일지 업데이트 실패";
     }
 
+    @Transactional
     public Object deleteDayWorklog(int dayWorklogCode) {
 
         log.info("[DayWorklogService] deleteDayWorklog Start ====================");

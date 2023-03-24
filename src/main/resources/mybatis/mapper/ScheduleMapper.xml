@@ -21,7 +21,7 @@
             ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-         WHERE SCHEDULE_CODE = #{ scheduleCode }
+
     </select>
 
     <select id = "selectScheduleCalendarAboutWeek" resultType = "ScheduleDTO">
@@ -41,7 +41,7 @@
             ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-         WHERE SCHEDULE_CODE = #{ scheduleCode }
+         WHERE S.SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <select id = "selectScheduleCalendarAboutDay" resultType = "ScheduleDTO">
@@ -61,7 +61,7 @@
             ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-         WHERE SCHEDULE_CODE = #{ scheduleCode }
+         WHERE S.SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <select id = "selectSchedule" resultType="ScheduleDTO">
@@ -81,7 +81,7 @@
             ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-         WHERE SCHEDULE_CODE = #{ scheduleCode }
+         WHERE S.SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
     <insert id = "insertSchedule" parameterType="ScheduleDTO">
@@ -105,21 +105,21 @@
 
     <update id = "updateSchedule" parameterType = "ScheduleDTO">
         UPDATE TBL_SCHEDULE
-        SET
-            MEMBER_CODE = #{ memberCode },
-            SCHEDULE_CATEGORY_CODE = #{ scheduleCategoryCode },
-            SCHEDULE_NAME = #{ scheduleName },
-            SCHEDULE_START_DAY = #{ scheduleStartDay },
-            SCHEDULE_END_DAY = #{ scheduleEndDay },
-            SCHEDULE_START_TIME = #{ scheduleStartTime },
-            SCHEDULE_END_TIME = #{ scheduleEndTime },
-            SCHEDULE_PLACE = #{ schedulePlace },
-            SCHEDULE_CONTENT = #{ scheduleContent }
-        WHERE SCHEDULE_CODE = #{ scheduleCode }
+           SET
+               MEMBER_CODE = #{ memberCode },
+               SCHEDULE_CATEGORY_CODE = #{ scheduleCategoryCode },
+               SCHEDULE_NAME = #{ scheduleName },
+               SCHEDULE_START_DAY = #{ scheduleStartDay },
+               SCHEDULE_END_DAY = #{ scheduleEndDay },
+               SCHEDULE_START_TIME = #{ scheduleStartTime },
+               SCHEDULE_END_TIME = #{ scheduleEndTime },
+               SCHEDULE_PLACE = #{ schedulePlace },
+               SCHEDULE_CONTENT = #{ scheduleContent }
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </update>
 
     <delete id = "deleteSchedule" parameterType="_int">
         DELETE FROM TBL_SCHEDULE
-        WHERE SCHEDULE_CODE = #{ scheduleCode }
+         WHERE SCHEDULE_CODE = #{ scheduleCode }
     </delete>
 </mapper>

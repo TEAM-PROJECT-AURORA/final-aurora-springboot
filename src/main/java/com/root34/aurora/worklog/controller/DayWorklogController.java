@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -20,23 +23,27 @@ public class DayWorklogController {
 
     public DayWorklogController(DayWorklogService dayWorklogService) { this.dayWorklogService = dayWorklogService; }
 
-    @GetMapping("/worklogs/days")
-    public ResponseEntity<ResponseDTO> selectDayWorklogListWithPaging(@RequestParam(name = "offset", defaultValue = "1") String offset) {
+    //일일 업무일지 전체조회
+    @GetMapping("/worklogs/days/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectDayWorklogListWithPaging(@RequestParam(name="offset", defaultValue="1") String offset, @PathVariable int memberCode) {
 
         log.info("[DayWorklogController] selectDayWorklogListWithPaging : " + offset);
-        int totalCount = dayWorklogService.selectDayWorklogTotal();
+        int totalCount = dayWorklogService.selectDayWorklogTotal(memberCode); // selectDayWorklogTotal() ()안에 멤버코드를 줘서 그 멤버만 볼수 있게 해준다?
         int limit = 20;
-        int buttonAmout = 5;
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmout);
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        Map map = new HashMap();
+        map.put("selectCriteria", selectCriteria);
+        map.put("memberCode", memberCode);
         log.info("[DayWorklogController] selectCriteria : " + selectCriteria);
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(selectCriteria);
-        responseDTOWithPaging.setData(dayWorklogService.selectDayWorklogListWithPaging(selectCriteria));
+        responseDTOWithPaging.setData(dayWorklogService.selectDayWorklogListWithPaging(map));
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
     }
 
-    @GetMapping("/worklogs/days/{dayWorklogCode}")
+    @GetMapping("/worklogs/days/detail/{dayWorklogCode}")
     public ResponseEntity<ResponseDTO> selectDayWorklogDetail(@PathVariable int dayWorklogCode) {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 상세 조회 성공", dayWorklogService.selectDayWorklog(dayWorklogCode)));
@@ -58,6 +65,7 @@ public class DayWorklogController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 업데이트 성공", dayWorklogService.updateDayWorklog(dayWorklogDTO)));
     }
 
+    @DeleteMapping(value = "/worklogs/days/{dayWorklogCode}")
     public ResponseEntity<ResponseDTO> deleteDayWorklog(@PathVariable int dayWorklogCode) {
 
         log.info("[DayWorklogController] DeleteMapping dayWorklogCode : " + dayWorklogCode);
