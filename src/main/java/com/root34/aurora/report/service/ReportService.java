@@ -33,6 +33,24 @@ public class ReportService {
     }
 
     /**
+    	* @MethodName : verifyMemberReportAccess
+    	* @Date : 2023-03-24
+    	* @Writer : 김수용
+    	* @Description : 보고 관련자 체크
+    */
+    public boolean verifyMemberReportAccess(int memberCode, Long reportCode) {
+
+        log.info("[ReportService] verifyMemberReportAccess Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
+
+        List<Integer> involvedMemberCodeList = reportMapper.selectMemberListInvolvedInReport(reportCode);
+        log.info("[ReportService] involvedMemberCodeList : " + involvedMemberCodeList);
+
+        return involvedMemberCodeList.contains(memberCode);
+    }
+
+    /**
     	* @MethodName : registerReport
     	* @Date : 2023-03-22
     	* @Writer : 김수용
@@ -40,7 +58,7 @@ public class ReportService {
     */
     public boolean registerReport(ReportDTO reportDTO, List<Integer> memberList) {
 
-        log.info("[ReportService] registerReport");
+        log.info("[ReportService] registerReport Start");
         int result = reportMapper.registerReport(reportDTO);
         log.info("[ReportService] registerReport result : " + result);
 
@@ -70,7 +88,7 @@ public class ReportService {
     */
     public HashMap<String, Object> getReportSummary(int memberCode) {
 
-        log.info("[ReportService] getReportSummary");
+        log.info("[ReportService] getReportSummary Start");
         List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
         log.info("[ReportService] recentRoutineReportCodeList : " + recentRoutineReportCodeList);
 
@@ -104,7 +122,7 @@ public class ReportService {
     */
     public boolean registerReportRound(ReportRoundDTO reportRoundDTO) {
 
-        log.info("[ReportService] registerReportRound");
+        log.info("[ReportService] registerReportRound Start");
         int capacity = reportMapper.getReportRoundCapacity(reportRoundDTO.getReportCode());
         reportRoundDTO.setCapacity(capacity);
         log.info("[ReportService] capacity : " + capacity);
@@ -128,7 +146,7 @@ public class ReportService {
     */
     public boolean updateReport(ReportDTO reportDTO, List<Integer> memberList) {
 
-        log.info("[ReportService] updateReport");
+        log.info("[ReportService] updateReport Start");
         log.info("[ReportService] memberList : " + memberList);
 
         log.info("[ReportService] ReportDTO : " + reportDTO);
@@ -164,7 +182,7 @@ public class ReportService {
     */
     public ResponseDTOWithPaging selectReportListByConditions(int offset, HashMap<String, Object> searchConditions) {
 
-        log.info("[ReportService] selectReportListByConditions");
+        log.info("[ReportService] selectReportListByConditions Start");
         int totalCount = reportMapper.getReportCount(searchConditions);
         log.info("[ReportService] totalCount : " + totalCount);
         int limit = 10;
@@ -182,10 +200,6 @@ public class ReportService {
         responseDTOWithPaging.setData(reportList);
         log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
-//        if(reportList.isEmpty())) {
-//            return new Exception
-//        }
-
         return responseDTOWithPaging;
     }
 
@@ -197,18 +211,22 @@ public class ReportService {
     */
     public ResponseDTOWithPaging selectReportRoundListByReportCode(Long reportCode, int offset) {
 
+        log.info("[ReportService] selectReportRoundListByReportCode Start");
         int totalCount = reportMapper.getReportRoundCount(reportCode);
         int limit = 10;
         int buttonAmount = 5;
 
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
         selectCriteria.setSearchCondition(String.valueOf(reportCode));
+        log.info("[ReportService] selectCriteria : " + selectCriteria);
 
         List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(selectCriteria);
+        log.info("[ReportService] reportRoundList : " + reportRoundList);
 
         ResponseDTOWithPaging responseDTOWithPaging =new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(selectCriteria);
         responseDTOWithPaging.setData(reportRoundList);
+        log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
         return responseDTOWithPaging;
     }

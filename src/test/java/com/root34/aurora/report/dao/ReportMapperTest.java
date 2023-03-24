@@ -285,4 +285,18 @@ public class ReportMapperTest {
         assertNotNull(result);
     }
 
+
+//    List<Integer> selectMemberListInvolvedInReport(Long reportCode); // 보고 관련자 목록 조회
+    @Test
+    void 보고_관련자_목록_조회_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        List<Integer> result = reportMapper.selectMemberListInvolvedInReport(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
 }

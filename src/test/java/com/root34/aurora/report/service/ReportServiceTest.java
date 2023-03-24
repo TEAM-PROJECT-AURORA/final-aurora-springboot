@@ -45,6 +45,23 @@ public class ReportServiceTest {
         assertNotNull(reportService);
     }
 
+    @Test
+    void 보고_관련자_체크_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        Long reportCode1 = 5L;
+        Long reportCode2 = 999999L;
+
+        // when
+        boolean result1 = reportService.verifyMemberReportAccess(memberCode, reportCode1);
+        boolean result2 = reportService.verifyMemberReportAccess(memberCode, reportCode2);
+
+        // then
+        assertEquals(true, result1);
+        assertEquals(false, result2);
+    }
+
     @Transactional
     @Rollback(false)
     @Test

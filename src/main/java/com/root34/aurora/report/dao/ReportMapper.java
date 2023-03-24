@@ -44,4 +44,6 @@ public interface ReportMapper {
     int getReportRoundCount(Long reportCode); // 보고 회차 갯수 조회
 
     List<ReportRoundDTO> selectReportRoundListByReportCode(SelectCriteria selectCriteria); // 보고 회차 목록 조회
+
+    List<Integer> selectMemberListInvolvedInReport(Long reportCode); // 보고 관련자 목록 조회
 }

@@ -127,7 +127,16 @@
         ORDER BY REPORT_CODE DESC
         LIMIT #{ startRow }, #{ limit }
     </select>
-
+    <!--보고 관련자 목록 조회-->
+    <select id="selectMemberListInvolvedInReport" parameterType="Long" resultType="Integer">
+        SELECT A.MEMBER_CODE
+          FROM TBL_REPORT A
+         WHERE A.REPORT_CODE = #{ reportCode }
+         UNION ALL
+        SELECT B.MEMBER_CODE
+        FROM TBL_REPORTER B
+        WHERE B.REPORT_CODE = #{ reportCode }
+    </select>
 
 
 
