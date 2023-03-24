@@ -2,7 +2,6 @@ package com.root34.aurora.report.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root34.aurora.common.ResponseDTO;
-import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import com.root34.aurora.report.service.ReportService;
@@ -160,16 +159,32 @@ public class ReportController {
         searchConditions.put("memberCode", memberCode);
         searchConditions.put("reportType", "Routine");
         searchConditions.put("completionStatus", 'N');
-
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        ResponseDTOWithPaging result = reportService.selectReportListByConditions(offset, searchConditions);
-        log.info("[ReportController] result : " + result);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+    }
 
-//        List<ReportDTO> reportList = reportService.selectReportListByConditions(offset, searchConditions);
-//        log.info("[ReportController] reportList : " + reportList);
+    /**
+     * @MethodName : selectRoutineReportList
+     * @Date : 2023-03-24
+     * @Writer : 김수용
+     * @Description : 완료된 정기보고 목록 조회
+     */
+//    @ApiOperation(value = "정기보고 목록 조회") // Swagger
+    @GetMapping(value ="/reports/routine/completed")
+    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공", result));
+        log.info("[ReportController] selectCompletedRoutineReportList");
+        log.info("[ReportController] offset : " + offset);
+
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        searchConditions.put("memberCode", memberCode);
+        searchConditions.put("reportType", "Routine");
+        searchConditions.put("completionStatus", 'Y');
+        log.info("[ReportController] searchConditions : " + searchConditions);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
 }

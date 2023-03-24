@@ -180,6 +180,7 @@ public class ReportService {
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(searchCriteria);
         responseDTOWithPaging.setData(reportList);
+        log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
 //        if(reportList.isEmpty())) {
 //            return new Exception
