@@ -1,6 +1,7 @@
 package com.root34.aurora.report.service;
 
 import com.root34.aurora.common.paging.Pagenation;
+import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
@@ -20,7 +21,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@ExtendWith(SpringExtension.class)
 @SpringBootTest
+//@AutoConfigureTestDatabase
 public class ReportServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(ReportServiceTest.class);
@@ -29,17 +32,23 @@ public class ReportServiceTest {
     private final char COMPLETION_STATUS = 'N';
 
     @Autowired
+//    @MockBean
     private ReportMapper reportMapper;
+
+    @Autowired
+    private ReportService reportService;
 
     @Test
     public void 보고_맵퍼_의존성_주입_테스트() {
 
         assertNotNull(reportMapper);
+        assertNotNull(reportService);
     }
 
-    @Test
     @Transactional
     @Rollback(false)
+    @Test
+//    @Rollback
     void 보고_작성_서비스_테스트() {
 
         // given
@@ -54,26 +63,32 @@ public class ReportServiceTest {
         memberList.add(2);
         memberList.add(3);
 
+        log.info("[보고_작성_서비스_테스트] reportDTO : " + reportDTO);
+        log.info("[보고_작성_서비스_테스트] memberList : " + memberList);
+
         // when
-        int result = reportMapper.registerReport(reportDTO);
+        boolean result = reportService.registerReport(reportDTO, memberList);
 
-        int generatedPk = reportDTO.getId();
-
-        int count = 0;
-
-        for (Integer listItem : memberList) {
-            HashMap<String, Object> parameter = new HashMap<>();
-            parameter.put("reportCode", generatedPk);
-            parameter.put("listItem", listItem);
-
-            reportMapper.registerReporter(parameter);
-
-            count++;
-        }
+//        int result = reportMapper.registerReport(reportDTO);
+//
+//        int generatedPk = reportDTO.getId();
+//
+//        int count = 0;
+//
+//        for (Integer listItem : memberList) {
+//            HashMap<String, Object> parameter = new HashMap<>();
+//            parameter.put("reportCode", generatedPk);
+//            parameter.put("listItem", listItem);
+//
+//            reportMapper.registerReporter(parameter);
+//
+//            count++;
+//        }
 
         // then
-        assertEquals(1, result);
-        assertEquals(memberList.size(), count);
+        assertEquals(true, result);
+//        assertEquals(1, result);
+//        assertEquals(memberList.size(), count);
     }
 
     @Test
@@ -144,7 +159,7 @@ public class ReportServiceTest {
 
         for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
 
-            List<ReportRoundDTO> result = reportMapper.selectReportRoundListByReportCode(recentRoutineReportCodeList.get(i));
+            List<ReportRoundDTO> result = reportMapper.selectReportRoundSummaryListByReportCode(recentRoutineReportCodeList.get(i));
             String resultName = "result" + (i + 1);
             resultMap.put(resultName, result);
         }
@@ -231,7 +246,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    void 조건별_보고_목록_조회() {
+    void 조건별_보고_목록_조회_서비스_테스트() {
 
         // given
         HashMap<String, Object> searchConditions = new HashMap<>();
@@ -255,5 +270,26 @@ public class ReportServiceTest {
 
         // then
         assertNotNull(reportList);
+    }
+
+    @Test
+    void 보고_회차_목록_조회() {
+
+        // given
+        Long reportCode = 1L;
+
+        int offset = 1;
+        int totalCount = reportMapper.getReportRoundCount(reportCode);
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(String.valueOf(reportCode));
+
+        // when
+        ResponseDTOWithPaging result = reportService.selectReportRoundListByReportCode(reportCode, offset);
+
+        // then
+        assertNotNull(result);
     }
 }

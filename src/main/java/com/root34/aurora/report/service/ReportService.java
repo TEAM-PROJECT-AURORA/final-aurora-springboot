@@ -84,7 +84,7 @@ public class ReportService {
 
         for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
 
-            List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(recentRoutineReportCodeList.get(i));
+            List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundSummaryListByReportCode(recentRoutineReportCodeList.get(i));
             String resultName = "routineList" + (i + 1);
             response.put(resultName, reportRoundList);
             log.info("[ReportService] " + resultName + " : " + reportRoundList);
@@ -170,21 +170,45 @@ public class ReportService {
         int limit = 10;
         int buttonAmount = 5;
 
-        SelectCriteria searchCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
-        log.info("[ReportService] searchCriteria : " + searchCriteria);
-        searchCriteria.setSearchConditions(searchConditions);
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        log.info("[ReportService] selectCriteria : " + selectCriteria);
+        selectCriteria.setSearchConditions(searchConditions);
 
-        List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(searchCriteria);
+        List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
         log.info("[ReportService] reportList : " + reportList);
 
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
-        responseDTOWithPaging.setPageInfo(searchCriteria);
+        responseDTOWithPaging.setPageInfo(selectCriteria);
         responseDTOWithPaging.setData(reportList);
         log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
 //        if(reportList.isEmpty())) {
 //            return new Exception
 //        }
+
+        return responseDTOWithPaging;
+    }
+
+    /**
+    	* @MethodName : selectReportRoundListByReportCode
+    	* @Date : 2023-03-24
+    	* @Writer : 김수용
+    	* @Description : 보고 회차 목록 조회
+    */
+    public ResponseDTOWithPaging selectReportRoundListByReportCode(Long reportCode, int offset) {
+
+        int totalCount = reportMapper.getReportRoundCount(reportCode);
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(String.valueOf(reportCode));
+
+        List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(selectCriteria);
+
+        ResponseDTOWithPaging responseDTOWithPaging =new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(reportRoundList);
 
         return responseDTOWithPaging;
     }

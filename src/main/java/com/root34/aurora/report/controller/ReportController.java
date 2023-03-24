@@ -34,12 +34,12 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-/**
-	* @MethodName : registerReport
-	* @Date : 2023-03-22
-	* @Writer : 김수용
-	* @Description : 보고 작성
-*/
+    /**
+     * @MethodName : registerReport
+     * @Date : 2023-03-22
+     * @Writer : 김수용
+     * @Description : 보고 작성
+     */
 //    @ApiOperation(value = "보고 작성")
     @Transactional
     @PostMapping(value = "/reports")
@@ -63,13 +63,13 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : getAllReportList
-    	* @Date : 2023-03-23
-    	* @Writer : 김수용
-    	* @Description : 전체 보고 조회 - 보고 메인 페이지용
-    */
+     * @MethodName : getAllReportList
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 전체 보고 조회 - 보고 메인 페이지용
+     */
 //    @ApiOperation(value = "전체 보고 조회") // Swagger
-    @GetMapping(value ="/reports")
+    @GetMapping(value = "/reports")
     public ResponseEntity<ResponseDTO> getAllReportList(HttpServletRequest request) {
 
         log.info("[ReportController] getAllReportList");
@@ -79,8 +79,8 @@ public class ReportController {
         HashMap<String, Object> response = reportService.getReportSummary(memberCode);
         log.info("[ReportController] response : " + response);
 
-        if(((List)response.get("routineList1")).size() == 0 && ((List)response.get("casualList")).size() == 0) {
-            log.info("[ReportController] getAllReportList : 조회된 보고서가 없습니다." );
+        if (((List) response.get("routineList1")).size() == 0 && ((List) response.get("casualList")).size() == 0) {
+            log.info("[ReportController] getAllReportList : 조회된 보고서가 없습니다.");
 //            log.info("[BoardService] selectBoardListWithPaging End ===================================");
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회된 보고서가 없습니다.", null));
         } else {
@@ -92,14 +92,14 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : registerReportRound
-    	* @Date : 2023-03-23
-    	* @Writer : 김수용
-    	* @Description : 보고 회차 등록
-    */
+     * @MethodName : registerReportRound
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 보고 회차 등록
+     */
 //    @ApiOperation(value = "보고 회차 등록") // Swagger
     @Transactional
-    @PostMapping(value ="/reports/routines")
+    @PostMapping(value = "/reports/routines")
     public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
 
         log.info("[ReportController] registerReportRound");
@@ -111,14 +111,14 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : updateReport
-    	* @Date : 2023-03-23
-    	* @Writer : 김수용
-    	* @Description : 보고 수정
-    */
+     * @MethodName : updateReport
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 보고 수정
+     */
     //    @ApiOperation(value = "보고 수정") // Swagger
     @Transactional
-    @PutMapping(value ="/reports")
+    @PutMapping(value = "/reports")
     public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
 
         log.info("[ReportController] updateReport");
@@ -142,13 +142,13 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : selectRoutineReportList
-    	* @Date : 2023-03-24
-    	* @Writer : 김수용
-    	* @Description : 정기보고 목록 조회
-    */
+     * @MethodName : selectRoutineReportList
+     * @Date : 2023-03-24
+     * @Writer : 김수용
+     * @Description : 정기보고 목록 조회
+     */
 //    @ApiOperation(value = "정기보고 목록 조회") // Swagger
-    @GetMapping(value ="/reports/routine/active")
+    @GetMapping(value = "/reports/routine/active")
     public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
         log.info("[ReportController] selectRoutineReportList");
@@ -171,7 +171,7 @@ public class ReportController {
      * @Description : 완료된 정기보고 목록 조회
      */
 //    @ApiOperation(value = "완료된 정기보고 목록 조회") // Swagger
-    @GetMapping(value ="/reports/routine/completed")
+    @GetMapping(value = "/reports/routine/completed")
     public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
         log.info("[ReportController] selectCompletedRoutineReportList");
@@ -194,7 +194,7 @@ public class ReportController {
      * @Description : 비정기보고 목록 조회
      */
 //    @ApiOperation(value = "비정기보고 목록 조회") // Swagger
-    @GetMapping(value ="/reports/casual/active")
+    @GetMapping(value = "/reports/casual/active")
     public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request, @RequestParam int offset) {
 
         log.info("[ReportController] selectCasualReportList");
@@ -217,7 +217,7 @@ public class ReportController {
      * @Description : 완료된 비정기보고 목록 조회
      */
 //    @ApiOperation(value = "완료된 비정기보고 목록 조회") // Swagger
-    @GetMapping(value ="/reports/casual/completed")
+    @GetMapping(value = "/reports/casual/completed")
     public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request, @RequestParam int offset) {
 
         log.info("[ReportController] selectCompletedCasualReportList");
@@ -231,5 +231,16 @@ public class ReportController {
         log.info("[ReportController] searchConditions : " + searchConditions);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+    }
+
+    //    @ApiOperation(value = "정기보고 회차 목록 조회") // Swagger
+    @GetMapping(value = "/reports/routine/{reportCode}/rounds")
+    public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request, @PathVariable Long reportCode, @RequestParam int offset) {
+
+        log.info("[ReportController] selectReportRoundListByReportCode");
+        log.info("[ReportController] reportCode : " + reportCode);
+        log.info("[ReportController] offset : " + offset);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 목록 조회 성공", reportService.selectReportRoundListByReportCode(reportCode, offset)));
     }
 }

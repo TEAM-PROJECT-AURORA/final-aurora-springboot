@@ -27,7 +27,7 @@ public interface ReportMapper {
 
     List<Long> selectThreeReportCodesByMemberCode(int memberCode); // 최근 정기보고 3개
 
-    List<ReportRoundDTO> selectReportRoundListByReportCode(Long reportCode); // 정기보고 회차 목록 조회 - 메인 페이지 요약 출력
+    List<ReportRoundDTO> selectReportRoundSummaryListByReportCode(Long reportCode); // 정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력
 
     List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 10개 조회
 
@@ -35,7 +35,13 @@ public interface ReportMapper {
 
     int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
 
+    List<ReportRoundDTO> selectReportRoundList(int memberCode); // 보고 회차 목록 조회
+
     int updateReport(ReportDTO reportDTO); // 보고 수정
 
     int deleteReporter(Long reportCode); // 보고자 삭제
+
+    int getReportRoundCount(Long reportCode); // 보고 회차 갯수 조회
+
+    List<ReportRoundDTO> selectReportRoundListByReportCode(SelectCriteria selectCriteria); // 보고 회차 목록 조회
 }

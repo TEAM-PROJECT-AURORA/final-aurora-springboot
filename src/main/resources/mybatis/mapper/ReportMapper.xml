@@ -52,8 +52,8 @@
          ORDER BY REPORT_CODE DESC
          LIMIT 3
     </select>
-    <!--정기보고 회차 목록 조회 - 메인 페이지 요약 출력-->
-    <select id="selectReportRoundListByReportCode" parameterType="Long" resultType="ReportRoundDTO">
+    <!--정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력-->
+    <select id="selectReportRoundSummaryListByReportCode" parameterType="Long" resultType="ReportRoundDTO">
         SELECT ROUND_CODE,
                REPORT_CODE,
                ROUND_TITLE,
@@ -108,6 +108,30 @@
         DELETE FROM TBL_REPORTER
          WHERE REPORT_CODE = #{ reportCode };
     </delete>
+    <!--보고 회차 갯수 조회-->
+    <select id="getReportRoundCount" parameterType="Long" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_REPORT_ROUND
+        WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--정기보고 회차 목록 조회-->
+    <select id="selectReportRoundListByReportCode" parameterType="SelectCriteria" resultType="ReportRoundDTO">
+        SELECT ROUND_CODE,
+               REPORT_CODE,
+               ROUND_TITLE,
+               ROUND_BODY,
+               REG_DATE,
+               CAPACITY
+        FROM TBL_REPORT_ROUND
+        WHERE REPORT_CODE = #{ searchCondition }
+        ORDER BY REPORT_CODE DESC
+        LIMIT #{ startRow }, #{ limit }
+    </select>
+
+
+
+
+
     <!--보고 읽음-->
     <update id="readReport" parameterType="Long">
         UPDATE TBL_REPORT

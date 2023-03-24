@@ -154,7 +154,7 @@ public class ReportMapperTest {
         // when
         for(int i = 0; i < reportCodeList.size(); i++) {
 
-            List<ReportRoundDTO> result = reportMapper.selectReportRoundListByReportCode(reportCodeList.get(i));
+            List<ReportRoundDTO> result = reportMapper.selectReportRoundSummaryListByReportCode(reportCodeList.get(i));
             String resultName = "result" + (i + 1);
             resultMap.put(resultName, result);
         }
@@ -236,8 +236,9 @@ public class ReportMapperTest {
 
 
     @Test
-    @Transactional
-    @Rollback(false)
+//    @Transactional
+//    @Rollback(false)
+    @Rollback
     void 보고자_삭제_맵퍼_테스트() {
 
         // given
@@ -248,6 +249,40 @@ public class ReportMapperTest {
 
         // then
         assertNotEquals(0, result);
+    }
+
+    @Test
+    void 보고_회차_갯수_조회() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        int result = reportMapper.getReportRoundCount(reportCode);
+
+        // then
+        assertNotEquals(0, result);
+    }
+
+    @Test
+    void 보고_회차_목록_조회_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        int offset = 1;
+        int totalCount = 1;
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(String.valueOf(reportCode));
+
+        // when
+        List<ReportRoundDTO> result = reportMapper.selectReportRoundListByReportCode(selectCriteria);
+
+        // then
+        assertNotNull(result);
     }
 
 }
