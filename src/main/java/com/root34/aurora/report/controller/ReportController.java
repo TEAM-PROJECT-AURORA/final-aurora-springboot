@@ -2,6 +2,7 @@ package com.root34.aurora.report.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root34.aurora.common.ResponseDTO;
+import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import com.root34.aurora.report.service.ReportService;
@@ -69,7 +70,6 @@ public class ReportController {
     	* @Description : 전체 보고 조회 - 보고 메인 페이지용
     */
 //    @ApiOperation(value = "전체 보고 조회") // Swagger
-    @Transactional
     @GetMapping(value ="/reports")
     public ResponseEntity<ResponseDTO> getAllReportList(HttpServletRequest request) {
 
@@ -124,6 +124,7 @@ public class ReportController {
 
         log.info("[ReportController] updateReport");
         List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+
         if(memberList.size() == 0) {
             return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
         }
@@ -139,6 +140,36 @@ public class ReportController {
         return reportService.updateReport(reportDTO, memberList)?
                 ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공", true))
                 : ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고 수정 실패!", false));
+    }
+
+    /**
+    	* @MethodName : selectRoutineReportList
+    	* @Date : 2023-03-24
+    	* @Writer : 김수용
+    	* @Description : 정기보고 목록 조회
+    */
+//    @ApiOperation(value = "정기보고 목록 조회") // Swagger
+    @GetMapping(value ="/reports/routine/active")
+    public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
+
+        log.info("[ReportController] selectRoutineReportList");
+        log.info("[ReportController] offset : " + offset);
+
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        searchConditions.put("memberCode", memberCode);
+        searchConditions.put("reportType", "Routine");
+        searchConditions.put("completionStatus", 'N');
+
+        log.info("[ReportController] searchConditions : " + searchConditions);
+
+        ResponseDTOWithPaging result = reportService.selectReportListByConditions(offset, searchConditions);
+        log.info("[ReportController] result : " + result);
+
+//        List<ReportDTO> reportList = reportService.selectReportListByConditions(offset, searchConditions);
+//        log.info("[ReportController] reportList : " + reportList);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공", result));
     }
 
 }

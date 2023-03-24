@@ -229,9 +229,31 @@ public class ReportServiceTest {
         assertNotEquals(0, result2);
         assertNotEquals(0, count);
     }
-}
 
-//
-//        // then
-//        assertEquals(1, result);
-//        assertEquals(memberList.size(), count);
+    @Test
+    void 조건별_보고_목록_조회() {
+
+        // given
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        searchConditions.put("memberCode", MEMBER_CODE);
+        searchConditions.put("reportType", "Routine");
+        searchConditions.put("completionStatus", COMPLETION_STATUS);
+//        searchConditions.put("completionStatus", null);
+
+        String offset = "1";
+
+        int totalCount = reportMapper.getReportCount(searchConditions);
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+
+        selectCriteria.setSearchConditions(searchConditions);
+
+        // when
+        List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
+
+        // then
+        assertNotNull(reportList);
+    }
+}

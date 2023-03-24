@@ -1,5 +1,8 @@
 package com.root34.aurora.report.service;
 
+import com.root34.aurora.common.paging.Pagenation;
+import com.root34.aurora.common.paging.ResponseDTOWithPaging;
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
@@ -151,5 +154,37 @@ public class ReportService {
         log.info("[ReportService] count : " + count);
 
         return updateResult > 0 && deleteResult > 0 && count > 0;
+    }
+
+    /**
+    	* @MethodName : selectReportListByConditions
+    	* @Date : 2023-03-24
+    	* @Writer : 김수용
+    	* @Description : 조건별 보고 목록 조회
+    */
+    public ResponseDTOWithPaging selectReportListByConditions(int offset, HashMap<String, Object> searchConditions) {
+
+        log.info("[ReportService] selectReportListByConditions");
+        int totalCount = reportMapper.getReportCount(searchConditions);
+        log.info("[ReportService] totalCount : " + totalCount);
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria searchCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        log.info("[ReportService] searchCriteria : " + searchCriteria);
+        searchCriteria.setSearchConditions(searchConditions);
+
+        List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(searchCriteria);
+        log.info("[ReportService] reportList : " + reportList);
+
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(searchCriteria);
+        responseDTOWithPaging.setData(reportList);
+
+//        if(reportList.isEmpty())) {
+//            return new Exception
+//        }
+
+        return responseDTOWithPaging;
     }
 }
