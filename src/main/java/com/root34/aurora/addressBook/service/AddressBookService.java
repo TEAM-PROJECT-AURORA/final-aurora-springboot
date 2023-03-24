@@ -122,10 +122,10 @@ public class AddressBookService {
     }
 
     @Transactional
-    public String deleteAddress(String addbookNo) {
+    public String deleteAddress(String[] addBookNos) {
 
         log.info("[addressBookService] deleteAddress Start ===================================");
-        int result = addressBookMapper.deleteAddress(addbookNo);
+        int result = addressBookMapper.deleteAddress(addBookNos);
 
         log.info("[addressBookService] deleteAddress End ===================================");
         return (result > 0)? "주소록 삭제 성공" : "주소록 삭제 실패";

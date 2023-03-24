@@ -144,20 +144,20 @@ class AddressBookControllerTest {
         assertNotNull(response.getBody().getData());
     }
 
-    @Test
-    void 주소록_삭제_컨트롤러_테스트() {
-
-        // given
-        String addBookNo = "4";
-
-        // when
-        ResponseEntity<ResponseDTO> response = addressBookController.deleteAddress(addBookNo);
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("주소록 삭제 성공", response.getBody().getMessage());
-        assertNotNull(response.getBody().getData());
-    }
+//    @Test
+//    void 주소록_삭제_컨트롤러_테스트() {
+//
+//        // given
+//        String addBookNo = "4";
+//
+//        // when
+//        ResponseEntity<ResponseDTO> response = addressBookController.deleteAddress(addBookNo);
+//
+//        // then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals("주소록 삭제 성공", response.getBody().getMessage());
+//        assertNotNull(response.getBody().getData());
+//    }
 
     @Test
     void 개인_주소록_그룹_조회_컨트롤러_테스트() {

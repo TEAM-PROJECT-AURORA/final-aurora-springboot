@@ -10,6 +10,7 @@
     </select>
     <select id="selectAllMemberAddresses" parameterType="selectCriteria" resultType="addressBookDTO">
         SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
             A.MEMBER_NAME AS NAME,
             A.PHONE,
             A.MEMBER_EMAIL AS EMAIL,
@@ -117,7 +118,10 @@
     </update>
     <delete id="deleteAddress" parameterType="String">
         DELETE FROM TBL_ADDRESS_BOOK
-         WHERE ADDBOOK_NO = #{ addBookNo }
+         WHERE ADDBOOK_NO IN
+        <foreach collection=" addBookNos " item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </delete>
     <select id="selectPersonalGroups" parameterType="_int" resultType="addressGroupDTO">
         SELECT

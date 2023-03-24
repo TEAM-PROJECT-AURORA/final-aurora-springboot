@@ -8,6 +8,7 @@ import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -170,12 +171,15 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 주소록 삭제
     */
-    @DeleteMapping("/address-book/{addBookNo}")
-    public ResponseEntity<ResponseDTO> deleteAddress(@PathVariable String addBookNo) {
+    @DeleteMapping("/address-book/groups")
+    public ResponseEntity<ResponseDTO> deleteAddress(@RequestBody JSONObject object) {
 
-        log.info("[AddressBookController] deleteAddress : " + addBookNo);
+        String objectAsString = object.getAsString("addBookNos");
+        String[] addBookNos = objectAsString.substring(1, objectAsString.length()-1).split(", ");
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 삭제 성공", addressBookService.deleteAddress(addBookNo)));
+        log.info("[AddressBookController] deleteAddress : " + addBookNos);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 삭제 성공", addressBookService.deleteAddress(addBookNos)));
     }
 
     /**

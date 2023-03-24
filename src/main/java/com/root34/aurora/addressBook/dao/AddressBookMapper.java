@@ -38,7 +38,7 @@ public interface AddressBookMapper {
 
 	int updateAddress(Map map);
 
-	int deleteAddress(String addBookNo);
+	int deleteAddress(String[] addBookNos);
 
 	List<AddressGroupDTO> selectPersonalGroups(int memberCode);
 
