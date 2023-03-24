@@ -14,17 +14,27 @@ import java.sql.Date;
 public class ReportRoundDTO {
 
     /**
-     * @param roundCode 보고 회차 코드
-     * @param reportCode 보고 코드
-     * @param roundTitle 보고 회차 제목
-     * @param roundBody 보고 회차 내용
-     * @param regDate 보고 회차 등록일
-     * @param capacity 보고 정원
+     * @variable roundCode 보고 회차 코드
      */
     private long roundCode;
+    /**
+     * @variable reportCode 보고 코드
+     */
     private long reportCode;
+    /**
+     * @variable roundTitle 보고 회차 제목
+     */
     private String roundTitle;
+    /**
+     * @variable roundBody 보고 회차 내용
+     */
     private String roundBody;
+    /**
+     * @variable regDate 보고 회차 등록일
+     */
     private Date regDate;
+    /**
+     * @variable capacity 보고 정원
+     */
     private int capacity;
 }

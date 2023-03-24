@@ -12,23 +12,39 @@ import lombok.Data;
 public class ReportDTO {
 
     /**
-     * @param id insert후 생성된 PK값을 담을 변수
-     * @param reportCode 보고 코드
-     * @param memberCode 멤버 코드
-     * @param reportType 보고 유형
-     * @param reportTitle 보고 제목
-     * @param reportInfo 보고 정보
-     * @param reportCycle 보고 주기
-     * @param readStatus 읽음 상태
-     * @param completionStatus 완료 상태
+     * @variable id insert후 생성된 PK값을 담을 변수
      */
     private int id;
+    /**
+     * @variable reportCode 보고 코드
+     */
     private long reportCode;
+    /**
+     * @variable memberCode 멤버 코드
+     */
     private long memberCode;
+    /**
+     * @variable reportType 보고 유형
+     */
     private String reportType;
+    /**
+     * @variable reportTitle 보고 제목
+     */
     private String reportTitle;
+    /**
+     * @variable reportInfo 보고 정보
+     */
     private String reportInfo;
+    /**
+     * @variable reportCycle 보고 주기
+     */
     private String reportCycle;
+    /**
+     * @variable readStatus 읽음 상태
+     */
     private char readStatus;
+    /**
+     * @variable completionStatus 완료 상태
+     */
     private char completionStatus;
 }
