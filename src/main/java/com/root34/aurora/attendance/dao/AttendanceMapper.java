@@ -17,4 +17,8 @@ public interface AttendanceMapper {
 	Map getAttendance(int memberCode);
 
 	void insertWorkTime(LocalDateTime workTime, int memberCode);
+
+	void insertOffTime(LocalDateTime offTime, int memberCode);
+
+	Map selectTime(int memberCode);
 }

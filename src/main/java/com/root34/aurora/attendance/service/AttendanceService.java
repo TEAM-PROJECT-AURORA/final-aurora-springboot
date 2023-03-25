@@ -23,7 +23,7 @@ public class AttendanceService {
     private final AttendanceMapper attendanceMapper;
 
 	/**
-		@ClassName : AttendanceService
+	    @MethodName : getAttendance
 		@Date : 2023-03-23
 		@Writer : 정근호
 		@Description :
@@ -46,12 +46,47 @@ public class AttendanceService {
 
 	}
 
+	public Map selectTime(int memberCode) {
 
+		Map selectTime = attendanceMapper.selectTime(memberCode);
+		log.info("[memberCode]   :" + memberCode );
+
+		log.info("[count]   :" + selectTime );
+
+		return selectTime;
+
+
+	}
+
+	/**
+	    @MethodName : insertWorkTime
+		@Date : 2023-03-23
+		@Writer : 정근호
+		@Description :
+	*/
 	public void insertWorkTime(int memberCode) {
 
+		log.info("[AttendanceService] insertWorkTime Start ===================");
 		LocalDateTime workTime = LocalDateTime.now();
 		attendanceMapper.insertWorkTime(workTime ,memberCode);
+		log.info("[AttendanceService] insertWorkTime End ===================");
 	}
+
+	/**
+		@MethodName : insertOffTime
+		@Date : 2023-03-24
+		@Writer : 정근호
+		@Description :
+	*/
+	public void insertOffTime(int memberCode) {
+
+		log.info("[AttendanceService] insertOffTime Start ===================");
+		LocalDateTime offTime = LocalDateTime.now();
+		attendanceMapper.insertOffTime(offTime, memberCode);
+		log.info("[AttendanceService] insertOffTime End ===================");
+	}
+
+
 
 
 

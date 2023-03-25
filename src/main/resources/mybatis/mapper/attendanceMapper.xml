@@ -26,8 +26,8 @@
 
     <insert id="insertWorkTime" parameterType="attendanceDTO">
         INSERT INTO TBL_ATTENDANCE (member_code, work_time, work_status, tardy)
-        VALUES (#{memberCode}, #{workTime, jdbcType=TIMESTAMP}, '근무', IF(TIME(#{workTime, jdbcType=TIMESTAMP}) > '20:30:00', 'Y', 'N'))
-            ON DUPLICATE KEY UPDATE tardy = IF(TIME(VALUES(work_time)) > '20:30:00', 'Y', tardy);
+        VALUES (#{memberCode}, #{workTime, jdbcType=TIMESTAMP}, '근무', IF(TIME(#{workTime, jdbcType=TIMESTAMP}) > '22:30:00', 'Y', 'N'))
+--             ON DUPLICATE KEY UPDATE tardy = IF(TIME(VALUES(work_time)) > '20:30:00', 'Y', tardy);
     </insert>
 
 <!--        <update id="insertWorkTime" parameterType="attendanceDTO">-->
@@ -42,9 +42,42 @@
 
 <!--        </update>-->
 
+<!--    <update id="insertOffTime" parameterType="attendanceDTO">-->
+<!--        UPDATE TBL_ATTENDANCE-->
+<!--           SET-->
+<!--               OFF_TIME = #{ offTime, jdbcType=TIMESTAMP },-->
+<!--               WORK_STATUS = '퇴근'-->
+<!--         WHERE (MEMBER_CODE , ATT_CODE) IN (-->
+<!--               SELECT MEMBER_CODE , MAX(ATT_CODE)-->
+<!--               FROM TBL_ATTENDANCE-->
+<!--               WHERE MEMBER_CODE = #{ memberCode }-->
+<!--               GROUP BY MEMBER_CODE-->
+<!--               )-->
+<!--    </update>-->
 
-
-
+    <select id="selectTime" resultType="hashmap">
+    <![CDATA[
+        SELECT
+               MEMBER_CODE,
+               SUM(worked_minutes) AS total_worked_minutes,
+               SUM(IF(worked_minutes > (9 * 60), worked_minutes - (9 * 60), 0)) AS extra_worked_minutes,
+               SUM(IF(worked_minutes < (9 * 60), (9 * 60) - worked_minutes, 0)) AS remaining_minutes,
+               SUM(IF(work_week = YEARWEEK(CURDATE(), 1), worked_minutes, 0)) AS worked_minutes_this_week,
+               SUM(IF(work_month = MONTH(CURDATE()) AND work_year = YEAR(CURDATE()), worked_minutes, 0)) AS worked_minutes_this_month
+          FROM (
+                 SELECT
+                        MEMBER_CODE,
+                        DATE(OFF_TIME) AS work_date,
+                        TIMESTAMPDIFF(MINUTE, WORK_TIME, OFF_TIME) AS worked_minutes,
+                        MONTH(OFF_TIME) AS work_month,
+                        YEAR(OFF_TIME) AS work_year,
+                        YEARWEEK(OFF_TIME, 1) AS work_week
+                   FROM TBL_ATTENDANCE
+         WHERE (YEARWEEK(OFF_TIME, 1) = YEARWEEK(CURDATE(), 1)) OR (MONTH(OFF_TIME) = MONTH(CURDATE()) AND YEAR(OFF_TIME) = YEAR(CURDATE()))
+            ) AS daily_worked_minutes
+      GROUP BY MEMBER_CODE;
+        ]]>
+</select>
 
 
 

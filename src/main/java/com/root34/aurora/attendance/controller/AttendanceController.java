@@ -36,6 +36,12 @@ public class AttendanceController {
 
 	}
 
+	/**
+	 @MethodName : insertWorkTime
+	 @Date : 2023-03-23
+	 @Writer : 정근호
+	 @Description :
+	 */
 	@PostMapping("/attendance/{memberCode}")
 	public ResponseEntity<ResponseDTO> insertWorkTime(@PathVariable int memberCode) {
 
@@ -43,6 +49,26 @@ public class AttendanceController {
 
 		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.getAttendance(memberCode)));
 	}
+
+	@PutMapping("/attendance/{memberCode}")
+	public ResponseEntity<ResponseDTO> insertOffTime(@PathVariable int memberCode) {
+
+		attendanceService.insertOffTime(memberCode);
+
+		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.getAttendance(memberCode)));
+
+	}
+
+	@GetMapping("/attendance/time/{memberCode}")
+	public ResponseEntity<ResponseDTO> selectTime(@PathVariable int memberCode) {
+
+		attendanceService.selectTime(memberCode);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.selectTime(memberCode)));
+
+	}
+
+
 
 
 
