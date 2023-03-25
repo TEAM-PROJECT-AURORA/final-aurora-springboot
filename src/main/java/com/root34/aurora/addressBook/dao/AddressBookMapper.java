@@ -43,4 +43,8 @@ public interface AddressBookMapper {
 	List<AddressGroupDTO> selectPersonalGroups(int memberCode);
 
 	List<AddressGroupDTO> selectTeamGroups(int memberCode);
+
+	int selectTotalMembersSearch(Map map);
+
+	List<AddressBookDTO> selectMembersWithSearch(SelectCriteria selectCriteria);
 }

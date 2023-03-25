@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class AddressBookController {
 
         log.info("[AddressBookController] selectAllMemberAddressesByDeptWithPaging : " + offset);
         int totalCount = addressBookService.selectTotalMemberAddressesByDept(deptCode);
-        int limit = 15;
+        int limit = 20;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
@@ -208,5 +209,37 @@ public class AddressBookController {
         log.info("[AddressBookController] selectTeamGroups : " + memberCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "팀 그룹 조회 성공", addressBookService.selectTeamGroups(memberCode)));
+    }
+
+    /**
+    	* @MethodName : selectMembersWithSearch
+    	* @Date : 2023-03-25
+    	* @Writer : 오승재
+    	* @Description : 검색으로 사원 주소록 조회
+    */
+    @GetMapping("address-book/search")
+    public ResponseEntity<ResponseDTO> selectMembersWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue) {
+
+        log.info("[AddressBookController] selectMembersWithSearch : " + searchCondition + searchValue);
+
+        Map map = new HashMap();
+        map.put("searchCondition", searchCondition);
+        map.put("searchValue", searchValue);
+
+        int totalCount = addressBookService.selectTotalMembersSearch(map);
+        int limit = 20;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(searchCondition);
+        selectCriteria.setSearchValue(searchValue);
+
+        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+
+        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
+        responseDtoWithPaging.setPageInfo(selectCriteria);
+        responseDtoWithPaging.setData(addressBookService.selectMembersWithSearch(selectCriteria));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
     }
 }

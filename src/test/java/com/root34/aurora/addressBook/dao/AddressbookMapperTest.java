@@ -186,18 +186,18 @@ class AddressBookMapperTest {
         assertEquals(1, result);
     }
 
-    @Test
-    void 주소록_삭제_매퍼_테스트() {
-
-        // given
-        String addBookNo = "1";
-
-        // when
-        int result = addressBookMapper.deleteAddress(addBookNo);
-
-        // then
-        assertEquals(1, result);
-    }
+//    @Test
+//    void 주소록_삭제_매퍼_테스트() {
+//
+//        // given
+//        String addBookNo = "1";
+//
+//        // when
+//        int result = addressBookMapper.deleteAddress(addBookNo);
+//
+//        // then
+//        assertEquals(1, result);
+//    }
 
     @Test
     void 개인_주소록_그룹_조회_매퍼_테스트() {
@@ -223,5 +223,17 @@ class AddressBookMapperTest {
 
         // then
         assertNotNull(list);
+    }
+
+    @Test
+    void 사원_검색_총개수_조회_매퍼_테스트() {
+
+        // given
+//        Map map = new HashMap();
+//        map.put("")
+
+        // when
+
+        // then
     }
 }

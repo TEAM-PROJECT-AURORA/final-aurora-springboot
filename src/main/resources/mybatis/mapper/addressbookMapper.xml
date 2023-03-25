@@ -14,12 +14,14 @@
             A.MEMBER_NAME AS NAME,
             A.PHONE,
             A.MEMBER_EMAIL AS EMAIL,
-            '우리 회사' AS COMPANY,
+            C.JOB_NAME AS COMPANY,
             B.DEPT_NAME AS DEPARTMENT,
-            A.PHONE AS COM_PHONE
+            IF(A.TEAM, '', '대기중') AS COM_PHONE
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
          LIMIT #{ startRow }, #{ limit }
     </select>
     <select id="selectTotalMemberAddressesByDept" resultType="_int">
@@ -30,15 +32,18 @@
     </select>
     <select id="selectAllMemberAddressesByDept" parameterType="map" resultType="addressBookDTO">
         SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
             A.MEMBER_NAME AS NAME,
             A.PHONE,
             A.MEMBER_EMAIL AS EMAIL,
-            '우리 회사' AS COMPANY,
+            C.JOB_NAME AS COMPANY,
             B.DEPT_NAME AS DEPARTMENT,
-            A.PHONE AS COM_PHONE
+            IF(A.TEAM, '', '대기중') AS COM_PHONE
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
          WHERE A.DEPT_CODE = #{ deptCode }
          LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
@@ -139,5 +144,47 @@
                            TEAM
                          FROM TBL_MEMBER
                         WHERE MEMBER_CODE = #{ memberCode })
+    </select>
+    <select id="selectTotalMembersSearch" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         WHERE 1 = 1
+        <if test="searchCondition == 'name'">
+           AND A.MEMBER_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND B.DEPT_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND A.MEMBER_EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+    </select>
+    <select id="selectMembersWithSearch" parameterType="selectCriteria" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            C.JOB_NAME AS COMPANY,
+            B.DEPT_NAME AS DEPARTMENT,
+            IF(A.TEAM, '', '대기중') AS COM_PHONE
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
+        <if test="searchCondition == 'name'">
+           AND A.MEMBER_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND B.DEPT_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND A.MEMBER_EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+         LIMIT #{ startRow }, #{ limit }
     </select>
 </mapper>

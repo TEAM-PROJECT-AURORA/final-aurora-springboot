@@ -150,4 +150,24 @@ public class AddressBookService {
 
         return list;
     }
+
+    public int selectTotalMembersSearch(Map map) {
+
+        log.info("[addressBookService] selectTotalMembersSearch Start ===================================");
+        int totalNum = addressBookMapper.selectTotalMembersSearch(map);
+
+        log.info("[addressBookService] selectTotalMembersSearch End ===================================");
+
+        return totalNum;
+    }
+
+    public List<AddressBookDTO> selectMembersWithSearch(SelectCriteria selectCriteria) {
+
+        log.info("[addressBookService] selectMembersWithSearch Start ===================================");
+        List<AddressBookDTO> list = addressBookMapper.selectMembersWithSearch(selectCriteria);
+
+        log.info("[addressBookService] selectMembersWithSearch End ===================================");
+
+        return list;
+    }
 }
