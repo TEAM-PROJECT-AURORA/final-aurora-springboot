@@ -17,4 +17,6 @@ public interface VacationMapper {
     Map selectVacation(int memberCode);
 
 	Map selectUsedVacation(int memberCode);
+
+	void updateRemainVacation(int memberCode , int vacationNo);
 }

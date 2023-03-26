@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
 	@ClassName : VacationController
@@ -37,4 +34,11 @@ public class VacationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" ,vacationService.selectUsedVacation(memberCode)));
 	}
 
+	@PutMapping("/vacation/remain/{memberCode}/{vacationNo}")
+	public ResponseEntity<ResponseDTO> updateRemainVacation(@PathVariable int memberCode , @PathVariable int vacationNo ) {
+
+		vacationService.updateRemainVacation(memberCode , vacationNo);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정", vacationService.selectVacation(memberCode)));
+	}
 }

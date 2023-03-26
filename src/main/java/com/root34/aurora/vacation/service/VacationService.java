@@ -22,7 +22,7 @@ public class VacationService {
 
     public Map selectVacation(int memberCode) {
 
-        log.info("[AttendanceService] selectVacation Start ===================");
+        log.info("[VacationService] selectVacation Start ===================");
         log.info("[memberCode]   :" + memberCode );
         Map count = vacationMapper.selectVacation(memberCode);
         log.info("[count]   :"   + count);
@@ -33,7 +33,7 @@ public class VacationService {
 
     public Map selectUsedVacation(int memberCode) {
 
-        log.info("[AttendanceService] selectUsedVacation Start ===================");
+        log.info("[VacationService] selectUsedVacation Start ===================");
         log.info("[memberCode]   :" + memberCode);
         Map count = vacationMapper.selectUsedVacation(memberCode);
         log.info("[count]   :" + count);
@@ -42,6 +42,14 @@ public class VacationService {
         return count;
     }
 
+    public void updateRemainVacation(int memberCode, int vacationNo ) {
+
+        log.info("[VacationService] updateRemainVacation Start ===================");
+        log.info("[memberCode]   :" + memberCode);
+        log.info("[vacationCode]   :" + vacationNo);
+        vacationMapper.updateRemainVacation(memberCode, vacationNo);
+        log.info("[VacationService] updateRemainVacation End ==============================");
+    }
 
 
 }

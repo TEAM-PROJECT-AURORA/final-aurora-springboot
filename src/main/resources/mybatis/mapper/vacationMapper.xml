@@ -10,6 +10,7 @@
 
           FROM TBL_VACATION
          WHERE MEMBER_CODE = #{ memberCode }
+           AND VACATION_NO = #{ vacationNo }
 
     </select>
 
@@ -20,20 +21,24 @@
         FROM TBL_USED_VACATION A
         JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
        WHERE B.MEMBER_CODE = #{ memberCode }
+
     </select>
 
-<!--    UPDATE TBL_MEMBER-->
-<!--    SET REMAIN_VACATION = REMAIN_VACATION - (-->
-<!--    SELECT-->
-<!--    SUM(IF(U.IS_HALF_DAY, 0.5, DATEDIFF(V.VACATION_END_DATE, V.VACATION_START_DATE) + 1))-->
-<!--    FROM-->
-<!--    TBL_USED_VACATION U-->
-<!--    JOIN TBL_VACATION V ON U.VACATION_NO = V.VACATION_NO-->
-<!--    WHERE-->
-<!--    U.MEMBER_CODE = TBL_MEMBER.MEMBER_CODE-->
-<!--    )-->
-<!--    WHERE MEMBER_CODE = -->
+    <update id="updateRemainVacation" parameterType="vacationDTO">
+
+        UPDATE TBL_VACATION B
+        SET REMAIN_VACATION = REMAIN_VACATION - (
+            SELECT
+                SUM(IF(A.IS_HALF_DAY, 0.5, DATEDIFF(A.VACATION_END_DATE, A.VACATION_START_DATE) + 1))
+            FROM
+                TBL_USED_VACATION A
+            WHERE
+                A.VACATION_NO = B.VACATION_NO
+        )
+        WHERE MEMBER_CODE = #{ memberCode }
+          AND VACATION_NO = #{ vacationNo }
 
 
+    </update>
 
 </mapper>

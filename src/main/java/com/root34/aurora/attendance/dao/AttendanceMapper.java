@@ -23,4 +23,5 @@ public interface AttendanceMapper {
 	Map selectTime(int memberCode);
 
 	Map selectMonthTime(int MemberCode);
+
 }
