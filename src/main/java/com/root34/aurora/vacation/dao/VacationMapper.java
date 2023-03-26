@@ -14,5 +14,7 @@ import java.util.Map;
 @Mapper
 public interface VacationMapper {
 
-    Map selectRemainVacation(int memberCode);
+    Map selectVacation(int memberCode);
+
+	Map selectUsedVacation(int memberCode);
 }

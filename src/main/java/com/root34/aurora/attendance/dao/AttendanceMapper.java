@@ -21,4 +21,6 @@ public interface AttendanceMapper {
 	void insertOffTime(LocalDateTime offTime, int memberCode);
 
 	Map selectTime(int memberCode);
+
+	Map selectMonthTime(int MemberCode);
 }

@@ -93,6 +93,26 @@
         ]]>
 </select>
 
+    <select id="selectMonthTime" resultType="hashmap">
+        SELECT
+                MEMBER_CODE,
+                SUM(worked_minutes) AS total_worked_minutes,
+                COUNT(DISTINCT work_date) AS total_work_days,
+                (SUM(worked_minutes) / COUNT(DISTINCT work_date)) AS avg_worked_minutes
+           FROM (
+                    SELECT
+                            MEMBER_CODE,
+                            DATE(OFF_TIME) AS work_date,
+                            TIMESTAMPDIFF(MINUTE, WORK_TIME, OFF_TIME) AS worked_minutes
+                      FROM  TBL_ATTENDANCE
+                     WHERE
+                            MONTH(OFF_TIME) = MONTH(CURDATE())
+                            AND YEAR(OFF_TIME) = YEAR(CURDATE())
+                     )AS daily_worked_miutes
+        GROUP BY MEMBER_CODE;
+
+
+    </select>
 
 
 

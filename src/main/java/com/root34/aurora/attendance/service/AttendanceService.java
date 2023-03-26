@@ -91,6 +91,16 @@ public class AttendanceService {
 	}
 
 
+	public Map selectMonthTime(int memberCode) {
+
+		log.info("[AttendanceService] selectMonthTime Start ===================");
+		Map selectMonthTimeTime = attendanceMapper.selectMonthTime(memberCode);
+		log.info("[memberCode]   :" + memberCode );
+		log.info("[selectMonthTimeTime]   :" + selectMonthTimeTime );
+		log.info("[AttendanceService] selectMonthTime End ===================");
+
+		return selectMonthTimeTime;
+	}
 
 
 

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.vacation.dao.VacationMapper">
 
-    <select id="selectRemainVacation" resultType="map">
+    <select id="selectVacation" resultType="hashmap">
         SELECT
                REMAIN_VACATION
 
@@ -13,8 +13,26 @@
 
     </select>
 
+    <select id="selectUsedVacation" resultType="hashmap">
+        SELECT
 
+            IF(IS_HALF_DAY, 0.5, DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) + 1) AS usedDay
+        FROM TBL_USED_VACATION A
+        JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
+       WHERE B.MEMBER_CODE = #{ memberCode }
+    </select>
 
+<!--    UPDATE TBL_MEMBER-->
+<!--    SET REMAIN_VACATION = REMAIN_VACATION - (-->
+<!--    SELECT-->
+<!--    SUM(IF(U.IS_HALF_DAY, 0.5, DATEDIFF(V.VACATION_END_DATE, V.VACATION_START_DATE) + 1))-->
+<!--    FROM-->
+<!--    TBL_USED_VACATION U-->
+<!--    JOIN TBL_VACATION V ON U.VACATION_NO = V.VACATION_NO-->
+<!--    WHERE-->
+<!--    U.MEMBER_CODE = TBL_MEMBER.MEMBER_CODE-->
+<!--    )-->
+<!--    WHERE MEMBER_CODE = -->
 
 
 

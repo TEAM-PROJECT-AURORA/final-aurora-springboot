@@ -20,13 +20,24 @@ public class VacationService {
 
     private final VacationMapper vacationMapper;
 
-    public Map selectRemainVacation(int memberCode) {
+    public Map selectVacation(int memberCode) {
 
-        log.info("[AttendanceService] getAttendance Start ===================");
+        log.info("[AttendanceService] selectVacation Start ===================");
         log.info("[memberCode]   :" + memberCode );
-        Map count = vacationMapper.selectRemainVacation(memberCode);
+        Map count = vacationMapper.selectVacation(memberCode);
         log.info("[count]   :"   + count);
-        log.info("[VacationService] selectRemainVacation End ==============================" );
+        log.info("[VacationService] selectVacation End ==============================" );
+
+        return count;
+    }
+
+    public Map selectUsedVacation(int memberCode) {
+
+        log.info("[AttendanceService] selectUsedVacation Start ===================");
+        log.info("[memberCode]   :" + memberCode);
+        Map count = vacationMapper.selectUsedVacation(memberCode);
+        log.info("[count]   :" + count);
+        log.info("[VacationService] selectUsedVacation End ==============================");
 
         return count;
     }
