@@ -297,4 +297,18 @@ public class AddressBookController {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 추가 성공", addressBookService.insertMemberToGroup(map)));
     }
+
+    /**
+    	* @MethodName : deleteGroup
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 그룹 삭제
+    */
+    @DeleteMapping("address-book/group/{groupCode}")
+    public  ResponseEntity<ResponseDTO> deleteGroup(@PathVariable String groupCode) {
+
+        log.info("[AddressBookController] deleteGroup : " + groupCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 삭제 성공", addressBookService.deleteGroup(groupCode)));
+    }
 }

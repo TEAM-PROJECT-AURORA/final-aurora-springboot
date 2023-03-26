@@ -53,4 +53,8 @@ public interface AddressBookMapper {
 	List<AddressBookDTO> selectGroupsWithSearch(Map map);
 
 	int insertMemberToGroup(Map map);
+
+	int deleteAddressInGroup(String groupCode);
+
+	int deleteGroup(String groupCode);
 }

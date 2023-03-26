@@ -238,7 +238,7 @@
             A.MEMBER_NAME,
             A.PHONE,
             A.MEMBER_EMAIL,
-            CONCAT('우리회사-', IF(A.TEAM, '', '대기중')),
+            CONCAT('우리회사-', IFNULL(NULLIF(A.TEAM, ''), '대기중')),
             B.DEPT_NAME,
             C.JOB_NAME
           FROM TBL_MEMBER A
@@ -251,4 +251,12 @@
                #{ item }
         </foreach>
     </insert>
+    <delete id="deleteAddressInGroup" parameterType="String">
+        DELETE FROM TBL_ADDRESS_BOOK
+         WHERE GROUP_CODE = #{ groupCode }
+    </delete>
+    <delete id="deleteGroup" parameterType="String">
+        DELETE FROM TBL_ADDRESS_GROUP
+         WHERE GROUP_CODE = #{ groupCode }
+    </delete>
 </mapper>

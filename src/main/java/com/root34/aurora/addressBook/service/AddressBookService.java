@@ -200,4 +200,18 @@ public class AddressBookService {
 
         return result > 0? "추가 성공" : "추가 실패";
     }
+
+    public String deleteGroup(String groupCode) {
+
+        log.info("[addressBookService] deleteGroup Start ===================================");
+        int result1 = addressBookMapper.deleteAddressInGroup(groupCode);
+
+        log.info("[addressBookService] deleteAddressInGroup result1 : " + result1);
+
+        int result2 = addressBookMapper.deleteGroup(groupCode);
+
+        log.info("[addressBookService] deleteGroup End ===================================");
+
+        return result2 > 0? "삭제 성공" : "삭제 실패";
+    }
 }
