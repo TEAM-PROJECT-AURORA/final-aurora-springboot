@@ -52,7 +52,7 @@ public class AddressBookDTO {
     */
     private String department;
     /**
-    	* @variable 회사 전화 
+    	* @variable 직급
     */
-    private String comPhone;
+    private String jobName;
 }

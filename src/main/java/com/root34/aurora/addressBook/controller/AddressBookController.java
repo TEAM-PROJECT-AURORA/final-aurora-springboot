@@ -176,7 +176,7 @@ public class AddressBookController {
     public ResponseEntity<ResponseDTO> deleteAddress(@RequestBody JSONObject object) {
 
         String objectAsString = object.getAsString("addBookNos");
-        String[] addBookNos = objectAsString.substring(1, objectAsString.length()-1).split(", ");
+        String[] addBookNos = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
 
         log.info("[AddressBookController] deleteAddress : " + addBookNos);
 
@@ -241,5 +241,60 @@ public class AddressBookController {
         responseDtoWithPaging.setData(addressBookService.selectMembersWithSearch(selectCriteria));
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
+    }
+
+    /**
+    	* @MethodName : selectGroupsWithSearch
+    	* @Date : 2023-03-26
+    	* @Writer : 오승재
+    	* @Description : 검색으로 그룹 주소록 조회
+    */
+    @GetMapping("address-book/groups/{groupCode}/search")
+    public ResponseEntity<ResponseDTO> selectGroupsWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue, @PathVariable String groupCode) {
+
+        log.info("[AddressBookController] selectGroupsWithSearch : " + searchCondition + searchValue + groupCode);
+
+        Map map = new HashMap();
+        map.put("searchCondition", searchCondition);
+        map.put("searchValue", searchValue);
+        map.put("groupCode", groupCode);
+
+        int totalCount = addressBookService.selectTotalGroupsWithSearch(map);
+        int limit = 20;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(searchCondition);
+        selectCriteria.setSearchValue(searchValue);
+        map.put("selectCriteria", selectCriteria);
+
+        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+
+        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
+        responseDtoWithPaging.setPageInfo(selectCriteria);
+        responseDtoWithPaging.setData(addressBookService.selectGroupsWithSearch(map));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
+    }
+
+    /**
+    	* @MethodName : insertMemberToGroup
+    	* @Date : 2023-03-26
+    	* @Writer : 오승재
+    	* @Description : 사원 주소록 주소록 그룹에 추가
+    */
+    @PostMapping("address-book/member-to-group")
+    public ResponseEntity<ResponseDTO> insertMemberToGroup(@RequestBody JSONObject object) {
+
+        log.info("[AddressBookController] insertMemberToGroup : " + object);
+        String groupCode = (String) object.get("groupCode");
+        String objectAsString = object.getAsString("memberCodes");
+        String[] memberCodes = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+        Map map = new HashMap();
+        map.put("groupCode", groupCode);
+        map.put("memberCodes", memberCodes);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 추가 성공", addressBookService.insertMemberToGroup(map)));
     }
 }

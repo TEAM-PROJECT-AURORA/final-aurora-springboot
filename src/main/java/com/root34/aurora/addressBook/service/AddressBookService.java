@@ -161,6 +161,26 @@ public class AddressBookService {
         return totalNum;
     }
 
+    public int selectTotalGroupsWithSearch(Map map) {
+
+        log.info("[addressBookService] selectTotalGroupsWithSearch Start ===================================");
+        int totalNum = addressBookMapper.selectTotalGroupsWithSearch(map);
+
+        log.info("[addressBookService] selectTotalGroupsWithSearch End ===================================");
+
+        return totalNum;
+    }
+
+    public List<AddressBookDTO> selectGroupsWithSearch(Map map) {
+
+        log.info("[addressBookService] selectGroupsWithSearch Start ===================================");
+        List<AddressBookDTO> list = addressBookMapper.selectGroupsWithSearch(map);
+
+        log.info("[addressBookService] selectGroupsWithSearch End ===================================");
+
+        return list;
+    }
+
     public List<AddressBookDTO> selectMembersWithSearch(SelectCriteria selectCriteria) {
 
         log.info("[addressBookService] selectMembersWithSearch Start ===================================");
@@ -169,5 +189,15 @@ public class AddressBookService {
         log.info("[addressBookService] selectMembersWithSearch End ===================================");
 
         return list;
+    }
+    
+    public String insertMemberToGroup(Map map) {
+
+        log.info("[addressBookService] insertMemberToGroup Start ===================================");
+        int result = addressBookMapper.insertMemberToGroup(map);
+
+        log.info("[addressBookService] insertMemberToGroup End ===================================");
+
+        return result > 0? "추가 성공" : "추가 실패";
     }
 }
