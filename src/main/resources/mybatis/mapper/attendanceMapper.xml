@@ -55,6 +55,20 @@
 <!--               )-->
 <!--    </update>-->
 
+    <update id="insertOffTime" parameterType="attendanceDTO">
+        UPDATE TBL_ATTENDANCE
+           SET
+               OFF_TIME = #{ offTime, jdbcType=TIMESTAMP },
+               WORK_STATUS = '퇴근'
+         WHERE ATT_CODE = (
+                    SELECT * FROM (
+                              SELECT MAX(ATT_CODE)
+                              FROM TBL_ATTENDANCE
+                              WHERE MEMBER_CODE = #{ memberCode }
+                          ) AS temp
+          ) AND MEMBER_CODE = #{ memberCode }
+    </update>
+
     <select id="selectTime" resultType="hashmap">
     <![CDATA[
         SELECT

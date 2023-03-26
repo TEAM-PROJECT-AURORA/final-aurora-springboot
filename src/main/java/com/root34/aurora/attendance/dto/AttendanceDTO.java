@@ -13,24 +13,13 @@ import java.time.LocalDateTime;
 */
 @Data
 public class AttendanceDTO {
-	/**
-	 * @variable attCode       근태코드
-	 * @variable memberCode    사원코드
-	 * @variable workTime      출근시간
-	 * @variable offTime       퇴근시간
-	 * @variable tardy         지각
-	 * @variable earlyOff      조퇴
-	 * @variable truancy       무단결근
-	 * @variable absence       결근
-	 * @variable workStatus    근무상태
-	 * @variable attRegDate    근무날짜
-	 */
+
 	/**
 	 * @variable attCode 근태코드
 	 **/
      private int attCode;
 	/**
-	 * @variable attCode 근태코드
+	 * @variable memberCode 사원코드
 	 **/
 	 private int memberCode;
 	/**

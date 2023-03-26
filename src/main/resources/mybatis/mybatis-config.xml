@@ -1,25 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
-<!DOCTYPE configuration 
-    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
-<configuration> 
-	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 --> 
-	<settings> 
-		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여무 --> 
-		<setting name="callSettersOnNulls" value="true" /> 
-		<!-- null parameter 허용 --> 
-		<setting name="jdbcTypeForNull" value="NULL" /> 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 -->
+	<settings>
+		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여무 -->
+		<setting name="callSettersOnNulls" value="true" />
+		<!-- null parameter 허용 -->
+		<setting name="jdbcTypeForNull" value="NULL" />
 	</settings>
 
 	<typeAliases>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
-		<typeAlias alias="attendanceDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
-
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
+		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="memberMapper.xml"/>
 		<mapper resource="attendanceMapper.xml"/>
+		<mapper resource="vacationMapper.xml"/>
 
 	</mappers>
 </configuration>

@@ -33,25 +33,29 @@ public class AttendanceService {
 
 
 		log.info("[AttendanceService] getAttendance Start ===================");
-
 		log.info("[memberCode]   :" + memberCode );
-
 		Map count = attendanceMapper.getAttendance(memberCode);
-
-
 		log.info("[count]   :" + count );
-
 		log.info("[AttendanceService] getAttendance End ===================");
+
 		return count;
 
 	}
 
+	/**
+	 @MethodName : selectTime
+	 @Date : 2023-03-24
+	 @Writer : 정근호
+	 @Description :
+	 */
+
 	public Map selectTime(int memberCode) {
 
+		log.info("[AttendanceService] selectTime Start ===================");
 		Map selectTime = attendanceMapper.selectTime(memberCode);
 		log.info("[memberCode]   :" + memberCode );
-
-		log.info("[count]   :" + selectTime );
+		log.info("[selectTime]   :" + selectTime );
+		log.info("[AttendanceService] selectTime End ===================");
 
 		return selectTime;
 
