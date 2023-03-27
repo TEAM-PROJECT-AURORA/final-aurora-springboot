@@ -20,11 +20,11 @@ public class VacationService {
 
     private final VacationMapper vacationMapper;
 
-    public Map selectVacation(int memberCode) {
+    public Map selectVacation(int memberCode , int vacationNo) {
 
         log.info("[VacationService] selectVacation Start ===================");
         log.info("[memberCode]   :" + memberCode );
-        Map count = vacationMapper.selectVacation(memberCode);
+        Map count = vacationMapper.selectVacation(memberCode , vacationNo);
         log.info("[count]   :"   + count);
         log.info("[VacationService] selectVacation End ==============================" );
 

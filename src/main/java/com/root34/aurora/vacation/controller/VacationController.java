@@ -23,9 +23,11 @@ public class VacationController {
     private final VacationService vacationService;
 
 	@GetMapping("/vacation/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectRemainVacation(@PathVariable int memberCode) {
+	public ResponseEntity<ResponseDTO> selectRemainVacation(@PathVariable int memberCode , @RequestParam( name= "vacationNo") int vacationNo ) {
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , vacationService.selectVacation(memberCode)));
+		vacationService.selectVacation( memberCode ,vacationNo);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , vacationService.selectVacation(memberCode , vacationNo)));
 	}
 
 	@GetMapping("/vacation/used/{memberCode}")
@@ -34,11 +36,11 @@ public class VacationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" ,vacationService.selectUsedVacation(memberCode)));
 	}
 
-	@PutMapping("/vacation/remain/{memberCode}/{vacationNo}")
-	public ResponseEntity<ResponseDTO> updateRemainVacation(@PathVariable int memberCode , @PathVariable int vacationNo ) {
+	@PutMapping("/vacation/remain/{memberCode}")
+	public ResponseEntity<ResponseDTO> updateRemainVacation(@PathVariable int memberCode , @RequestParam( name= "vacationNo") int vacationNo ) {
 
 		vacationService.updateRemainVacation(memberCode , vacationNo);
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정", vacationService.selectVacation(memberCode)));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정", vacationService.selectVacation(memberCode , vacationNo)));
 	}
 }

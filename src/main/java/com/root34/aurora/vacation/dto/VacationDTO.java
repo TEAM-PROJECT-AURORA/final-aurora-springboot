@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class VacationDTO {
     //tbl_used_vacation
     /**
-     * @variable vacationCode 휴가코드
+     * @variable vacationNo 휴가코드
      **/
     private int vacationNo;
     /**
