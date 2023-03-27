@@ -137,7 +137,16 @@
         FROM TBL_REPORTER B
         WHERE B.REPORT_CODE = #{ reportCode }
     </select>
-
+    <select id="selectReportRoundDetailByRoundCode" parameterType="Long" resultType="ReportRoundDTO">
+        SELECT ROUND_CODE,
+               REPORT_CODE,
+               ROUND_TITLE,
+               ROUND_BODY,
+               REG_DATE,
+               CAPACITY
+        FROM TBL_REPORT_ROUND
+        WHERE ROUND_CODE = #{ roundCode }
+    </select>
 
 
 

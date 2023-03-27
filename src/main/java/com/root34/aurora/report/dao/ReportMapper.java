@@ -35,8 +35,6 @@ public interface ReportMapper {
 
     int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
 
-    List<ReportRoundDTO> selectReportRoundList(int memberCode); // 보고 회차 목록 조회
-
     int updateReport(ReportDTO reportDTO); // 보고 수정
 
     int deleteReporter(Long reportCode); // 보고자 삭제
@@ -47,4 +45,6 @@ public interface ReportMapper {
 
     List<Integer> selectMemberListInvolvedInReport(Long reportCode); // 보고 관련자 목록 조회
 
+    ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
 }
+    // 체크관련해서 기능하나 필요했는데..

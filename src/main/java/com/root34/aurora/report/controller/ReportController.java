@@ -233,6 +233,12 @@ public class ReportController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
+    /**
+    	* @MethodName : selectReportRoundListByReportCode
+    	* @Date : 2023-03-26
+    	* @Writer : 김수용
+    	* @Description : 정기보고 회차 목록 조회
+    */
     //    @ApiOperation(value = "정기보고 회차 목록 조회") // Swagger
     @GetMapping(value = "/reports/routine/{reportCode}/rounds")
     public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request, @PathVariable Long reportCode, @RequestParam int offset) {
@@ -242,5 +248,27 @@ public class ReportController {
         log.info("[ReportController] offset : " + offset);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 목록 조회 성공", reportService.selectReportRoundListByReportCode(reportCode, offset)));
+    }
+
+    /**
+    	* @MethodName : selectReportRoundDetailByRoundCode
+    	* @Date : 2023-03-27
+    	* @Writer : 김수용
+    	* @Description : 정기보고 회차 상세 조회
+    */
+    @GetMapping(value = "/reports/routine/{reportCode}/rounds/{roundCode}")
+    public ResponseEntity<ResponseDTO> selectReportRoundDetailByRoundCode(HttpServletRequest request, @PathVariable Long reportCode, @PathVariable Long roundCode) {
+
+        log.info("[ReportController] selectReportRoundDetailByRoundCode");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+
+        log.info("[ReportController] reportCode : " + reportCode);
+        log.info("[ReportController] roundCode : " + roundCode);
+
+        ReportRoundDTO reportRoundDetail = reportService.selectReportRoundDetailByRoundCode(roundCode);
+        log.info("[ReportController] reportRoundDetail : " + reportRoundDetail);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 상세 조회 성공", reportRoundDetail));
     }
 }

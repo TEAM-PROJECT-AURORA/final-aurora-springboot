@@ -230,4 +230,19 @@ public class ReportService {
 
         return responseDTOWithPaging;
     }
+
+    /**
+    	* @MethodName : selectReportRoundDetailByRoundCode
+    	* @Date : 2023-03-27
+    	* @Writer : 김수용
+    	* @Description : 정기보고 회차 상세 조회
+    */
+    public ReportRoundDTO selectReportRoundDetailByRoundCode(Long roundCode) {
+
+        log.info("[ReportService] selectReportRoundDetailByRoundCode Start");
+        ReportRoundDTO reportRoundDetail = reportMapper.selectReportRoundDetailByRoundCode(roundCode);
+        log.info("[ReportService] reportRoundDetail : " + reportRoundDetail);
+
+        return reportRoundDetail;
+    }
 }
