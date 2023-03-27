@@ -433,4 +433,34 @@ public class ReportMapperTest {
         // then
         assertEquals('N', result);
     }
+
+    @Test
+    void 회차별_상세_보고_수정_맵퍼_테스트() {
+
+        // given
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setDetailCode(2L);
+        reportDetailDTO.setRoundCode(5L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("Modified TestBody");
+
+        // when
+        int result = reportMapper.updateReportDetail(reportDetailDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 상세_보고_작성자_본인_확인_맵퍼_테스트() {
+
+        // given
+        long detailCode = 2L;
+
+        // when
+        int result = reportMapper.selectMemberCodeByDetailCode(detailCode);
+
+        // then
+        assertEquals(1, result);
+    }
 }

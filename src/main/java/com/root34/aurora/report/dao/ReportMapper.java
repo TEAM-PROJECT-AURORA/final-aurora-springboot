@@ -66,4 +66,8 @@ public interface ReportMapper {
     int registerReportDetail(ReportDetailDTO reportDetailDTO); // 회차별 상세 보고 작성
 
     char selectReportCompletionStatus(long reportCode); // 보고 완료 상태 확인
+
+    int updateReportDetail(ReportDetailDTO reportDetailDTO); // 회차별 상세 보고 수정
+
+    int selectMemberCodeByDetailCode(long detailCode); // 상세 보고 작성자 본인 확인
 }

@@ -117,7 +117,8 @@ public class ReportController {
      */
     @Transactional
     @PutMapping(value = "/reports")
-    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
+    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
+                                                    @RequestBody Map<String, Object> requestData) {
 
         log.info("[ReportController] updateReport");
         List<Integer> memberList = (List<Integer>) requestData.get("memberList");
@@ -146,7 +147,8 @@ public class ReportController {
      * @Description : 정기보고 목록 조회
      */
     @GetMapping(value = "/reports/routine/active")
-    public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
+    public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request,
+                                                               @RequestParam int offset) {
 
         log.info("[ReportController] selectRoutineReportList");
         log.info("[ReportController] offset : " + offset);
@@ -168,7 +170,8 @@ public class ReportController {
      * @Description : 완료된 정기보고 목록 조회
      */
     @GetMapping(value = "/reports/routine/completed")
-    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
+    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request,
+                                                                        @RequestParam int offset) {
 
         log.info("[ReportController] selectCompletedRoutineReportList");
         log.info("[ReportController] offset : " + offset);
@@ -190,7 +193,8 @@ public class ReportController {
      * @Description : 비정기보고 목록 조회
      */
     @GetMapping(value = "/reports/casual/active")
-    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request, @RequestParam int offset) {
+    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request,
+                                                              @RequestParam int offset) {
 
         log.info("[ReportController] selectCasualReportList");
         log.info("[ReportController] offset : " + offset);
@@ -212,7 +216,8 @@ public class ReportController {
      * @Description : 완료된 비정기보고 목록 조회
      */
     @GetMapping(value = "/reports/casual/completed")
-    public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request, @RequestParam int offset) {
+    public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request,
+                                                                       @RequestParam int offset) {
 
         log.info("[ReportController] selectCompletedCasualReportList");
         log.info("[ReportController] offset : " + offset);
@@ -234,7 +239,9 @@ public class ReportController {
     	* @Description : 정기보고 회차 목록 조회
     */
     @GetMapping(value = "/reports/routine/{reportCode}/rounds")
-    public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request, @PathVariable Long reportCode, @RequestParam int offset) {
+    public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request,
+                                                                         @PathVariable Long reportCode,
+                                                                         @RequestParam int offset) {
 
         log.info("[ReportController] selectReportRoundListByReportCode");
         Integer memberCode = (Integer) request.getAttribute("memberCode");
@@ -252,7 +259,9 @@ public class ReportController {
     	* @Description : 정기보고 회차 상세 조회
     */
     @GetMapping(value = "/reports/routine/{reportCode}/rounds/{roundCode}")
-    public ResponseEntity<ResponseDTO> selectReportRoundDetailByRoundCode(HttpServletRequest request, @PathVariable Long reportCode, @PathVariable Long roundCode) {
+    public ResponseEntity<ResponseDTO> selectReportRoundDetailByRoundCode(HttpServletRequest request,
+                                                                          @PathVariable Long reportCode,
+                                                                          @PathVariable Long roundCode) {
 
         log.info("[ReportController] selectReportRoundDetailByRoundCode Start");
         Integer memberCode = (Integer) request.getAttribute("memberCode");
@@ -273,7 +282,8 @@ public class ReportController {
     	* @Description : 비정기보고 상세 조회
     */
     @GetMapping("/reports/casual/{reportCode}")
-    public ResponseEntity<ResponseDTO> selectCasualReportDetailByReportCode(HttpServletRequest request, @PathVariable Long reportCode) {
+    public ResponseEntity<ResponseDTO> selectCasualReportDetailByReportCode(HttpServletRequest request,
+                                                                            @PathVariable Long reportCode) {
 
         log.info("[ReportController] selectCasualReportDetailByReportCode Start");
         Integer memberCode = (Integer) request.getAttribute("memberCode");
@@ -292,7 +302,8 @@ public class ReportController {
     	* @Description : 보고 완료상태 수정 - 완료
     */
     @DeleteMapping("/reports/{reportCode}")
-    public ResponseEntity<ResponseDTO> updateReportCompletionStatusToComplete(HttpServletRequest request, @PathVariable Long reportCode) {
+    public ResponseEntity<ResponseDTO> updateReportCompletionStatusToComplete(HttpServletRequest request,
+                                                                              @PathVariable Long reportCode) {
 
         log.info("[ReportController] updateReportCompletionStatusToComplete Start");
         Integer memberCode = (Integer) request.getAttribute("memberCode");
@@ -309,16 +320,44 @@ public class ReportController {
     	* @Description : 상세 보고 작성
     */
     @PostMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
-    public ResponseEntity<ResponseDTO> registerReportDetail(HttpServletRequest request, @PathVariable long reportCode, @PathVariable int roundCode, @RequestBody ReportDetailDTO reportDetailDTO) {
+    public ResponseEntity<ResponseDTO> registerReportDetail(HttpServletRequest request,
+                                                            @PathVariable long reportCode,
+                                                            @PathVariable int roundCode,
+                                                            @RequestBody ReportDetailDTO reportDetailDTO) {
 
         log.info("[ReportController] registerReportDetail Start");
-        Integer memberCode = (Integer) request.getAttribute("memberCode");
         log.info("[ReportController] reportCode : " + reportCode);
+
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
 
         reportDetailDTO.setMemberCode(memberCode);
         reportDetailDTO.setRoundCode(roundCode);
         log.info("[ReportController] reportDetailDTO : " + reportDetailDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 작성 성공", reportService.registerReportDetail(reportCode, reportDetailDTO)));
+    }
+
+    /**
+    	* @MethodName : updateReportDetail
+    	* @Date : 2023-03-27
+    	* @Writer : 김수용
+    	* @Description : 상세 보고 수정
+    */
+    @PutMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
+    public ResponseEntity<ResponseDTO> updateReportDetail(HttpServletRequest request,
+                                                          @PathVariable long reportCode,
+                                                          @PathVariable long roundCode,
+                                                          @RequestBody ReportDetailDTO reportDetailDTO) {
+
+        log.info("[ReportController] updateReportDetail Start");
+        log.info("[ReportController] reportCode : " + reportCode);
+
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+
+        reportDetailDTO.setMemberCode(memberCode);
+        reportDetailDTO.setRoundCode(roundCode);
+        log.info("[ReportController] reportDetailDTO : " + reportDetailDTO);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 수정 성공", reportService.updateReportDetail(reportCode, reportDetailDTO)));
     }
 }
