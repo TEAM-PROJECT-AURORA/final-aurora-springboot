@@ -111,7 +111,7 @@ class AddressBookControllerTest {
         addressBookDTO.setEmail("test3@test.com");
         addressBookDTO.setCompany("오컴퍼니");
         addressBookDTO.setDepartment("개발부");
-        addressBookDTO.setComPhone("02-111-2223");
+        addressBookDTO.setJobName("02-111-2223");
 
         // when
         ResponseEntity<ResponseDTO> response = addressBookController.insertGroupAddress(addressBookDTO);
@@ -132,7 +132,7 @@ class AddressBookControllerTest {
         address.setEmail("heoCasadian@test.com");
         address.setCompany("커다시안패밀리");
         address.setDepartment("허씨");
-        address.setComPhone("02-1111-1111");
+        address.setJobName("02-1111-1111");
         String addBookNo = "4";
 
         // when

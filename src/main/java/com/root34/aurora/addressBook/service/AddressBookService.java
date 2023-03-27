@@ -214,4 +214,24 @@ public class AddressBookService {
 
         return result2 > 0? "삭제 성공" : "삭제 실패";
     }
+
+    public String updateGroup(AddressGroupDTO addressGroupDTO) {
+
+        log.info("[addressBookService] updateGroup Start ===================================");
+
+        int result = addressBookMapper.updateGroup(addressGroupDTO);
+
+        log.info("[addressBookService] updateGroup End ===================================");
+
+        return result > 0? "수정 성공" : "수정 실패";
+    }
+
+    public AddressBookDTO selectAddressForUpdate(String addBookNo) {
+
+        log.info("[addressBookService] selectAddressForUpdate Start ===================================");
+        AddressBookDTO addressBookDTO = addressBookMapper.selectAddressForUpdate(addBookNo);
+
+        log.info("[addressBookService] selectAddressForUpdate End ===================================");
+        return addressBookDTO;
+    }
 }

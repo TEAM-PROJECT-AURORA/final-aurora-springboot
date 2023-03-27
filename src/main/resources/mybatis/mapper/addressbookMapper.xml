@@ -113,13 +113,30 @@
     </insert>
     <update id="updateAddress" parameterType="map">
         UPDATE TBL_ADDRESS_BOOK
-           SET NAME = #{ address.name },
-               PHONE = #{ address.phone },
-               EMAIL = #{ address.email },
-               COMPANY = #{ address.company },
-               DEPARTMENT = #{ address.department },
-               JOB_NAME = #{ address.jobName }
-         WHERE ADDBOOK_NO = #{ addBookNo }
+        <set>
+            <if test="address.name != null and address.name != ''">
+                NAME = #{ address.name },
+            </if>
+            <if test="address.phone != null and address.phone != ''">
+                PHONE = #{ address.phone },
+            </if>
+            <if test="address.email != null and address.email != ''">
+                EMAIL = #{ address.email },
+            </if>
+            <if test="address.company != null and address.company != ''">
+                COMPANY = #{ address.company },
+            </if>
+            <if test="address.department != null and address.department != ''">
+                DEPARTMENT = #{ address.department },
+            </if>
+            <if test="address.jobName != null and address.jobName != ''">
+                JOB_NAME = #{ address.jobName }
+            </if>
+        </set>
+         WHERE ADDBOOK_NO IN
+        <foreach collection="addBookNos" item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
     </update>
     <delete id="deleteAddress" parameterType="String">
         DELETE FROM TBL_ADDRESS_BOOK
@@ -259,4 +276,22 @@
         DELETE FROM TBL_ADDRESS_GROUP
          WHERE GROUP_CODE = #{ groupCode }
     </delete>
+    <update id="updateGroup" parameterType="addressGroupDTO">
+        UPDATE TBL_ADDRESS_GROUP
+           SET GROUP_NAME = #{ groupName }
+         WHERE GROUP_CODE = #{ groupCode }
+    </update>
+    <select id="selectAddressForUpdate" parameterType="String" resultType="addressBookDTO">
+        SELECT
+            GROUP_CODE,
+            ADDBOOK_NO,
+            NAME,
+            PHONE,
+            EMAIL,
+            JOB_NAME,
+            DEPARTMENT,
+            COMPANY
+          FROM TBL_ADDRESS_BOOK
+         WHERE ADDBOOK_NO = #{ addBookNo }
+    </select>
 </mapper>

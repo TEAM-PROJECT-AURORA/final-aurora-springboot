@@ -57,4 +57,8 @@ public interface AddressBookMapper {
 	int deleteAddressInGroup(String groupCode);
 
 	int deleteGroup(String groupCode);
+
+	int updateGroup(AddressGroupDTO addressGroupDTO);
+
+	AddressBookDTO selectAddressForUpdate(String addBookNo);
 }

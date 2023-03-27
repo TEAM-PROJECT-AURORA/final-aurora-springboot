@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,13 +154,15 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 주소록 수정
     */
-    @PutMapping("/address-book/{addBookNo}")
-    public ResponseEntity<ResponseDTO> updateAddress(@RequestBody AddressBookDTO address, @PathVariable String addBookNo) {
+    @PutMapping("/address-book/address")
+    public ResponseEntity<ResponseDTO> updateAddress(@RequestBody AddressBookDTO address, @RequestParam String addBookNos) {
 
-        log.info("[AddressBookController] updateAddress : " + address);
+        log.info("[AddressBookController] updateAddress : " + addBookNos + address);
+        String[] addBookNosArr = addBookNos.split(",");
+
         Map map = new HashMap();
         map.put("address", address);
-        map.put("addBookNo", addBookNo);
+        map.put("addBookNos", addBookNosArr);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 수정 성공", addressBookService.updateAddress(map)));
     }
@@ -305,10 +306,38 @@ public class AddressBookController {
     	* @Description : 그룹 삭제
     */
     @DeleteMapping("address-book/group/{groupCode}")
-    public  ResponseEntity<ResponseDTO> deleteGroup(@PathVariable String groupCode) {
+    public ResponseEntity<ResponseDTO> deleteGroup(@PathVariable String groupCode) {
 
         log.info("[AddressBookController] deleteGroup : " + groupCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 삭제 성공", addressBookService.deleteGroup(groupCode)));
+    }
+
+    /**
+    	* @MethodName : updateGroup
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 그룹 수정
+    */
+    @PutMapping("address-book/group")
+    public ResponseEntity<ResponseDTO> updateGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
+
+        log.info("[AddressBookController] updateGroup : " + addressGroupDTO);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 수정 성공", addressBookService.updateGroup(addressGroupDTO)));
+    }
+
+    /**
+    	* @MethodName : selectAddressForUpdate
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 주소록 수정을 위한 조회
+    */
+    @GetMapping("address-book/{addBookNo}")
+    public ResponseEntity<ResponseDTO> selectAddressForUpdate(@PathVariable String addBookNo) {
+
+        log.info("[AddressBookController] selectAddressForUpdate : " + addBookNo);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 상세 조회 성공", addressBookService.selectAddressForUpdate(addBookNo)));
     }
 }

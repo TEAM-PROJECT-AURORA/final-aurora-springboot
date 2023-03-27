@@ -155,7 +155,7 @@ class AddressBookMapperTest {
         addressBookDTO.setEmail("lupy@test.com");
         addressBookDTO.setCompany("뽀로로");
         addressBookDTO.setDepartment("루피담당");
-        addressBookDTO.setComPhone("02-1111-2222");
+        addressBookDTO.setJobName("02-1111-2222");
 
         // when
         int result = addressBookMapper.insertGroupAddress(addressBookDTO);
@@ -174,7 +174,7 @@ class AddressBookMapperTest {
         address.setEmail("heoCadasian@test.com");
         address.setCompany("커다시안패밀리");
         address.setDepartment("허씨");
-        address.setComPhone("02-1111-1111");
+        address.setJobName("02-1111-1111");
         Map map = new HashMap();
         map.put("address", address);
         map.put("addBookNo", "3");
