@@ -20,14 +20,14 @@ public interface ApprovalMapper {
      * @param approvalDTO 결재 DTO*/
     int insertApprove(ApprovalDTO approvalDTO);
     /** 최근리스트, 첫화면에 보여지는 데이터 */
-    List<ApprovalDTO> lastList();
+    List<ApprovalDTO> lastList(int memberCode);
     /** 미결재 리스트 */
-    List<ApprovalDTO> pendingList();
+    List<ApprovalDTO> pendingList(int memberCode);
     /** 상세 정보 조회
      * @param appCode 결재코드*/
     ApprovalDTO detailApprove(int appCode);
     /** 결재완료 리스트 */
-    List<ApprovalDTO> completedList();
+    List<ApprovalDTO> completedList(int memberCode);
     /** 결재 수정 
     * @param approvalDTO 결재 DTO*/
     ApprovalDTO updateApproval(ApprovalDTO approvalDTO);
