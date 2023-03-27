@@ -4,6 +4,7 @@ import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dto.ReportDTO;
+import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -338,5 +339,98 @@ public class ReportMapperTest {
 
         // then
         assertNotNull(result);
+    }
+    
+    @Test 
+    @Transactional
+    @Rollback(false)
+    void 보고_완료상태_수정_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+        char completionStatus = 'Y';
+        int memberCode = 1;
+
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("reportCode", reportCode);
+        parameter.put("completionStatus", completionStatus);
+        parameter.put("memberCode", memberCode);
+
+        // when
+        int result = reportMapper.updateReportCompletionStatus(parameter);
+
+        // then
+        assertNotEquals(0, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_읽음상태_수정_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+        char readStatus = 'Y';
+        int memberCode = 1;
+
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("reportCode", reportCode);
+        parameter.put("readStatus", readStatus);
+        parameter.put("memberCode", memberCode);
+
+        // when
+        int result = reportMapper.updateReportReadStatus(parameter);
+
+        // then
+        assertNotEquals(0, result);
+    }
+    
+    @Test 
+    void 보고_책임자_확인_맵퍼_테스트() {
+        
+        // given 
+        int memberCode = 1;
+        Long reportCode = 1L;
+        
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("memberCode", memberCode);
+        parameter.put("reportCode", reportCode);
+        
+        // when
+        int result = reportMapper.countInChargeMember(parameter);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+//    @Transactional
+//    @Rollback(false)
+    void 회차별_상세_보고_작성_맵퍼_테스트() {
+
+        // given
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setRoundCode(5L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("TestBody");
+
+        // when
+        int result = reportMapper.registerReportDetail(reportDetailDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_완료_상태_확인_맵퍼_테스트() {
+
+        // given
+        long reportCode = 6L;
+
+        // when
+        char result = reportMapper.selectReportCompletionStatus(reportCode);
+
+        // then
+        assertEquals('N', result);
     }
 }

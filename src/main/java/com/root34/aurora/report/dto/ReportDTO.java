@@ -18,7 +18,7 @@ public class ReportDTO {
     /**
      * @variable memberCode 멤버 코드
      */
-    private long memberCode;
+    private int memberCode;
     /**
      * @variable reportType 보고 유형
      */

@@ -3,6 +3,7 @@ package com.root34.aurora.report.dao;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.report.dto.ReportDTO;
+import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -53,4 +54,16 @@ public interface ReportMapper {
     ReportDTO selectCasualReportDetailByReportCode(Long reportCode); // 비정기보고 상세 조회
 
     List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
+
+    int updateReportCompletionStatus(HashMap<String, Object> parameter); // 보고 완료상태 수정
+
+    int updateReportReadStatus(HashMap<String, Object> parameter); // 보고 읽음상태 수정
+
+    int countInChargeMember(HashMap<String, Object> parameter); // 보고 책임자 확인
+
+    String selectReportType(Long reportCode); // 보고 유형 확인
+
+    int registerReportDetail(ReportDetailDTO reportDetailDTO); // 회차별 상세 보고 작성
+
+    char selectReportCompletionStatus(long reportCode); // 보고 완료 상태 확인
 }

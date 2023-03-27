@@ -82,7 +82,7 @@
                REPORT_CYCLE,
                READ_STATUS,
                COMPLETION_STATUS
-        FROM TBL_REPORT
+         FROM TBL_REPORT
         WHERE MEMBER_CODE = #{ memberCode }
           AND REPORT_TYPE = 'Casual'
         ORDER BY REPORT_CODE DESC
@@ -91,8 +91,8 @@
     <!--보고 회차 정원 조회-->
     <select id="getReportRoundCapacity" parameterType="Long" resultType="int">
         SELECT COUNT(*)
-        FROM TBL_REPORTER
-        WHERE REPORT_CODE = #{ reportCode }
+          FROM TBL_REPORTER
+         WHERE REPORT_CODE = #{ reportCode }
     </select>
     <!--보고 회차 등록-->
     <insert id="registerReportRound" parameterType="ReportRoundDTO">
@@ -129,10 +129,10 @@
                ROUND_BODY,
                REG_DATE,
                CAPACITY
-        FROM TBL_REPORT_ROUND
-        WHERE REPORT_CODE = #{ searchCondition }
-        ORDER BY REPORT_CODE DESC
-        LIMIT #{ startRow }, #{ limit }
+          FROM TBL_REPORT_ROUND
+         WHERE REPORT_CODE = #{ searchCondition }
+         ORDER BY REPORT_CODE DESC
+         LIMIT #{ startRow }, #{ limit }
     </select>
     <!--보고 관련자 목록 조회-->
     <select id="selectMemberListInvolvedInReport" parameterType="Long" resultType="Integer">
@@ -180,13 +180,45 @@
           FROM TBL_FILE
          WHERE REPORT_CODE = #{ reportCode }
     </select>
-
-
-
-    <!--보고 읽음-->
-    <update id="readReport" parameterType="Long">
+    <!--보고 책임자 확인-->
+    <select id="countInChargeMember" parameterType="HashMap" resultType="Integer">
+        SELECT COUNT(MEMBER_CODE)
+          FROM TBL_REPORT
+         WHERE REPORT_CODE = #{ reportCode }
+           AND MEMBER_CODE = #{ memberCode }
+    </select>
+    <!--보고 완료상태 수정-->
+    <update id="updateReportCompletionStatus" parameterType="HashMap">
         UPDATE TBL_REPORT
-           SET READ_STATUS = 'Y'
+           SET COMPLETION_STATUS = #{ completionStatus }
+         WHERE REPORT_CODE = #{ reportCode }
+           AND MEMBER_CODE = #{ memberCode }
+    </update>
+    <!--보고 읽음상태 수정-->
+    <update id="updateReportReadStatus" parameterType="HashMap">
+        UPDATE TBL_REPORT
+           SET READ_STATUS = #{ readStatus }
          WHERE REPORT_CODE = #{ reportCode }
     </update>
+    <!--보고 유형 확인-->
+    <select id="selectReportType" parameterType="Long" resultType="String">
+        SELECT REPORT_TYPE
+          FROM TBL_REPORT
+         WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--회차별 상세 보고 작성-->
+    <insert id="registerReportDetail" parameterType="ReportDetailDTO">
+        INSERT INTO TBL_REPORT_DETAIL
+            ( ROUND_CODE, MEMBER_CODE, DETAIL_BODY )
+        VALUES
+            ( #{ roundCode }, #{ memberCode }, #{ detailBody } )
+    </insert>
+    <!--보고 완료 상태 확인-->
+    <select id="selectReportCompletionStatus" parameterType="Long" resultType="char">
+        SELECT COMPLETION_STATUS
+          FROM TBL_REPORT
+         WHERE REPORT_CODE = #{ reportCode }
+    </select>
+
+<!--    // 상세보고 목록 조회 쿼리 -->
 </mapper>

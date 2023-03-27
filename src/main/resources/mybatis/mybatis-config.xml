@@ -24,6 +24,7 @@
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
 		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
+		<typeAlias alias="ReportDetailDTO" type="com.root34.aurora.report.dto.ReportDetailDTO" />
 	</typeAliases>
 
 	<mappers>

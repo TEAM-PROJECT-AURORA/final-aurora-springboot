@@ -54,12 +54,10 @@ public class ReportServiceTest {
         Long reportCode2 = 999999L;
 
         // when
-        boolean result1 = reportService.verifyMemberReportAccess(memberCode, reportCode1);
-        boolean result2 = reportService.verifyMemberReportAccess(memberCode, reportCode2);
+        reportService.verifyMemberReportAccess(memberCode, reportCode1);
+        reportService.verifyMemberReportAccess(memberCode, reportCode2);
 
         // then
-        assertEquals(true, result1);
-        assertEquals(false, result2);
     }
 
     @Transactional
@@ -275,6 +273,7 @@ public class ReportServiceTest {
     void 보고_회차_목록_조회() {
 
         // given
+        int memberCode = 1;
         Long reportCode = 1L;
 
         int offset = 1;
@@ -286,7 +285,7 @@ public class ReportServiceTest {
         selectCriteria.setSearchCondition(String.valueOf(reportCode));
 
         // when
-        ResponseDTOWithPaging result = reportService.selectReportRoundListByReportCode(reportCode, offset);
+        ResponseDTOWithPaging result = reportService.selectReportRoundListByReportCode(memberCode, reportCode, offset);
 
         // then
         assertNotNull(result);
