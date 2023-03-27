@@ -24,7 +24,6 @@ import java.util.Map;
 	@Writer : 김수용
 	@Description : 보고 관련 요청을 처리하는 컨트롤러
 */
-//@Api(tags = {"reports"}) // Swagger
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
@@ -65,7 +64,6 @@ public class ReportController {
 //    }
     //    @ApiOperation(value = "보고 작성")
     @Transactional
-//    @PostMapping(value = "/reports")
     @PostMapping(value = "/reports", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request,
                                                       @RequestPart("reportDTO") ReportDTO reportDTO,
@@ -97,7 +95,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 전체 보고 조회 - 보고 메인 페이지용
      */
-//    @ApiOperation(value = "전체 보고 조회") // Swagger
     @GetMapping(value = "/reports")
     public ResponseEntity<ResponseDTO> getAllReportList(HttpServletRequest request) {
 
@@ -126,7 +123,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 보고 회차 등록
      */
-//    @ApiOperation(value = "보고 회차 등록") // Swagger
     @Transactional
     @PostMapping(value = "/reports/routines")
     public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
@@ -145,7 +141,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 보고 수정
      */
-    //    @ApiOperation(value = "보고 수정") // Swagger
     @Transactional
     @PutMapping(value = "/reports")
     public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
@@ -176,7 +171,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 정기보고 목록 조회
      */
-//    @ApiOperation(value = "정기보고 목록 조회") // Swagger
     @GetMapping(value = "/reports/routine/active")
     public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
@@ -199,7 +193,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 완료된 정기보고 목록 조회
      */
-//    @ApiOperation(value = "완료된 정기보고 목록 조회") // Swagger
     @GetMapping(value = "/reports/routine/completed")
     public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request, @RequestParam int offset) {
 
@@ -222,7 +215,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 비정기보고 목록 조회
      */
-//    @ApiOperation(value = "비정기보고 목록 조회") // Swagger
     @GetMapping(value = "/reports/casual/active")
     public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request, @RequestParam int offset) {
 
@@ -245,7 +237,6 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 완료된 비정기보고 목록 조회
      */
-//    @ApiOperation(value = "완료된 비정기보고 목록 조회") // Swagger
     @GetMapping(value = "/reports/casual/completed")
     public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request, @RequestParam int offset) {
 
@@ -268,7 +259,6 @@ public class ReportController {
     	* @Writer : 김수용
     	* @Description : 정기보고 회차 목록 조회
     */
-    //    @ApiOperation(value = "정기보고 회차 목록 조회") // Swagger
     @GetMapping(value = "/reports/routine/{reportCode}/rounds")
     public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request, @PathVariable Long reportCode, @RequestParam int offset) {
 
@@ -288,7 +278,7 @@ public class ReportController {
     @GetMapping(value = "/reports/routine/{reportCode}/rounds/{roundCode}")
     public ResponseEntity<ResponseDTO> selectReportRoundDetailByRoundCode(HttpServletRequest request, @PathVariable Long reportCode, @PathVariable Long roundCode) {
 
-        log.info("[ReportController] selectReportRoundDetailByRoundCode");
+        log.info("[ReportController] selectReportRoundDetailByRoundCode Start");
         Integer memberCode = (Integer) request.getAttribute("memberCode");
         log.info("[ReportController] memberCode : " + memberCode);
 
@@ -299,5 +289,22 @@ public class ReportController {
         log.info("[ReportController] reportRoundDetail : " + reportRoundDetail);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 상세 조회 성공", reportRoundDetail));
+    }
+
+    /**
+    	* @MethodName : selectCasualReportDetailByReportCode
+    	* @Date : 2023-03-27
+    	* @Writer : 김수용
+    	* @Description : 비정기보고 상세 조회
+    */
+    @GetMapping("/reports/casual/{reportCode}")
+    public ResponseEntity<ResponseDTO> selectCasualReportDetailByReportCode(HttpServletRequest request, @PathVariable Long reportCode) {
+
+        log.info("[ReportController] selectCasualReportDetailByReportCode Start");
+        log.info("[ReportController] reportCode : " + reportCode);
+
+        HashMap<String, Object> casualReportDetail = reportService.selectCasualReportDetailByReportCode(reportCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 상세 조회 성공", casualReportDetail));
     }
 }

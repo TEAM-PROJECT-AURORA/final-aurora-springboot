@@ -1,5 +1,6 @@
 package com.root34.aurora.report.dao;
 
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dto.ReportDTO;
@@ -311,12 +312,31 @@ public class ReportMapperTest {
         assertNotNull(result);
     }
 
-}
+    @Test
+    void 비정기보고_상세_조회() {
 
-/*해야함 */
-//    @Test
-//    @Transactional
-//    @Rollback(false)
-//    void 보고_첨부파일_등록_맵퍼_테스트() {
-//
-//    }
+        // given
+        Long reportCode = 3L;
+
+        // when
+        ReportDTO result = reportMapper.selectCasualReportDetailByReportCode(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_첨부파일_등록_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        List<FileDTO> result = reportMapper.selectReportAttachmentListByReportCode(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+}

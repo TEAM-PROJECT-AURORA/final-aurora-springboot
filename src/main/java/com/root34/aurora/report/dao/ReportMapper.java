@@ -50,6 +50,7 @@ public interface ReportMapper {
 
     ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
 
-    // 테스트 필요
-    FileDTO selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
+    ReportDTO selectCasualReportDetailByReportCode(Long reportCode); // 비정기보고 상세 조회
+
+    List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
 }

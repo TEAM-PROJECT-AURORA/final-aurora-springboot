@@ -107,7 +107,7 @@ public class ReportService {
                     fileDTO.setFileOriginName(file.getOriginalFilename());
     //                fileDTO.setFileOriginName(replaceFileName);
                     fileDTO.setFileName(replaceFileName);
-                    fileDTO.setFilePath(FILE_DIR);
+                    fileDTO.setFilePath(FILE_DIR + replaceFileName);
                     fileDTO.setReportCode(generatedPk);
                     double fileSizeInMB = (double) file.getSize() / (1024 * 1024);
                     log.info("[ReportService] fileSizeInMB : " + fileSizeInMB);
@@ -292,5 +292,24 @@ public class ReportService {
         log.info("[ReportService] reportRoundDetail : " + reportRoundDetail);
 
         return reportRoundDetail;
+    }
+
+    /**
+    	* @MethodName : selectCasualReportDetailByReportCode
+    	* @Date : 2023-03-27
+    	* @Writer : 김수용
+    	* @Description : 비정기보고 상세 조회
+    */
+    public HashMap<String, Object> selectCasualReportDetailByReportCode(Long reportCode) {
+
+        log.info("[ReportService] selectCasualReportDetailByReportCode Start");
+        log.info("[ReportService] reportCode : " + reportCode);
+
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("ReportDTO", reportMapper.selectCasualReportDetailByReportCode(reportCode));
+        response.put("attachmentList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
+        log.info("[ReportService] response : " + response);
+
+        return response;
     }
 }
