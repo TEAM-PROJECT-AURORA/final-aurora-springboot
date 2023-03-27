@@ -190,7 +190,8 @@ public class AddressBookService {
 
         return list;
     }
-    
+
+    @Transactional
     public String insertMemberToGroup(Map map) {
 
         log.info("[addressBookService] insertMemberToGroup Start ===================================");
@@ -201,6 +202,7 @@ public class AddressBookService {
         return result > 0? "추가 성공" : "추가 실패";
     }
 
+    @Transactional
     public String deleteGroup(String groupCode) {
 
         log.info("[addressBookService] deleteGroup Start ===================================");
@@ -215,6 +217,7 @@ public class AddressBookService {
         return result2 > 0? "삭제 성공" : "삭제 실패";
     }
 
+    @Transactional
     public String updateGroup(AddressGroupDTO addressGroupDTO) {
 
         log.info("[addressBookService] updateGroup Start ===================================");

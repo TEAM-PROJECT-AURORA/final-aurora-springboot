@@ -132,6 +132,9 @@
             <if test="address.jobName != null and address.jobName != ''">
                 JOB_NAME = #{ address.jobName }
             </if>
+            <if test="address.groupCode != null and address.groupCode != ''">
+                GROUP_CODE = #{ address.groupCode }
+            </if>
         </set>
          WHERE ADDBOOK_NO IN
         <foreach collection="addBookNos" item="item" index="index" open="(" close=")" separator=",">
