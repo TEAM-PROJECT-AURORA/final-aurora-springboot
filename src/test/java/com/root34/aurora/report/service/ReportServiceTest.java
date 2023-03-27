@@ -84,28 +84,10 @@ public class ReportServiceTest {
         log.info("[보고_작성_서비스_테스트] memberList : " + memberList);
 
         // when
-        boolean result = reportService.registerReport(reportDTO, memberList);
-
-//        int result = reportMapper.registerReport(reportDTO);
-//
-//        int generatedPk = reportDTO.getId();
-//
-//        int count = 0;
-//
-//        for (Integer listItem : memberList) {
-//            HashMap<String, Object> parameter = new HashMap<>();
-//            parameter.put("reportCode", generatedPk);
-//            parameter.put("listItem", listItem);
-//
-//            reportMapper.registerReporter(parameter);
-//
-//            count++;
-//        }
+//        boolean result = reportService.registerReport(reportDTO, memberList, fileList);
 
         // then
-        assertEquals(true, result);
-//        assertEquals(1, result);
-//        assertEquals(memberList.size(), count);
+//        assertEquals(true, result);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.root34.aurora.file;
+package com.root34.aurora.common;
 
 import com.root34.aurora.approval.dto.ApprovalDTO;
 import lombok.Data;
@@ -24,6 +24,8 @@ public class FileDTO {
     private String filePath;
     /**@Variable :  결재 DTO, 결재 코드 용*/
     private ApprovalDTO approval;
-    // 수용이 형 메일, 보고 
-    
+    /**@Variable :  메일 코드*/
+    private Long mailCode;
+    /**@Variable :  보고 코드*/
+    private Long reportCode;
 }

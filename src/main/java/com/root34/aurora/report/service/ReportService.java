@@ -1,18 +1,24 @@
 package com.root34.aurora.report.service;
 
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.util.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
 	@ClassName : ReportService
@@ -23,6 +29,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class ReportService {
+
+    @Value("${file.file-dir}")
+    private String FILE_DIR;
+    @Value("${file.file-url}")
+    private String FILE_URL;
 
     private final ReportMapper reportMapper;
 
@@ -56,28 +67,65 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 작성
     */
-    public boolean registerReport(ReportDTO reportDTO, List<Integer> memberList) {
+    public boolean registerReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList) {
 
         log.info("[ReportService] registerReport Start");
+        log.info("[ReportService] reportDTO : " + reportDTO);
         int result = reportMapper.registerReport(reportDTO);
         log.info("[ReportService] registerReport result : " + result);
 
-        int generatedPk = reportDTO.getId();
+        Long generatedPk = reportDTO.getReportCode();
         log.info("[ReportService] generatedPk : " + generatedPk);
 
-        int count = 0;
+        int memberCount = 0;
 
         for (Integer listItem : memberList) {
+
             HashMap<String, Object> parameter = new HashMap<>();
             parameter.put("reportCode", generatedPk);
             parameter.put("listItem", listItem);
 
-            reportMapper.registerReporter(parameter);
-
-            count++;
+            memberCount += reportMapper.registerReporter(parameter);
         }
-        log.info("[ReportService] count : " + count);
-        return result > 0 && count == memberList.size();
+        log.info("[ReportService] memberCount : " + memberCount);
+
+        if(fileList != null) {
+
+            int fileCount = 0;
+
+            try {
+                for (MultipartFile file : fileList) {
+
+                    String fileName = UUID.randomUUID().toString().replace("-", "");
+                    String replaceFileName = null;
+                    log.info("[ReportService] FILE_DIR : " + FILE_DIR);
+                    log.info("[ReportService] fileName : " + fileName);
+                    replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
+                    log.info("[ReportService] replaceFileName : " + replaceFileName);
+
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFileOriginName(file.getOriginalFilename());
+    //                fileDTO.setFileOriginName(replaceFileName);
+                    fileDTO.setFileName(replaceFileName);
+                    fileDTO.setFilePath(FILE_DIR);
+                    fileDTO.setReportCode(generatedPk);
+                    double fileSizeInMB = (double) file.getSize() / (1024 * 1024);
+                    log.info("[ReportService] fileSizeInMB : " + fileSizeInMB);
+                    String fileSizeString = String.format("%.2f MB", fileSizeInMB);
+                    log.info("[ReportService] fileSizeString : " + fileSizeString);
+                    fileDTO.setFileSize(fileSizeString);
+
+    //                fileDTO.setBoardImageUrl(replaceFileName);
+
+                    fileCount += reportMapper.registerFileWithReportCode(fileDTO);
+    //                log.info("[ReportService] insert Image Name : "+ replaceFileName);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return result > 0 && memberCount == memberList.size();
     }
 
     /**

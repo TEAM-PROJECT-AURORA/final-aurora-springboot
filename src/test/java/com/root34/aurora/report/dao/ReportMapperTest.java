@@ -53,7 +53,7 @@ public class ReportMapperTest {
         // when
         int result = reportMapper.registerReport(reportDTO);
 
-        int generatedPk = reportDTO.getId();
+        Long generatedPk = reportDTO.getReportCode();
 
         int count = 0;
 
@@ -299,7 +299,7 @@ public class ReportMapperTest {
     }
 
     @Test
-    void 보고_회차_상세_조회_맵퍼_테스트() {
+    void 정기보고_회차_상세_조회_맵퍼_테스트() {
 
         // given
         Long reportCode = 1L;
@@ -310,4 +310,13 @@ public class ReportMapperTest {
         // then
         assertNotNull(result);
     }
+
 }
+
+/*해야함 */
+//    @Test
+//    @Transactional
+//    @Rollback(false)
+//    void 보고_첨부파일_등록_맵퍼_테스트() {
+//
+//    }

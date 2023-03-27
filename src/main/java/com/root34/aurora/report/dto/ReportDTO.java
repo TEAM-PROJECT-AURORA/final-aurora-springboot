@@ -12,10 +12,6 @@ import lombok.Data;
 public class ReportDTO {
 
     /**
-     * @variable id insert후 생성된 PK값을 담을 변수
-     */
-    private int id;
-    /**
      * @variable reportCode 보고 코드
      */
     private long reportCode;

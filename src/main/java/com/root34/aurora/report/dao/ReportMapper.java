@@ -1,6 +1,7 @@
 package com.root34.aurora.report.dao;
 
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,6 +19,8 @@ import java.util.List;
 public interface ReportMapper {
 
     int registerReport(ReportDTO reportDTO); // 보고서 작성
+
+    int registerFileWithReportCode(FileDTO fileDTO); // 보고_첨부파일 등록
 
     int registerReporter(HashMap<String, Object> parameter); // 보고자 등록
 
@@ -46,5 +49,7 @@ public interface ReportMapper {
     List<Integer> selectMemberListInvolvedInReport(Long reportCode); // 보고 관련자 목록 조회
 
     ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
+
+    // 테스트 필요
+    FileDTO selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
 }
-    // 체크관련해서 기능하나 필요했는데..

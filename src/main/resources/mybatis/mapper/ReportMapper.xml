@@ -4,11 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.report.dao.ReportMapper">
     <!--보고서 등록-->
-    <insert id="registerReport" parameterType="ReportDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="registerReport" parameterType="ReportDTO" useGeneratedKeys="true" keyProperty="reportCode">
         INSERT INTO TBL_REPORT
             ( MEMBER_CODE, REPORT_TYPE, REPORT_TITLE, REPORT_INFO, REPORT_CYCLE )
         VALUES
             ( #{ memberCode }, #{ reportType }, #{ reportTitle }, #{ reportInfo }, #{ reportCycle } )
+    </insert>
+    <!--보고 첨부파일 등록-->
+    <insert id="registerFileWithReportCode" parameterType="FileDTO">
+        INSERT INTO TBL_FILE
+            ( FILE_NAME, FILE_ORIGIN_NAME, FILE_SIZE, FILE_PATH, REPORT_CODE )
+        VALUES
+            ( #{ fileName }, #{fileOriginName}, #{ fileSize }, #{ filePath }, #{ reportCode } )
     </insert>
     <!--보고자 등록-->
     <insert id="registerReporter" parameterType="HashMap">
@@ -134,9 +141,10 @@
          WHERE A.REPORT_CODE = #{ reportCode }
          UNION ALL
         SELECT B.MEMBER_CODE
-        FROM TBL_REPORTER B
-        WHERE B.REPORT_CODE = #{ reportCode }
+          FROM TBL_REPORTER B
+         WHERE B.REPORT_CODE = #{ reportCode }
     </select>
+    <!--정기보고 회차 상세 조회-->
     <select id="selectReportRoundDetailByRoundCode" parameterType="Long" resultType="ReportRoundDTO">
         SELECT ROUND_CODE,
                REPORT_CODE,
@@ -144,8 +152,32 @@
                ROUND_BODY,
                REG_DATE,
                CAPACITY
-        FROM TBL_REPORT_ROUND
-        WHERE ROUND_CODE = #{ roundCode }
+          FROM TBL_REPORT_ROUND
+         WHERE ROUND_CODE = #{ roundCode }
+    </select>
+    <!--비정기보고 상세 조회-->
+    <select id="selectCasualReportDetailByReportCode" parameterType="Long" resultType="ReportDTO">
+        SELECT A.REPORT_CODE,
+               A.MEMBER_CODE,
+               A.REPORT_TYPE,
+               A.REPORT_TITLE,
+               A.REPORT_INFO,
+               A.REPORT_CYCLE,
+               A.READ_STATUS,
+               A.COMPLETION_STATUS
+          FROM TBL_REPORT
+         WHERE A.REPORT_CODE = #{ reportCode }
+    </select>
+    <!--비정기보고 첨부파일 목록 조회-->
+    <select id="selectReportAttachmentListByReportCode" parameterType="Long" resultType="FileDTO">
+        SELECT FILE_CODE,
+               FILE_NAME,
+               FILE_ORIGINAL_NAME,
+               FILE_SIZE,
+               FILE_PATH,
+               REPORT_CODE
+          FROM TBL_FILE
+         WHERE REPORT_CODE = #{ reportCode }
     </select>
 
 

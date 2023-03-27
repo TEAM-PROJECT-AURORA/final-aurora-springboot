@@ -7,9 +7,11 @@ import com.root34.aurora.report.dto.ReportRoundDTO;
 import com.root34.aurora.report.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -40,13 +42,38 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 보고 작성
      */
-//    @ApiOperation(value = "보고 작성")
+////    @ApiOperation(value = "보고 작성")
+//    @Transactional
+//    @PostMapping(value = "/reports")
+//    public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
+//
+//        log.info("[ReportController] registerReport");
+//        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+//        if(memberList.size() == 0) {
+//            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 작성 실패! - 보고자를 등록해주세요", null));
+//        }
+//        log.info("[ReportController] memberList : " + memberList);
+//
+//        Integer memberCode = (Integer) request.getAttribute("memberCode");
+//        log.info("[ReportController] memberCode : " + memberCode);
+//
+//        ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
+//        reportDTO.setMemberCode(memberCode);
+//        log.info("[ReportController] reportDTO : " + reportDTO);
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공", reportService.registerReport(reportDTO, memberList)));
+//    }
+    //    @ApiOperation(value = "보고 작성")
     @Transactional
-    @PostMapping(value = "/reports")
-    public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request, @RequestBody Map<String, Object> requestData) {
+//    @PostMapping(value = "/reports")
+    @PostMapping(value = "/reports", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request,
+                                                      @RequestPart("reportDTO") ReportDTO reportDTO,
+                                                      @RequestPart("memberList") List<Integer> memberList,
+                                                      @RequestPart(name = "fileList", required = false)List<MultipartFile> fileList) {
 
-        log.info("[ReportController] registerReport");
-        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+        log.info("[ReportController] registerReport Start");
+//        List<Integer> memberList = (List<Integer>) requestData.get("memberList");
         if(memberList.size() == 0) {
             return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 작성 실패! - 보고자를 등록해주세요", null));
         }
@@ -55,11 +82,13 @@ public class ReportController {
         Integer memberCode = (Integer) request.getAttribute("memberCode");
         log.info("[ReportController] memberCode : " + memberCode);
 
-        ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
+//        ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
         reportDTO.setMemberCode(memberCode);
         log.info("[ReportController] reportDTO : " + reportDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공", reportService.registerReport(reportDTO, memberList)));
+        log.info("[ReportController] fileList : " + fileList);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공", reportService.registerReport(reportDTO, memberList, fileList)));
     }
 
     /**
