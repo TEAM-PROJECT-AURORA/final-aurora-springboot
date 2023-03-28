@@ -22,4 +22,6 @@ public class ApprovalLineDTO {
     /**@Variable : 사원코드*/
     private MemberDTO memberDTO;
 
+    private ApprovalDTO approvalDTO;
+
 }

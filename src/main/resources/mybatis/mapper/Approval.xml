@@ -81,15 +81,26 @@
         where tal.APP_STATUS = 'N' and ta.MEMBER_CODE = #{ memberCode }
     </select>
 
-    <select id="detailApprove" resultType="ApprovalDTO">
+    <select id="detailApprove" resultMap="approvalResultMap">
         select
             *
         from TBL_APPROVAL ta
+        JOIN TBL_APPROVAL_LINE tal ON tal.APP_CODE = ta.APP_CODE
+        JOIN TBL_MEMBER tm ON tm.MEMBER_CODE = tal.MEMBER_CODE
         where ta.APP_CODE = #{ appCode }
     </select>
 
+    <select id="approvalLine" resultMap="approvalLineResultMap">
+        select
+            *
+        from TBL_APPROVAL_LINE tal
+                 JOIN TBL_APPROVAL ta ON tal.APP_CODE = ta.APP_CODE
+                 JOIN TBL_MEMBER tm ON tm.MEMBER_CODE = tal.MEMBER_CODE
+        where tal.APP_CODE = #{ appCode }
+    </select>
+
     <select id="completedList" resultType="ApprovalDTO">
-        elect
+        select
         *
         from TBL_APPROVAL ta
                  join TBL_APPROVAL_LINE tal

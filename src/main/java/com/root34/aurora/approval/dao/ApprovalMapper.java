@@ -37,4 +37,8 @@ public interface ApprovalMapper {
     /** 결재선 추가
      * @param approvalLineDTOList 결재선 DTO 리스트*/
     int setLineApproval(List<ApprovalLineDTO> approvalLineDTOList);
+
+    /** 결재선 확인
+     * @param appCode 결재문서 코드 */
+    List<ApprovalLineDTO> approvalLine(int appCode);
 }
