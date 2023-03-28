@@ -1,5 +1,7 @@
 package com.root34.aurora.reservation.dto;
 
+import lombok.Data;
+
 import java.sql.Date;
 
 /**
@@ -8,6 +10,7 @@ import java.sql.Date;
 	@Writer : 오승재
 	@Description : 예약 정보
 */
+@Data
 public class ReservationDTO {
 
     /**

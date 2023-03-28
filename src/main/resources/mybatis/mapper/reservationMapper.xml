@@ -2,16 +2,19 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.root34.aurora.addressBook.dao.AddressBookMapper">
+<mapper namespace="com.root34.aurora.reservation.dao.ReservationMapper">
     <select id="selectAllAssetsAvailable" resultType="assetDTO">
         SELECT
             ASSET_CODE,
             ASSET_NAME,
-            ASSET_DESCRIPTION
+            ASSET_CATEGORY
           FROM TBL_ASSET
-         WHERE STATUS = 'Y'
     </select>
-
+    <select id="selectAllAssetCategory" resultType="assetDTO">
+        SELECT
+            DISTINCT ASSET_CATEGORY
+          FROM TBL_ASSET
+    </select>
 
 
 </mapper>

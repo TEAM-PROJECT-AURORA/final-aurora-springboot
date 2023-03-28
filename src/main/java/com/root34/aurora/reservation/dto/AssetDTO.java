@@ -1,11 +1,14 @@
 package com.root34.aurora.reservation.dto;
 
+import lombok.Data;
+
 /**
 	@ClassName : AssetDTO
 	@Date : 2023-03-28
 	@Writer : 오승재
 	@Description : 자산 정보
 */
+@Data
 public class AssetDTO {
 
     /**
@@ -19,7 +22,7 @@ public class AssetDTO {
     /**
     	* @variable 자산 설명 
     */
-    private String assetDescription;
+    private String assetCategory;
     /**
     	* @variable 예약가능여부
     */

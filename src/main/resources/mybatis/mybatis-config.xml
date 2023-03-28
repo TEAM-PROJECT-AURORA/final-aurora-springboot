@@ -23,5 +23,6 @@
 	<mappers>
 		<mapper resource="addressBookMapper.xml" />
 		<mapper resource="reservationMapper.xml" />
+		<mapper resource="memberMapper.xml" />
 	</mappers>
 </configuration>
