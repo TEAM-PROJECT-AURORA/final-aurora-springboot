@@ -5,6 +5,7 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import com.root34.aurora.report.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class ReportController {
      * @Writer : 김수용
      * @Description : 전체 보고 조회 - 보고 메인 페이지용
      */
-    @GetMapping(value = "/reports")
+    @GetMapping(value = "/reports/all")
     public ResponseEntity<ResponseDTO> getAllReportList(HttpServletRequest request) {
 
         log.info("[ReportController] getAllReportList");
@@ -145,10 +146,12 @@ public class ReportController {
      * @MethodName : selectRoutineReportList
      * @Date : 2023-03-24
      * @Writer : 김수용
-     * @Description : 정기보고 목록 조회
+     * @Description : 조건별 보고 목록 조회
      */
-    @GetMapping(value = "/reports/routine/active")
+    @GetMapping(value = "/reports")
     public ResponseEntity<ResponseDTO> selectRoutineReportList(HttpServletRequest request,
+                                                               @RequestParam String reportType,
+                                                               @RequestParam char completionStatus,
                                                                @RequestParam int offset) {
 
         log.info("[ReportController] selectRoutineReportList");
@@ -157,83 +160,11 @@ public class ReportController {
         HashMap<String, Object> searchConditions = new HashMap<>();
         Integer memberCode = (Integer) request.getAttribute("memberCode");
         searchConditions.put("memberCode", memberCode);
-        searchConditions.put("reportType", "Routine");
-        searchConditions.put("completionStatus", 'N');
+        searchConditions.put("reportType", reportType);
+        searchConditions.put("completionStatus", completionStatus);
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공",
-                reportService.selectReportListByConditions(offset, searchConditions)));
-    }
-
-    /**
-     * @MethodName : selectCompletedRoutineReportList
-     * @Date : 2023-03-24
-     * @Writer : 김수용
-     * @Description : 완료된 정기보고 목록 조회
-     */
-    @GetMapping(value = "/reports/routine/completed")
-    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request,
-                                                                        @RequestParam int offset) {
-
-        log.info("[ReportController] selectCompletedRoutineReportList");
-        log.info("[ReportController] offset : " + offset);
-
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        Integer memberCode = (Integer) request.getAttribute("memberCode");
-        searchConditions.put("memberCode", memberCode);
-        searchConditions.put("reportType", "Routine");
-        searchConditions.put("completionStatus", 'Y');
-        log.info("[ReportController] searchConditions : " + searchConditions);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공",
-                reportService.selectReportListByConditions(offset, searchConditions)));
-    }
-
-    /**
-     * @MethodName : selectCasualReportList
-     * @Date : 2023-03-24
-     * @Writer : 김수용
-     * @Description : 비정기보고 목록 조회
-     */
-    @GetMapping(value = "/reports/casual/active")
-    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request,
-                                                              @RequestParam int offset) {
-
-        log.info("[ReportController] selectCasualReportList");
-        log.info("[ReportController] offset : " + offset);
-
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        Integer memberCode = (Integer) request.getAttribute("memberCode");
-        searchConditions.put("memberCode", memberCode);
-        searchConditions.put("reportType", "Casual");
-        searchConditions.put("completionStatus", 'N');
-        log.info("[ReportController] searchConditions : " + searchConditions);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공",
-                reportService.selectReportListByConditions(offset, searchConditions)));
-    }
-
-    /**
-     * @MethodName : selectCompletedCasualReportList
-     * @Date : 2023-03-24
-     * @Writer : 김수용
-     * @Description : 완료된 비정기보고 목록 조회
-     */
-    @GetMapping(value = "/reports/casual/completed")
-    public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request,
-                                                                       @RequestParam int offset) {
-
-        log.info("[ReportController] selectCompletedCasualReportList");
-        log.info("[ReportController] offset : " + offset);
-
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        Integer memberCode = (Integer) request.getAttribute("memberCode");
-        searchConditions.put("memberCode", memberCode);
-        searchConditions.put("reportType", "Casual");
-        searchConditions.put("completionStatus", 'Y');
-        log.info("[ReportController] searchConditions : " + searchConditions);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공",
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 목록 조회 성공",
                 reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
@@ -412,4 +343,170 @@ public class ReportController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 삭제 성공",
                 reportService.deleteReportDetail(memberCode, detailCode)));
     }
+
+    /**
+    	* @MethodName : registerReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 작성
+    */
+    @PostMapping("/reports/{reportCode}/rounds/{roundCode}/comments")
+    public ResponseEntity<ResponseDTO> registerReportRoundReply(HttpServletRequest request,
+                                                                @PathVariable long reportCode,
+                                                                @PathVariable long roundCode,
+                                                                @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
+
+        log.info("[ReportController] registerReportRoundReply Start");
+        log.info("[ReportController] reportCode : " + reportCode);
+
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        reportRoundReplyDTO.setMemberCode(memberCode);
+        reportRoundReplyDTO.setRoundCode(roundCode);
+        log.info("[ReportController] reportRoundReplyDTO : " + reportRoundReplyDTO);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 작성 성공",
+                reportService.registerReportRoundReply(reportCode, reportRoundReplyDTO)));
+    }
+
+    /**
+    	* @MethodName : selectReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 목록 조회
+    */
+    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/comments")
+    public ResponseEntity<ResponseDTO> selectReportRoundReply(HttpServletRequest request,
+                                                              @PathVariable long reportCode,
+                                                              @PathVariable long roundCode) {
+
+        log.info("[ReportController] registerReportRoundReply Start");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+        log.info("[ReportController] reportCode : " + reportCode);
+        log.info("[ReportController] roundCode : " + roundCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 목록 조회 성공",
+                reportService.selectReportRoundReply(memberCode, reportCode, roundCode)));
+    }
+
+    /**
+    	* @MethodName : updateReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 수정
+    */
+    @PutMapping("/reports/{reportCode}/rounds/{roundCode}/comments/{replyCode}")
+    public ResponseEntity<ResponseDTO> updateReportRoundReply(HttpServletRequest request,
+                                                              @PathVariable long reportCode,
+                                                              @PathVariable long roundCode,
+                                                              @PathVariable long replyCode,
+                                                              @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
+
+        log.info("[ReportController] updateReportRoundReply Start");
+        log.info("[ReportController] reportCode : " + reportCode);
+
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        reportRoundReplyDTO.setMemberCode(memberCode);
+        reportRoundReplyDTO.setReplyCode(replyCode);
+        reportRoundReplyDTO.setRoundCode(roundCode);
+        log.info("[ReportController] reportRoundReplyDTO : " + reportRoundReplyDTO);
+        
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 수정 성공",
+                reportService.updateReportRoundReply(reportRoundReplyDTO)));
+    }
+
+    /**
+    	* @MethodName : deleteReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 삭제
+    */
+    @DeleteMapping("/reports/{reportCode}/rounds/{roundCode}/comments/{replyCode}")
+    public ResponseEntity<ResponseDTO> deleteReportRoundReply(HttpServletRequest request,
+                                                              @PathVariable long reportCode,
+                                                              @PathVariable long roundCode,
+                                                              @PathVariable long replyCode) {
+
+        log.info("[ReportController] updateReportRoundReply Start");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+        log.info("[ReportController] reportCode : " + reportCode);
+        log.info("[ReportController] roundCode : " + roundCode);
+        log.info("[ReportController] replyCode : " + replyCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 삭제 성공",
+                reportService.deleteReportRoundReply(memberCode, replyCode)));
+    }
 }
+
+//    /**
+//     * @MethodName : selectCompletedRoutineReportList
+//     * @Date : 2023-03-24
+//     * @Writer : 김수용
+//     * @Description : 완료된 정기보고 목록 조회
+//     */
+//    @GetMapping(value = "/reports/routine/completed")
+//    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request,
+//                                                                        @RequestParam int offset) {
+//
+//        log.info("[ReportController] selectCompletedRoutineReportList");
+//        log.info("[ReportController] offset : " + offset);
+//
+//        HashMap<String, Object> searchConditions = new HashMap<>();
+//        Integer memberCode = (Integer) request.getAttribute("memberCode");
+//        searchConditions.put("memberCode", memberCode);
+//        searchConditions.put("reportType", "Routine");
+//        searchConditions.put("completionStatus", 'Y');
+//        log.info("[ReportController] searchConditions : " + searchConditions);
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공",
+//                reportService.selectReportListByConditions(offset, searchConditions)));
+//    }
+//
+//    /**
+//     * @MethodName : selectCasualReportList
+//     * @Date : 2023-03-24
+//     * @Writer : 김수용
+//     * @Description : 비정기보고 목록 조회
+//     */
+//    @GetMapping(value = "/reports/casual/active")
+//    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request,
+//                                                              @RequestParam int offset) {
+//
+//        log.info("[ReportController] selectCasualReportList");
+//        log.info("[ReportController] offset : " + offset);
+//
+//        HashMap<String, Object> searchConditions = new HashMap<>();
+//        Integer memberCode = (Integer) request.getAttribute("memberCode");
+//        searchConditions.put("memberCode", memberCode);
+//        searchConditions.put("reportType", "Casual");
+//        searchConditions.put("completionStatus", 'N');
+//        log.info("[ReportController] searchConditions : " + searchConditions);
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공",
+//                reportService.selectReportListByConditions(offset, searchConditions)));
+//    }
+//
+//    /**
+//     * @MethodName : selectCompletedCasualReportList
+//     * @Date : 2023-03-24
+//     * @Writer : 김수용
+//     * @Description : 완료된 비정기보고 목록 조회
+//     */
+//    @GetMapping(value = "/reports/casual/completed")
+//    public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request,
+//                                                                       @RequestParam int offset) {
+//
+//        log.info("[ReportController] selectCompletedCasualReportList");
+//        log.info("[ReportController] offset : " + offset);
+//
+//        HashMap<String, Object> searchConditions = new HashMap<>();
+//        Integer memberCode = (Integer) request.getAttribute("memberCode");
+//        searchConditions.put("memberCode", memberCode);
+//        searchConditions.put("reportType", "Casual");
+//        searchConditions.put("completionStatus", 'Y');
+//        log.info("[ReportController] searchConditions : " + searchConditions);
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공",
+//                reportService.selectReportListByConditions(offset, searchConditions)));
+//    }

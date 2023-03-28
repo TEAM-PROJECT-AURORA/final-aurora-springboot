@@ -5,6 +5,7 @@ import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.HashMap;
@@ -74,4 +75,14 @@ public interface ReportMapper {
     List<ReportDetailDTO> selectReportDetailListByRoundCode(long roundCode); // 회차별 상세 보고 목록 조회
 
     int deleteReportDetail(long detailCode); // 회차별 상세 보고 삭제
+
+    int registerReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO); // 보고 댓글 작성
+
+    List<ReportRoundReplyDTO> selectReportRoundReply(long roundCode); // 보고 댓글 목록 조회
+
+    int updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO); // 보고 댓글 수정
+
+    int deleteReportRoundReply(long replyCode); // 보고 댓글 삭제
+
+    int selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
 }

@@ -245,4 +245,39 @@
         DELETE FROM TBL_REPORT_DETAIL
          WHERE DETAIL_CODE = #{ detailCode }
     </delete>
+    <!--보고 댓글 작성-->
+    <insert id="registerReportRoundReply" parameterType="ReportRoundReplyDTO">
+        INSERT INTO TBL_REPORT_ROUND_REPLY
+            ( ROUND_CODE, MEMBER_CODE, REPLY_BODY )
+        VALUES
+            ( #{ roundCode }, #{ memberCode }, #{ replyBody } )
+    </insert>
+    <!--보고 댓글 목록 조회-->
+    <select id="selectReportRoundReply" parameterType="Long" resultType="ReportRoundReplyDTO">
+        SELECT REPLY_CODE,
+               ROUND_CODE,
+               MEMBER_CODE,
+               REPLY_BODY,
+               REG_DATE
+          FROM TBL_REPORT_ROUND_REPLY
+         WHERE ROUND_CODE = #{ roundCode }
+    </select>
+    <!--보고 댓글 작성자 확인-->
+    <select id="selectMemberCodeByReplyCode" resultType="int">
+        SELECT MEMBER_CODE
+          FROM TBL_REPORT_ROUND_REPLY
+         WHERE REPLY_CODE = #{ replyCode }
+    </select>
+    <!--보고 댓글 수정-->
+    <update id="updateReportRoundReply" parameterType="ReportRoundReplyDTO">
+        UPDATE TBL_REPORT_ROUND_REPLY
+           SET REPLY_BODY = #{ replyBody },
+               REG_DATE = (CURRENT_DATE)
+         WHERE REPLY_CODE = #{ replyCode }
+    </update>
+    <!--보고 댓글 삭제-->
+    <delete id="deleteReportRoundReply" parameterType="Long">
+        DELETE FROM TBL_REPORT_ROUND_REPLY
+         WHERE REPLY_CODE = #{ replyCode }
+    </delete>
 </mapper>

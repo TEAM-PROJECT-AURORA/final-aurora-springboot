@@ -8,6 +8,7 @@ import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import com.root34.aurora.util.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,7 @@ public class ReportService {
             if(!involvedMemberCodeList.contains(memberCode)) {
                 throw new Exception("보고 관련자가 아닙니다. 조회할 권한이 없습니다.");
             }
+            log.info("[ReportService] verifyMemberReportAccess Passed");
         } catch (Exception e) {
             log.error("[ReportService] verifyMemberReportAccess Error : " + e.getMessage());
             // 에러에 대한 응답 처리
@@ -385,6 +387,7 @@ public class ReportService {
     public ResponseDTOWithPaging selectReportListByConditions(int offset, HashMap<String, Object> searchConditions) {
 
         log.info("[ReportService] selectReportListByConditions Start");
+        log.info("[ReportService] searchConditions : " + searchConditions);
         int totalCount = reportMapper.getReportCount(searchConditions);
         log.info("[ReportService] totalCount : " + totalCount);
         int limit = 10;
@@ -651,6 +654,115 @@ public class ReportService {
             return reportMapper.deleteReportDetail(detailCode) > 0;
         } catch (Exception e) {
             log.error("[ReportService] deleteReportDetail Error : " + e.getMessage());
+            // 에러에 대한 응답 처리
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    /**
+    	* @MethodName : registerReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 작성
+    */
+    public boolean registerReportRoundReply(long reportCode, ReportRoundReplyDTO reportRoundReplyDTO) {
+
+        try {
+            log.info("[ReportService] registerReportRoundReply Start");
+            log.info("[ReportService] memberCode : " + reportRoundReplyDTO.getMemberCode());
+            log.info("[ReportService] roundCode : " + reportRoundReplyDTO.getRoundCode());
+            log.info("[ReportService] replyBody : " + reportRoundReplyDTO.getReplyBody());
+
+            verifyMemberReportAccess(reportRoundReplyDTO.getMemberCode(), reportCode);
+
+            int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
+
+            if(result == 0 ) {
+                throw new Exception("보고 댓글 작성 실패!");
+            }
+            return result > 0;
+        } catch (Exception e) {
+            log.error("[ReportService] registerReportRoundReply Error : " + e.getMessage());
+            // 에러에 대한 응답 처리
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    /**
+    	* @MethodName : selectReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 목록 조회
+    */
+    public List<ReportRoundReplyDTO> selectReportRoundReply(int memberCode, long reportCode, long roundCode) {
+
+        try {
+            log.info("[ReportService] selectReportRoundReply Start");
+            log.info("[ReportService] memberCode : " + memberCode);
+            log.info("[ReportService] roundCode : " + roundCode);
+
+            verifyMemberReportAccess(memberCode, reportCode);
+
+            List<ReportRoundReplyDTO> reportReplyList = reportMapper.selectReportRoundReply(roundCode);
+            log.info("[ReportService] reportReplyList : " + reportReplyList);
+
+            if(reportReplyList.isEmpty()) {
+                throw new Exception("조회된 보고 댓글이 없습니다!");
+            }
+            return reportReplyList;
+        } catch (Exception e) {
+            log.error("[ReportService] selectReportRoundReply Error : " + e.getMessage());
+            // 에러에 대한 응답 처리
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    /**
+    	* @MethodName : updateReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 수정
+    */
+    public boolean updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO) {
+
+        try {
+            log.info("[ReportService] updateReportRoundReply Start");
+            log.info("[ReportService] reportRoundReplyDTO : " + reportRoundReplyDTO);
+
+            boolean isAuthor = reportRoundReplyDTO.getMemberCode() == reportMapper.selectMemberCodeByReplyCode(reportRoundReplyDTO.getReplyCode());
+
+            if(!isAuthor) {
+                throw new Exception("해당 보고 댓글의 작성자가 아닙니다!");
+            }
+            return reportMapper.updateReportRoundReply(reportRoundReplyDTO) > 0;
+        } catch (Exception e) {
+            log.error("[ReportService] updateReportRoundReply Error : " + e.getMessage());
+            // 에러에 대한 응답 처리
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    /**
+    	* @MethodName : deleteReportRoundReply
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글 삭제
+    */
+    public boolean deleteReportRoundReply(int memberCode, long replyCode) {
+
+        try {
+            log.info("[ReportService] deleteReportRoundReply Start");
+            log.info("[ReportService] memberCode : " + memberCode);
+            log.info("[ReportService] replyCode : " + replyCode);
+
+            boolean isAuthor = memberCode == reportMapper.selectMemberCodeByReplyCode(replyCode);
+
+            if(!isAuthor) {
+                throw new Exception("해당 보고 댓글의 작성자가 아닙니다!");
+            }
+            return reportMapper.deleteReportRoundReply(replyCode) > 0;
+        } catch (Exception e) {
+            log.error("[ReportService] deleteReportRoundReply Error : " + e.getMessage());
             // 에러에 대한 응답 처리
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

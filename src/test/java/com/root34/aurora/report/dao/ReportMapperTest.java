@@ -6,6 +6,7 @@ import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -489,4 +490,77 @@ public class ReportMapperTest {
         // then
         assertEquals(1, result);
     }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_댓글_작성_맵퍼_테스트() {
+
+        // given
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setRoundCode(21L);
+        reportRoundReplyDTO.setMemberCode(1);
+        reportRoundReplyDTO.setReplyBody("Test Report Reply Body");
+
+        // when
+        int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_목록_조회_맵퍼_테스트() {
+
+        // given
+        long roundCode = 21L;
+
+        // when
+        List<ReportRoundReplyDTO> result = reportMapper.selectReportRoundReply(roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 보고_댓글_수정_맵퍼_테스트() {
+
+        // given
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setReplyCode(1L);
+        reportRoundReplyDTO.setReplyBody("Modified Test Report Reply Body");
+
+        // when
+        int result = reportMapper.updateReportRoundReply(reportRoundReplyDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_삭제_맵퍼_테스트() {
+
+        // given
+        long replyCode = 1L;
+
+        // when
+        int result = reportMapper.deleteReportRoundReply(replyCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_작성자_확인_맵퍼_테스트() {
+
+        // given
+        long replyCode = 4L;
+
+        // when
+        int result = reportMapper.selectMemberCodeByReplyCode(replyCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
 }
