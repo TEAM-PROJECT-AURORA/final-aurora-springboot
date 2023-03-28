@@ -28,11 +28,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectAllMemberAddressesWithPaging
-    	* @Date : 2023-03-20
-    	* @Writer : 오승재
-    	* @Description : 전체 사원 주소록 조회
-    */
+     * @MethodName : selectAllMemberAddressesWithPaging
+     * @Date : 2023-03-20
+     * @Writer : 오승재
+     * @Description : 전체 사원 주소록 조회
+     */
     @GetMapping("/address-book/addresses")
     public ResponseEntity<ResponseDTO> selectAllMemberAddressesWithPaging(@RequestParam(name="offset", defaultValue="1") String offset) {
 
@@ -52,11 +52,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectAllMemberAddressesByDeptWithPaging
-    	* @Date : 2023-03-20
-    	* @Writer : 오승재
-    	* @Description : 부서별 전체 사원 주소록 조회
-    */
+     * @MethodName : selectAllMemberAddressesByDeptWithPaging
+     * @Date : 2023-03-20
+     * @Writer : 오승재
+     * @Description : 부서별 전체 사원 주소록 조회
+     */
     @GetMapping("/address-book/department/{deptCode}")
     public ResponseEntity<ResponseDTO> selectAllMemberAddressesByDeptWithPaging(@RequestParam(name="offset", defaultValue="1") String offset, @PathVariable String deptCode) {
 
@@ -79,11 +79,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectOneMemberAddress
-    	* @Date : 2023-03-20
-    	* @Writer : 오승재
-    	* @Description : 사원 상세 조회
-    */
+     * @MethodName : selectOneMemberAddress
+     * @Date : 2023-03-20
+     * @Writer : 오승재
+     * @Description : 사원 상세 조회
+     */
     @GetMapping("/address-book/addresses/{memberCode}")
     public ResponseEntity<ResponseDTO> selectOneMemberAddress(@PathVariable int memberCode) {
 
@@ -93,11 +93,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : insertGroup
-    	* @Date : 2023-03-20
-    	* @Writer : 오승재
-    	* @Description : 그룹 추가
-    */
+     * @MethodName : insertGroup
+     * @Date : 2023-03-20
+     * @Writer : 오승재
+     * @Description : 그룹 추가
+     */
     @PostMapping("/address-book/group")
     public ResponseEntity<ResponseDTO> insertGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
 
@@ -107,11 +107,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectAllPersonalAddressesWithPaging
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 그룹 주소록 전체 조회
-    */
+     * @MethodName : selectAllPersonalAddressesWithPaging
+     * @Date : 2023-03-21
+     * @Writer : 오승재
+     * @Description : 그룹 주소록 전체 조회
+     */
     @GetMapping("/address-book/groups/{groupCode}")
     public ResponseEntity<ResponseDTO> selectAllGroupAddressesWithPaging(@RequestParam String offset, @PathVariable String groupCode) {
 
@@ -135,11 +135,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : insertPersonalAddress
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 그룹 주소록 추가
-    */
+     * @MethodName : insertPersonalAddress
+     * @Date : 2023-03-21
+     * @Writer : 오승재
+     * @Description : 그룹 주소록 추가
+     */
     @PostMapping("/address-book/groups")
     public ResponseEntity<ResponseDTO> insertGroupAddress(@RequestBody AddressBookDTO addressBookDTO) {
 
@@ -149,11 +149,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : updateAddress
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 주소록 수정
-    */
+     * @MethodName : updateAddress
+     * @Date : 2023-03-21
+     * @Writer : 오승재
+     * @Description : 주소록 수정
+     */
     @PutMapping("/address-book/address")
     public ResponseEntity<ResponseDTO> updateAddress(@RequestBody AddressBookDTO address, @RequestParam String addBookNos) {
 
@@ -168,11 +168,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : deleteAddress
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 주소록 삭제
-    */
+     * @MethodName : deleteAddress
+     * @Date : 2023-03-21
+     * @Writer : 오승재
+     * @Description : 주소록 삭제
+     */
     @DeleteMapping("/address-book/groups")
     public ResponseEntity<ResponseDTO> deleteAddress(@RequestBody JSONObject object) {
 
@@ -185,11 +185,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectPersonalGroups
-    	* @Date : 2023-03-22
-    	* @Writer : 오승재
-    	* @Description : 개인 주소록 그룹 조회
-    */
+     * @MethodName : selectPersonalGroups
+     * @Date : 2023-03-22
+     * @Writer : 오승재
+     * @Description : 개인 주소록 그룹 조회
+     */
     @GetMapping("/address-book/personal-groups/{memberCode}")
     public ResponseEntity<ResponseDTO> selectPersonalGroups(@PathVariable int memberCode) {
 
@@ -199,11 +199,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectTeamGroups
-    	* @Date : 2023-03-23
-    	* @Writer : 오승재
-    	* @Description : 팀 주소록 그룹 조회
-    */
+     * @MethodName : selectTeamGroups
+     * @Date : 2023-03-23
+     * @Writer : 오승재
+     * @Description : 팀 주소록 그룹 조회
+     */
     @GetMapping("/address-book/team-groups/{memberCode}")
     public ResponseEntity<ResponseDTO> selectTeamGroups(@PathVariable int memberCode) {
 
@@ -213,11 +213,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectMembersWithSearch
-    	* @Date : 2023-03-25
-    	* @Writer : 오승재
-    	* @Description : 검색으로 사원 주소록 조회
-    */
+     * @MethodName : selectMembersWithSearch
+     * @Date : 2023-03-25
+     * @Writer : 오승재
+     * @Description : 검색으로 사원 주소록 조회
+     */
     @GetMapping("address-book/search")
     public ResponseEntity<ResponseDTO> selectMembersWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue) {
 
@@ -245,11 +245,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectGroupsWithSearch
-    	* @Date : 2023-03-26
-    	* @Writer : 오승재
-    	* @Description : 검색으로 그룹 주소록 조회
-    */
+     * @MethodName : selectGroupsWithSearch
+     * @Date : 2023-03-26
+     * @Writer : 오승재
+     * @Description : 검색으로 그룹 주소록 조회
+     */
     @GetMapping("address-book/groups/{groupCode}/search")
     public ResponseEntity<ResponseDTO> selectGroupsWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue, @PathVariable String groupCode) {
 
@@ -279,11 +279,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : insertMemberToGroup
-    	* @Date : 2023-03-26
-    	* @Writer : 오승재
-    	* @Description : 사원 주소록 주소록 그룹에 추가
-    */
+     * @MethodName : insertMemberToGroup
+     * @Date : 2023-03-26
+     * @Writer : 오승재
+     * @Description : 사원 주소록 주소록 그룹에 추가
+     */
     @PostMapping("address-book/member-to-group")
     public ResponseEntity<ResponseDTO> insertMemberToGroup(@RequestBody JSONObject object) {
 
@@ -300,11 +300,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : deleteGroup
-    	* @Date : 2023-03-27
-    	* @Writer : 오승재
-    	* @Description : 그룹 삭제
-    */
+     * @MethodName : deleteGroup
+     * @Date : 2023-03-27
+     * @Writer : 오승재
+     * @Description : 그룹 삭제
+     */
     @DeleteMapping("address-book/group/{groupCode}")
     public ResponseEntity<ResponseDTO> deleteGroup(@PathVariable String groupCode) {
 
@@ -314,11 +314,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : updateGroup
-    	* @Date : 2023-03-27
-    	* @Writer : 오승재
-    	* @Description : 그룹 수정
-    */
+     * @MethodName : updateGroup
+     * @Date : 2023-03-27
+     * @Writer : 오승재
+     * @Description : 그룹 수정
+     */
     @PutMapping("address-book/group")
     public ResponseEntity<ResponseDTO> updateGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
 
@@ -328,11 +328,11 @@ public class AddressBookController {
     }
 
     /**
-    	* @MethodName : selectAddressForUpdate
-    	* @Date : 2023-03-27
-    	* @Writer : 오승재
-    	* @Description : 주소록 수정을 위한 조회
-    */
+     * @MethodName : selectAddressForUpdate
+     * @Date : 2023-03-27
+     * @Writer : 오승재
+     * @Description : 주소록 수정을 위한 조회
+     */
     @GetMapping("address-book/{addBookNo}")
     public ResponseEntity<ResponseDTO> selectAddressForUpdate(@PathVariable String addBookNo) {
 
