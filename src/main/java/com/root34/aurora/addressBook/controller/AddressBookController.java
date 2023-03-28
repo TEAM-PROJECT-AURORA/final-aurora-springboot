@@ -1,6 +1,7 @@
 package com.root34.aurora.addressBook.controller;
 
 import com.root34.aurora.addressBook.dto.AddressBookDTO;
+import com.root34.aurora.addressBook.dto.AddressGroupDTO;
 import com.root34.aurora.addressBook.service.AddressBookService;
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
@@ -61,7 +62,7 @@ public class AddressBookController {
 
         log.info("[AddressBookController] selectAllMemberAddressesByDeptWithPaging : " + offset);
         int totalCount = addressBookService.selectTotalMemberAddressesByDept(deptCode);
-        int limit = 15;
+        int limit = 20;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
@@ -98,37 +99,37 @@ public class AddressBookController {
     	* @Description : 그룹 추가
     */
     @PostMapping("/address-book/group")
-    public ResponseEntity<ResponseDTO> insertGroup(@RequestBody JSONObject object) {
+    public ResponseEntity<ResponseDTO> insertGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
 
-        String groupName = (String) object.get("groupName");
-        log.info("[AddressBookController] insertGroup : " + groupName);
+        log.info("[AddressBookController] insertGroup : " + addressGroupDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 추가 성공", addressBookService.insertGroup(groupName)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 추가 성공", addressBookService.insertGroup(addressGroupDTO)));
     }
 
     /**
     	* @MethodName : selectAllPersonalAddressesWithPaging
     	* @Date : 2023-03-21
     	* @Writer : 오승재
-    	* @Description : 개인 주소록 전체 조회
+    	* @Description : 그룹 주소록 전체 조회
     */
-    @GetMapping("/address-book/personal/{memberCode}")
-    public ResponseEntity<ResponseDTO> selectAllPersonalAddressesWithPaging(@RequestParam String offset, @PathVariable int memberCode) {
+    @GetMapping("/address-book/groups/{groupCode}")
+    public ResponseEntity<ResponseDTO> selectAllGroupAddressesWithPaging(@RequestParam String offset, @PathVariable String groupCode) {
 
-        log.info("[AddressBookController] selectAllPersonalAddressesWithPaging : " + offset);
-        int totalCount = addressBookService.selectTotalPersonalAddresses(memberCode);
-        int limit = 15;
+        log.info("[AddressBookController] selectAllGroupAddressesWithPaging : " + offset);
+        int totalCount = addressBookService.selectTotalGroupAddresses(groupCode);
+        int limit = 20;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
         map.put("selectCriteria", selectCriteria);
-        map.put("memberCode", memberCode);
+        map.put("groupCode", groupCode);
 
         log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+        log.info("[AddressBookController] totalCount : " + totalCount);
 
         ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
         responseDtoWithPaging.setPageInfo(selectCriteria);
-        responseDtoWithPaging.setData(addressBookService.selectAllPersonalAddresses(map));
+        responseDtoWithPaging.setData(addressBookService.selectAllGroupAddresses(map));
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
     }
@@ -137,55 +138,14 @@ public class AddressBookController {
     	* @MethodName : insertPersonalAddress
     	* @Date : 2023-03-21
     	* @Writer : 오승재
-    	* @Description : 개인 주소록 추가
+    	* @Description : 그룹 주소록 추가
     */
-    @PostMapping("/address-book/personal")
-    public ResponseEntity<ResponseDTO> insertPersonalAddress(@RequestBody AddressBookDTO addressBookDTO) {
+    @PostMapping("/address-book/groups")
+    public ResponseEntity<ResponseDTO> insertGroupAddress(@RequestBody AddressBookDTO addressBookDTO) {
 
-        log.info("[AddressBookController] insertPersonalAddress : " + addressBookDTO);
+        log.info("[AddressBookController] insertGroupAddress : " + addressBookDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "개인 주소록 추가 성공", addressBookService.insertPersonalAddress(addressBookDTO)));
-    }
-
-    /**
-    	* @MethodName : selectAllTeamAddressesWithPaging
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 팀 주소록 전체 조회
-    */
-    @GetMapping("/address-book/team/{team}")
-    public ResponseEntity<ResponseDTO> selectAllTeamAddressesWithPaging(@RequestParam String offset, @PathVariable String team) {
-
-        log.info("[AddressBookController] selectAllTeamAddressesWithPaging : " + offset);
-        int totalCount = addressBookService.selectTotalTeamAddresses(team);
-        int limit = 15;
-        int buttonAmount = 5;
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
-        Map map = new HashMap();
-        map.put("selectCriteria", selectCriteria);
-        map.put("team", team);
-
-        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
-
-        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
-        responseDtoWithPaging.setPageInfo(selectCriteria);
-        responseDtoWithPaging.setData(addressBookService.selectAllTeamAddresses(map));
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
-    }
-
-    /**
-    	* @MethodName : insertTeamAddress
-    	* @Date : 2023-03-21
-    	* @Writer : 오승재
-    	* @Description : 팀 주소록 추가
-    */
-    @PostMapping("/address-book/team")
-    public ResponseEntity<ResponseDTO> insertTeamAddress(@RequestBody AddressBookDTO addressBookDTO) {
-
-        log.info("[AddressBookController] insertTeamAddress : " + addressBookDTO);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "팀 주소록 추가 성공", addressBookService.insertTeamAddress(addressBookDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 주소록 추가 성공", addressBookService.insertGroupAddress(addressBookDTO)));
     }
 
     /**
@@ -194,13 +154,15 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 주소록 수정
     */
-    @PutMapping("/address-book/{addBookNo}")
-    public ResponseEntity<ResponseDTO> updateAddress(@RequestBody AddressBookDTO address, @PathVariable String addBookNo) {
+    @PutMapping("/address-book/address")
+    public ResponseEntity<ResponseDTO> updateAddress(@RequestBody AddressBookDTO address, @RequestParam String addBookNos) {
 
-        log.info("[AddressBookController] updateAddress : " + address);
+        log.info("[AddressBookController] updateAddress : " + addBookNos + address);
+        String[] addBookNosArr = addBookNos.split(",");
+
         Map map = new HashMap();
         map.put("address", address);
-        map.put("addBookNo", addBookNo);
+        map.put("addBookNos", addBookNosArr);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 수정 성공", addressBookService.updateAddress(map)));
     }
@@ -211,12 +173,15 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 주소록 삭제
     */
-    @DeleteMapping("/address-book/{addBookNo}")
-    public ResponseEntity<ResponseDTO> deleteAddress(@PathVariable String addBookNo) {
+    @DeleteMapping("/address-book/groups")
+    public ResponseEntity<ResponseDTO> deleteAddress(@RequestBody JSONObject object) {
 
-        log.info("[AddressBookController] deleteAddress : " + addBookNo);
+        String objectAsString = object.getAsString("addBookNos");
+        String[] addBookNos = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 삭제 성공", addressBookService.deleteAddress(addBookNo)));
+        log.info("[AddressBookController] deleteAddress : " + addBookNos);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 삭제 성공", addressBookService.deleteAddress(addBookNos)));
     }
 
     /**
@@ -225,11 +190,154 @@ public class AddressBookController {
     	* @Writer : 오승재
     	* @Description : 개인 주소록 그룹 조회
     */
-    @GetMapping("/address-book/{memberCode}/groups")
+    @GetMapping("/address-book/personal-groups/{memberCode}")
     public ResponseEntity<ResponseDTO> selectPersonalGroups(@PathVariable int memberCode) {
 
         log.info("[AddressBookController] selectPersonalGroups : " + memberCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "개인 그룹 조회 성공", addressBookService.selectPersonalGroups(memberCode)));
+    }
+
+    /**
+    	* @MethodName : selectTeamGroups
+    	* @Date : 2023-03-23
+    	* @Writer : 오승재
+    	* @Description : 팀 주소록 그룹 조회
+    */
+    @GetMapping("/address-book/team-groups/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectTeamGroups(@PathVariable int memberCode) {
+
+        log.info("[AddressBookController] selectTeamGroups : " + memberCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "팀 그룹 조회 성공", addressBookService.selectTeamGroups(memberCode)));
+    }
+
+    /**
+    	* @MethodName : selectMembersWithSearch
+    	* @Date : 2023-03-25
+    	* @Writer : 오승재
+    	* @Description : 검색으로 사원 주소록 조회
+    */
+    @GetMapping("address-book/search")
+    public ResponseEntity<ResponseDTO> selectMembersWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue) {
+
+        log.info("[AddressBookController] selectMembersWithSearch : " + searchCondition + searchValue);
+
+        Map map = new HashMap();
+        map.put("searchCondition", searchCondition);
+        map.put("searchValue", searchValue);
+
+        int totalCount = addressBookService.selectTotalMembersSearch(map);
+        int limit = 20;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(searchCondition);
+        selectCriteria.setSearchValue(searchValue);
+
+        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+
+        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
+        responseDtoWithPaging.setPageInfo(selectCriteria);
+        responseDtoWithPaging.setData(addressBookService.selectMembersWithSearch(selectCriteria));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
+    }
+
+    /**
+    	* @MethodName : selectGroupsWithSearch
+    	* @Date : 2023-03-26
+    	* @Writer : 오승재
+    	* @Description : 검색으로 그룹 주소록 조회
+    */
+    @GetMapping("address-book/groups/{groupCode}/search")
+    public ResponseEntity<ResponseDTO> selectGroupsWithSearch(@RequestParam(name="offset", defaultValue="1") String offset, String searchCondition, String searchValue, @PathVariable String groupCode) {
+
+        log.info("[AddressBookController] selectGroupsWithSearch : " + searchCondition + searchValue + groupCode);
+
+        Map map = new HashMap();
+        map.put("searchCondition", searchCondition);
+        map.put("searchValue", searchValue);
+        map.put("groupCode", groupCode);
+
+        int totalCount = addressBookService.selectTotalGroupsWithSearch(map);
+        int limit = 20;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(searchCondition);
+        selectCriteria.setSearchValue(searchValue);
+        map.put("selectCriteria", selectCriteria);
+
+        log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+
+        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
+        responseDtoWithPaging.setPageInfo(selectCriteria);
+        responseDtoWithPaging.setData(addressBookService.selectGroupsWithSearch(map));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
+    }
+
+    /**
+    	* @MethodName : insertMemberToGroup
+    	* @Date : 2023-03-26
+    	* @Writer : 오승재
+    	* @Description : 사원 주소록 주소록 그룹에 추가
+    */
+    @PostMapping("address-book/member-to-group")
+    public ResponseEntity<ResponseDTO> insertMemberToGroup(@RequestBody JSONObject object) {
+
+        log.info("[AddressBookController] insertMemberToGroup : " + object);
+        String groupCode = (String) object.get("groupCode");
+        String objectAsString = object.getAsString("memberCodes");
+        String[] memberCodes = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+        Map map = new HashMap();
+        map.put("groupCode", groupCode);
+        map.put("memberCodes", memberCodes);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 추가 성공", addressBookService.insertMemberToGroup(map)));
+    }
+
+    /**
+    	* @MethodName : deleteGroup
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 그룹 삭제
+    */
+    @DeleteMapping("address-book/group/{groupCode}")
+    public ResponseEntity<ResponseDTO> deleteGroup(@PathVariable String groupCode) {
+
+        log.info("[AddressBookController] deleteGroup : " + groupCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 삭제 성공", addressBookService.deleteGroup(groupCode)));
+    }
+
+    /**
+    	* @MethodName : updateGroup
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 그룹 수정
+    */
+    @PutMapping("address-book/group")
+    public ResponseEntity<ResponseDTO> updateGroup(@RequestBody AddressGroupDTO addressGroupDTO) {
+
+        log.info("[AddressBookController] updateGroup : " + addressGroupDTO);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "그룹 수정 성공", addressBookService.updateGroup(addressGroupDTO)));
+    }
+
+    /**
+    	* @MethodName : selectAddressForUpdate
+    	* @Date : 2023-03-27
+    	* @Writer : 오승재
+    	* @Description : 주소록 수정을 위한 조회
+    */
+    @GetMapping("address-book/{addBookNo}")
+    public ResponseEntity<ResponseDTO> selectAddressForUpdate(@PathVariable String addBookNo) {
+
+        log.info("[AddressBookController] selectAddressForUpdate : " + addBookNo);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "주소록 상세 조회 성공", addressBookService.selectAddressForUpdate(addBookNo)));
     }
 }

@@ -19,4 +19,12 @@ public class AddressGroupDTO {
     	* @variable 그룹명
     */
     private String groupName;
+	/**
+		* @variable 사원 코드 
+	*/
+	private int memberCode;
+	/**
+		* @variable 소속팀
+	*/
+	private String team;
 }

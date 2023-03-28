@@ -28,23 +28,37 @@ public interface AddressBookMapper {
 
 	MemberDTO selectOneMemberAddress(int memberCode);
 
-	int insertGroup(String groupName);
+	int insertGroup(AddressGroupDTO addressGroupDTO);
 
-	int selectTotalPersonalAddresses(int MemberCode);
+	int selectTotalGroupAddresses(String groupCode);
 
-	List<AddressBookDTO> selectAllPersonalAddresses(Map map);
+	List<AddressBookDTO> selectAllGroupAddresses(Map map);
 
-	int insertPersonalAddress(AddressBookDTO addressBookDTO);
-
-	int selectTotalTeamAddresses(String team);
-
-	List<AddressBookDTO> selectAllTeamAddresses(Map map);
-
-	int insertTeamAddress(AddressBookDTO addressBookDTO);
+	int insertGroupAddress(AddressBookDTO addressBookDTO);
 
 	int updateAddress(Map map);
 
-	int deleteAddress(String addBookNo);
+	int deleteAddress(String[] addBookNos);
 
 	List<AddressGroupDTO> selectPersonalGroups(int memberCode);
+
+	List<AddressGroupDTO> selectTeamGroups(int memberCode);
+
+	int selectTotalMembersSearch(Map map);
+
+	List<AddressBookDTO> selectMembersWithSearch(SelectCriteria selectCriteria);
+
+	int selectTotalGroupsWithSearch(Map map);
+
+	List<AddressBookDTO> selectGroupsWithSearch(Map map);
+
+	int insertMemberToGroup(Map map);
+
+	int deleteAddressInGroup(String groupCode);
+
+	int deleteGroup(String groupCode);
+
+	int updateGroup(AddressGroupDTO addressGroupDTO);
+
+	AddressBookDTO selectAddressForUpdate(String addBookNo);
 }

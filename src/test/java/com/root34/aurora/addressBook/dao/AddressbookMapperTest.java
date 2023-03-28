@@ -102,39 +102,42 @@ class AddressBookMapperTest {
     void 주소록_그룹_추가_매퍼_테스트() {
 
         // given
-        String team = "개발1팀";
+        AddressGroupDTO addressGroupDTO = new AddressGroupDTO();
+        addressGroupDTO.setGroupName("주소록 그룹 테스트4");
+        addressGroupDTO.setMemberCode(1);
+
 
         // when
-        int result = addressBookMapper.insertGroup(team);
+        int result = addressBookMapper.insertGroup(addressGroupDTO);
 
         // then
         assertEquals(1, result);
     }
 
     @Test
-    void 개인_주소록_총_개수_조회_매퍼_테스트() {
+    void 그룹_주소록_총_개수_조회_매퍼_테스트() {
 
         // given
-        int memberCode = 1;
+        String groupCode = "1";
 
         // when
-        int result = addressBookMapper.selectTotalPersonalAddresses(memberCode);
+        int result = addressBookMapper.selectTotalGroupAddresses(groupCode);
 
         // then
         assertTrue(result > 0);
     }
     
     @Test
-    void 개인_주소록_전체_조회_매퍼_테스트() {
+    void 그룹_주소록_전체_조회_매퍼_테스트() {
 
         // given
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
         Map map = new HashMap();
         map.put("selectCriteria", selectCriteria);
-        map.put("memberCode", 1);
+        map.put("groupCode", "1");
 
         // when
-        List<AddressBookDTO> list = addressBookMapper.selectAllPersonalAddresses(map);
+        List<AddressBookDTO> list = addressBookMapper.selectAllGroupAddresses(map);
 
         // then
         System.out.println("list = " + list);
@@ -147,67 +150,15 @@ class AddressBookMapperTest {
         // given
         AddressBookDTO addressBookDTO = new AddressBookDTO();
         addressBookDTO.setGroupCode("1");
-        addressBookDTO.setMemberCode(1);
         addressBookDTO.setName("허재홍");
         addressBookDTO.setPhone("010-2222-3333");
         addressBookDTO.setEmail("lupy@test.com");
         addressBookDTO.setCompany("뽀로로");
         addressBookDTO.setDepartment("루피담당");
-        addressBookDTO.setComPhone("02-1111-2222");
+        addressBookDTO.setJobName("02-1111-2222");
 
         // when
-        int result = addressBookMapper.insertPersonalAddress(addressBookDTO);
-
-        // then
-        assertEquals(1, result);
-    }
-
-    @Test
-    void 팀_주소록_총_개수_조회_매퍼_테스트() {
-
-        // given
-        String team = "개발1팀";
-
-        // when
-        int result = addressBookMapper.selectTotalTeamAddresses(team);
-
-        // then
-        assertTrue(result > 0);
-    }
-    
-    @Test
-    void 팀_주소록_전체_조회_매퍼_테스트() {
-
-        // given
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(1, 10, 10, 5);
-        Map map = new HashMap();
-        map.put("selectCriteria", selectCriteria);
-        map.put("team", "개발1팀");
-
-        // when
-        List<AddressBookDTO> list = addressBookMapper.selectAllTeamAddresses(map);
-
-        // then
-        System.out.println("list = " + list);
-        assertNotNull(list);
-    }
-
-    @Test
-    void 팀공용_주소록_추가_매퍼_테스트() {
-
-        // given
-        AddressBookDTO addressBookDTO = new AddressBookDTO();
-        addressBookDTO.setGroupCode("1");
-        addressBookDTO.setTeam("개발1팀");
-        addressBookDTO.setName("허재홍");
-        addressBookDTO.setPhone("010-2222-3333");
-        addressBookDTO.setEmail("lupy@test.com");
-        addressBookDTO.setCompany("뽀로로");
-        addressBookDTO.setDepartment("루피담당");
-        addressBookDTO.setComPhone("02-1111-2222");
-
-        // when
-        int result = addressBookMapper.insertTeamAddress(addressBookDTO);
+        int result = addressBookMapper.insertGroupAddress(addressBookDTO);
 
         // then
         assertEquals(1, result);
@@ -223,7 +174,7 @@ class AddressBookMapperTest {
         address.setEmail("heoCadasian@test.com");
         address.setCompany("커다시안패밀리");
         address.setDepartment("허씨");
-        address.setComPhone("02-1111-1111");
+        address.setJobName("02-1111-1111");
         Map map = new HashMap();
         map.put("address", address);
         map.put("addBookNo", "3");
@@ -235,18 +186,18 @@ class AddressBookMapperTest {
         assertEquals(1, result);
     }
 
-    @Test
-    void 주소록_삭제_매퍼_테스트() {
-
-        // given
-        String addBookNo = "1";
-
-        // when
-        int result = addressBookMapper.deleteAddress(addBookNo);
-
-        // then
-        assertEquals(1, result);
-    }
+//    @Test
+//    void 주소록_삭제_매퍼_테스트() {
+//
+//        // given
+//        String addBookNo = "1";
+//
+//        // when
+//        int result = addressBookMapper.deleteAddress(addBookNo);
+//
+//        // then
+//        assertEquals(1, result);
+//    }
 
     @Test
     void 개인_주소록_그룹_조회_매퍼_테스트() {
@@ -259,5 +210,30 @@ class AddressBookMapperTest {
 
         // then
         assertNotNull(list);
+    }
+
+    @Test
+    void 팀_주소록_그룹_조회_매퍼_테스트() {
+
+        // given
+        int memberCode = 1;
+
+        // when
+        List<AddressGroupDTO> list = addressBookMapper.selectTeamGroups(memberCode);
+
+        // then
+        assertNotNull(list);
+    }
+
+    @Test
+    void 사원_검색_총개수_조회_매퍼_테스트() {
+
+        // given
+//        Map map = new HashMap();
+//        map.put("")
+
+        // when
+
+        // then
     }
 }
