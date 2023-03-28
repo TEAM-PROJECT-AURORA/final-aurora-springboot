@@ -70,7 +70,7 @@ public interface ReportMapper {
 
     int updateReportDetail(ReportDetailDTO reportDetailDTO); // 회차별 상세 보고 수정
 
-    int selectMemberCodeByDetailCode(long detailCode); // 상세 보고 작성자 본인 확인
+    Integer selectMemberCodeByDetailCode(long detailCode); // 상세 보고 작성자 본인 확인
 
     List<ReportDetailDTO> selectReportDetailListByRoundCode(long roundCode); // 회차별 상세 보고 목록 조회
 

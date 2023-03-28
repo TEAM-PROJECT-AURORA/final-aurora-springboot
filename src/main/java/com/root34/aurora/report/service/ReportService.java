@@ -124,7 +124,14 @@ public class ReportService {
         log.info("[ReportService] memberCode : " + memberCode);
         log.info("[ReportService] detailCode : " + detailCode);
 
-        boolean isAuthor = (memberCode != reportMapper.selectMemberCodeByDetailCode(detailCode));
+        Integer detailReportAuthor = reportMapper.selectMemberCodeByDetailCode(detailCode);
+        log.info("[ReportService] detailReportAuthor : " + detailReportAuthor);
+
+        if(detailReportAuthor == null) {
+            throw new DataNotFoundException("해당 상세 보고의 작성자를 찾을 수 없습니다!");
+        }
+
+        boolean isAuthor = (memberCode != detailReportAuthor);
         log.info("[ReportService] isAuthor : " + isAuthor);
 
         if(isAuthor) {
@@ -149,7 +156,7 @@ public class ReportService {
         log.info("[ReportService] author : " + author);
 
         if(author == null) {
-            throw new NotFoundException("해당 보고 댓글의 작성자를 찾을 수 없습니다.");
+            throw new NotFoundException("해당 보고 댓글의 작성자를 찾을 수 없습니다!");
         }
         boolean isAuthor = memberCode == author;
         log.info("[ReportService] isAuthor : " + isAuthor);
