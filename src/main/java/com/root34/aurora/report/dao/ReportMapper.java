@@ -84,5 +84,5 @@ public interface ReportMapper {
 
     int deleteReportRoundReply(long replyCode); // 보고 댓글 삭제
 
-    int selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
+    Integer selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
 }

@@ -4,6 +4,11 @@ import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.exception.*;
+import com.root34.aurora.exception.report.AlreadyCompletedReportException;
+import com.root34.aurora.exception.report.InvalidReportTypeException;
+import com.root34.aurora.exception.report.NotInvolvedInReportException;
+import com.root34.aurora.exception.report.NotReportSupervisorException;
 import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
@@ -11,12 +16,11 @@ import com.root34.aurora.report.dto.ReportRoundDTO;
 import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import com.root34.aurora.util.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -55,23 +59,17 @@ public class ReportService {
     */
     public void verifyMemberReportAccess(int memberCode, Long reportCode) {
 
-        try {
-            log.info("[ReportService] verifyMemberReportAccess Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] verifyMemberReportAccess Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
 
-            List<Integer> involvedMemberCodeList = reportMapper.selectMemberListInvolvedInReport(reportCode);
-            log.info("[ReportService] involvedMemberCodeList : " + involvedMemberCodeList);
+        List<Integer> involvedMemberCodeList = reportMapper.selectMemberListInvolvedInReport(reportCode);
+        log.info("[ReportService] involvedMemberCodeList : " + involvedMemberCodeList);
 
-            if(!involvedMemberCodeList.contains(memberCode)) {
-                throw new Exception("보고 관련자가 아닙니다. 조회할 권한이 없습니다.");
-            }
-            log.info("[ReportService] verifyMemberReportAccess Passed");
-        } catch (Exception e) {
-            log.error("[ReportService] verifyMemberReportAccess Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(!involvedMemberCodeList.contains(memberCode)) {
+            throw new NotInvolvedInReportException("보고 관련자가 아닙니다. 조회할 권한이 없습니다.");
         }
+        log.info("[ReportService] verifyMemberReportAccess Passed");
     }
 
     /**
@@ -95,6 +93,74 @@ public class ReportService {
     }
 
     /**
+     * @MethodName : isReportNotCompleted
+     * @Date : 2023-03-27
+     * @Writer : 김수용
+     * @Description : 완료된 보고인지 체크
+     */
+    public void isReportNotCompleted(long reportCode) {
+
+        log.info("[ReportService] isReportNotCompleted Start");
+        log.info("[ReportService] reportCode : " + reportCode);
+
+        char result = reportMapper.selectReportCompletionStatus(reportCode);
+        log.info("[ReportService] isReportNotCompleted result : " + result);
+
+        if(result == 'Y') {
+            throw new AlreadyCompletedReportException("해당 보고는 완료된 보고입니다. 완료된 보고는 더 이상 작성이나 수정이 불가합니다!");
+        }
+        log.info("[ReportService] isReportNotCompleted Passed");
+    }
+
+    /**
+     * @MethodName : isDetailReportAuthor
+     * @Date : 2023-03-28
+     * @Writer : 김수용
+     * @Description : 상세보고 작성자 확인
+     */
+    public void isDetailReportAuthor(int memberCode, Long detailCode) {
+
+        log.info("[ReportService] isDetailReportAuthor Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] detailCode : " + detailCode);
+
+        boolean isAuthor = (memberCode != reportMapper.selectMemberCodeByDetailCode(detailCode));
+        log.info("[ReportService] isAuthor : " + isAuthor);
+
+        if(isAuthor) {
+            throw new NotAuthorException("해당 상세 보고의 작성자가 아닙니다!");
+        }
+        log.info("[ReportService] isDetailReportAuthor Passed");
+    }
+
+    /**
+     * @MethodName : isReplyAuthor
+     * @Date : 2023-03-28
+     * @Writer : 김수용
+     * @Description : 보고 댓글 작성자 확인
+     */
+    public void isReplyAuthor(int memberCode, Long replyCode) throws Exception {
+
+        log.info("[ReportService] isReplyAuthor Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] replyCode : " + replyCode);
+
+        Integer author = reportMapper.selectMemberCodeByReplyCode(replyCode);
+        log.info("[ReportService] author : " + author);
+
+        if(author == null) {
+            throw new NotFoundException("해당 보고 댓글의 작성자를 찾을 수 없습니다.");
+        }
+        boolean isAuthor = memberCode == author;
+        log.info("[ReportService] isAuthor : " + isAuthor);
+
+        if(!isAuthor) {
+            throw new NotAuthorException("해당 보고 댓글의 작성자가 아닙니다!");
+        }
+        log.info("[ReportService] isReplyAuthor Passed");
+    }
+
+    /**
      * @MethodName : updateReportReadStatusToRead
      * @Date : 2023-03-27
      * @Writer : 김수용
@@ -103,18 +169,17 @@ public class ReportService {
     public void updateReportReadStatusToRead(int memberCode, Long reportCode) {
 
         if(countInChargeMember(memberCode, reportCode)) {
-            try {
-                log.info("[ReportService] updateReportReadStatusToRead Start");
-                HashMap<String, Object> parameter = new HashMap<>();
-                parameter.put("reportCode", reportCode);
-                parameter.put("readStatus", 'Y');
-                log.info("[ReportService] parameter : " + parameter);
+            log.info("[ReportService] updateReportReadStatusToRead Start");
+            HashMap<String, Object> parameter = new HashMap<>();
+            parameter.put("reportCode", reportCode);
+            parameter.put("readStatus", 'Y');
+            log.info("[ReportService] parameter : " + parameter);
 
-                reportMapper.updateReportReadStatus(parameter);
-            } catch (Exception e) {
-                log.error("[ReportService] updateReportReadStatusToRead Error : " + e.getMessage());
-                // 에러에 대한 응답 처리
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            int result = reportMapper.updateReportReadStatus(parameter);
+            log.info("[ReportService] updateReportReadStatusToRead result : " + result);
+
+            if(result == 0) {
+                throw new UpdateFailedException("해당 보고를 읽음 상태로 수정하는데 실패했습니다!");
             }
         }
     }
@@ -127,18 +192,17 @@ public class ReportService {
     */
     public void updateReportReadStatusToUnread(Long reportCode) {
 
-        try {
-            log.info("[ReportService] updateReportReadStatusToUnread Start");
-            HashMap<String, Object> parameter = new HashMap<>();
-            parameter.put("reportCode", reportCode);
-            parameter.put("readStatus", 'N');
-            log.info("[ReportService] parameter : " + parameter);
+        log.info("[ReportService] updateReportReadStatusToUnread Start");
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("reportCode", reportCode);
+        parameter.put("readStatus", 'N');
+        log.info("[ReportService] parameter : " + parameter);
 
-            reportMapper.updateReportReadStatus(parameter);
-        } catch (Exception e) {
-            log.error("[ReportService] updateReportReadStatusToUnread Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        int result = reportMapper.updateReportReadStatus(parameter);
+        log.info("[ReportService] updateReportReadStatusToUnread result : " + result);
+
+        if(result == 0) {
+            throw new UpdateFailedException("해당 보고를 읽지않음 상태로 수정하는데 실패했습니다!");
         }
     }
 
@@ -150,28 +214,23 @@ public class ReportService {
     */
     public boolean updateReportCompletionStatusToComplete(int memberCode, Long reportCode) {
 
-        try {
-            log.info("[ReportService] updateReportCompletionStatus Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] updateReportCompletionStatus Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
 
-            if(!countInChargeMember(memberCode, reportCode)) {
-                throw new Exception("보고 책임자가 아닙니다. 수정할 권한이 없습니다.");
-            }
-            HashMap<String, Object> parameter = new HashMap<>();
-            parameter.put("memberCode", memberCode);
-            parameter.put("reportCode", reportCode);
-            parameter.put("completionStatus", 'Y');
-            log.info("[ReportService] parameter : " + parameter);
-
-            int result = reportMapper.updateReportCompletionStatus(parameter);
-
-            return result > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] updateReportCompletionStatus Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(!countInChargeMember(memberCode, reportCode)) {
+            throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다.");
         }
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("memberCode", memberCode);
+        parameter.put("reportCode", reportCode);
+        parameter.put("completionStatus", 'Y');
+        log.info("[ReportService] parameter : " + parameter);
+
+        int result = reportMapper.updateReportCompletionStatus(parameter);
+        log.info("[ReportService] updateReportCompletionStatusToComplete result : " + result);
+
+        return result > 0;
     }
 
     /**
@@ -190,8 +249,9 @@ public class ReportService {
 
             int result = reportMapper.registerReport(reportDTO);
             log.info("[ReportService] registerReport result : " + result);
+
             if(result == 0) {
-                throw new Exception("보고서 등록 실패!");
+                throw new CreationFailedException("보고서 등록 실패!");
             }
 
             Long generatedPk = reportDTO.getReportCode();
@@ -210,16 +270,15 @@ public class ReportService {
             log.info("[ReportService] memberCount : " + memberCount);
 
             if(memberCount == 0) {
-                throw new Exception("에러 : 보고자가 등록되지않았습니다!");
+                throw new CreationFailedException("보고자가 등록되지않았습니다!");
             }
             if(fileList != null) {
-
                 int fileCount = 0;
 
                     for (MultipartFile file : fileList) {
-
                         String fileName = UUID.randomUUID().toString().replace("-", "");
                         String replaceFileName = null;
+
                         log.info("[ReportService] FILE_DIR : " + FILE_DIR);
                         log.info("[ReportService] fileName : " + fileName);
                         replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
@@ -227,7 +286,6 @@ public class ReportService {
 
                         FileDTO fileDTO = new FileDTO();
                         fileDTO.setFileOriginName(file.getOriginalFilename());
-        //                fileDTO.setFileOriginName(replaceFileName);
                         fileDTO.setFileName(replaceFileName);
                         fileDTO.setFilePath(FILE_DIR + replaceFileName);
                         fileDTO.setReportCode(generatedPk);
@@ -236,20 +294,15 @@ public class ReportService {
                         String fileSizeString = String.format("%.2f MB", fileSizeInMB);
                         log.info("[ReportService] fileSizeString : " + fileSizeString);
                         fileDTO.setFileSize(fileSizeString);
-
-        //                fileDTO.setBoardImageUrl(replaceFileName);
+                        log.info("[ReportService] fileDTO : " + fileDTO);
 
                         fileCount += reportMapper.registerFileWithReportCode(fileDTO);
-        //                log.info("[ReportService] insert Image Name : "+ replaceFileName);
+                        log.info("[ReportService] fileCount : " + fileCount);
                     }
             }
             return result > 0 && memberCount == memberList.size();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            log.error("[ReportService] registerReport Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new RuntimeException("파일 업로드에 실패했습니다!");
         }
     }
 
@@ -266,6 +319,10 @@ public class ReportService {
 
         List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
         log.info("[ReportService] recentRoutineReportCodeList : " + recentRoutineReportCodeList);
+
+        if(recentRoutineReportCodeList.isEmpty()) {
+            throw new DataNotFoundException("조회된 정기보고가 없습니다!");
+        }
 
         HashMap<String, Object> searchConditions = new HashMap<>();
         searchConditions.put("memberCode", memberCode);
@@ -286,6 +343,10 @@ public class ReportService {
         response.put("casualList", casualList);
         log.info("[ReportService] casualList : " + casualList);
 
+        if(casualList.isEmpty()) {
+            throw new DataNotFoundException("조회된 비정기보고가 없습니다!");
+        }
+
         return response;
     }
 
@@ -297,37 +358,31 @@ public class ReportService {
     */
     public boolean registerReportRound(ReportRoundDTO reportRoundDTO) {
 
-        try {
-            log.info("[ReportService] registerReportRound Start");
-            log.info("[ReportService] reportRoundDTO : " + reportRoundDTO);
+        log.info("[ReportService] registerReportRound Start");
+        log.info("[ReportService] reportRoundDTO : " + reportRoundDTO);
 
-            if(reportMapper.selectReportType(reportRoundDTO.getReportCode()).equals("Casual")) {
-                throw new Exception("해당 보고서는 정기보고가 아닙니다!");
-            }
-
-            int capacity = reportMapper.getReportRoundCapacity(reportRoundDTO.getReportCode());
-            reportRoundDTO.setCapacity(capacity);
-            log.info("[ReportService] capacity : " + capacity);
-
-            LocalDate currentDate = LocalDate.now();
-            String roundTitle = currentDate + " 정기 보고";
-            reportRoundDTO.setRoundTitle(roundTitle);
-            log.info("[ReportService] RoundTitle : " + roundTitle);
-
-            int result = reportMapper.registerReportRound(reportRoundDTO);
-            log.info("[ReportService] result : " + (result > 0));
-
-            if(result == 0) {
-                throw new Exception("보고 회차 등록 실패!");
-            }
-            updateReportReadStatusToUnread(reportRoundDTO.getReportCode());
-
-            return result > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] registerReportRound Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(reportMapper.selectReportType(reportRoundDTO.getReportCode()).equals("Casual")) {
+            throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
         }
+
+        int capacity = reportMapper.getReportRoundCapacity(reportRoundDTO.getReportCode());
+        reportRoundDTO.setCapacity(capacity);
+        log.info("[ReportService] capacity : " + capacity);
+
+        LocalDate currentDate = LocalDate.now();
+        String roundTitle = currentDate + " 정기 보고";
+        reportRoundDTO.setRoundTitle(roundTitle);
+        log.info("[ReportService] RoundTitle : " + roundTitle);
+
+        int result = reportMapper.registerReportRound(reportRoundDTO);
+        log.info("[ReportService] result : " + (result > 0));
+
+        if(result == 0) {
+            throw new CreationFailedException("보고 회차 등록 실패!");
+        }
+        updateReportReadStatusToUnread(reportRoundDTO.getReportCode());
+
+        return result > 0;
     }
 
     /**
@@ -338,44 +393,39 @@ public class ReportService {
     */
     public boolean updateReport(int memberCode, ReportDTO reportDTO, List<Integer> memberList) {
 
-        try {
-            log.info("[ReportService] updateReport Start");
-            log.info("[ReportService] ReportDTO : " + reportDTO);
-            log.info("[ReportService] memberList : " + memberList);
+        log.info("[ReportService] updateReport Start");
+        log.info("[ReportService] ReportDTO : " + reportDTO);
+        log.info("[ReportService] memberList : " + memberList);
 
-            if(!countInChargeMember(memberCode, reportDTO.getReportCode())) {
-                throw new Exception("보고 책임자가 아닙니다. 수정할 권한이 없습니다!");
-            }
-
-            int updateResult = reportMapper.updateReport(reportDTO);
-            log.info("[ReportService] updateResult : " + updateResult);
-
-            Long reportCode = reportDTO.getReportCode();
-
-            int deleteResult = reportMapper.deleteReporter(reportCode);
-
-            int count = 0;
-
-            for (Integer listItem : memberList) {
-                HashMap<String, Object> parameter = new HashMap<>();
-                parameter.put("reportCode", reportCode);
-                parameter.put("listItem", listItem);
-
-                reportMapper.registerReporter(parameter);
-
-                count++;
-            }
-            log.info("[ReportService] count : " + count);
-
-            if(deleteResult == 0 || count == 0) {
-                throw new Exception("보고 수정 실패!");
-            }
-            return updateResult > 0 && deleteResult > 0 && count > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] updateReport Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(!countInChargeMember(memberCode, reportDTO.getReportCode())) {
+            throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다!");
         }
+
+        int updateResult = reportMapper.updateReport(reportDTO);
+        log.info("[ReportService] updateResult : " + updateResult);
+
+        Long reportCode = reportDTO.getReportCode();
+
+        int deleteResult = reportMapper.deleteReporter(reportCode);
+        log.info("[ReportService] deleteResult : " + deleteResult);
+
+        int count = 0;
+
+        for (Integer listItem : memberList) {
+            HashMap<String, Object> parameter = new HashMap<>();
+            parameter.put("reportCode", reportCode);
+            parameter.put("listItem", listItem);
+
+            reportMapper.registerReporter(parameter);
+
+            count++;
+        }
+        log.info("[ReportService] memberList count : " + count);
+
+        if(deleteResult == 0 || count == 0) {
+            throw new UpdateFailedException("보고 수정 실패!");
+        }
+        return updateResult > 0 && deleteResult > 0 && count > 0;
     }
 
     /**
@@ -396,15 +446,15 @@ public class ReportService {
         log.info("[ReportService] buttonAmount : " + buttonAmount);
 
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
-        log.info("[ReportService] selectCriteria : " + selectCriteria);
         selectCriteria.setSearchConditions(searchConditions);
+        log.info("[ReportService] selectCriteria : " + selectCriteria);
 
         List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
         log.info("[ReportService] reportList : " + reportList);
 
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
-        responseDTOWithPaging.setPageInfo(selectCriteria);
         responseDTOWithPaging.setData(reportList);
+        responseDTOWithPaging.setPageInfo(selectCriteria);
         log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
         return responseDTOWithPaging;
@@ -418,42 +468,36 @@ public class ReportService {
     */
     public ResponseDTOWithPaging selectReportRoundListByReportCode(int memberCode, Long reportCode, int offset) {
 
-        try {
-            log.info("[ReportService] selectReportRoundListByReportCode Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
-            log.info("[ReportService] offset : " + offset);
+        log.info("[ReportService] selectReportRoundListByReportCode Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] offset : " + offset);
 
-            verifyMemberReportAccess(memberCode, reportCode);
+        verifyMemberReportAccess(memberCode, reportCode);
 
-            if(reportMapper.selectReportType(reportCode) == "Casual") {
-                throw new Exception("해당 보고서는 정기보고가 아닙니다!");
-            }
-
-            updateReportReadStatusToRead(memberCode,reportCode);
-
-            int totalCount = reportMapper.getReportRoundCount(reportCode);
-            int limit = 10;
-            int buttonAmount = 5;
-
-            SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
-            selectCriteria.setSearchCondition(String.valueOf(reportCode));
-            log.info("[ReportService] selectCriteria : " + selectCriteria);
-
-            List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(selectCriteria);
-            log.info("[ReportService] reportRoundList : " + reportRoundList);
-
-            ResponseDTOWithPaging responseDTOWithPaging =new ResponseDTOWithPaging();
-            responseDTOWithPaging.setPageInfo(selectCriteria);
-            responseDTOWithPaging.setData(reportRoundList);
-            log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
-
-            return responseDTOWithPaging;
-        } catch (Exception e) {
-            log.error("[ReportService] selectReportRoundListByReportCode Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(reportMapper.selectReportType(reportCode) == "Casual") {
+            throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
         }
+
+        updateReportReadStatusToRead(memberCode,reportCode);
+
+        int totalCount = reportMapper.getReportRoundCount(reportCode);
+        int limit = 10;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
+        selectCriteria.setSearchCondition(String.valueOf(reportCode));
+        log.info("[ReportService] selectCriteria : " + selectCriteria);
+
+        List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(selectCriteria);
+        log.info("[ReportService] reportRoundList : " + reportRoundList);
+
+        ResponseDTOWithPaging responseDTOWithPaging =new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(reportRoundList);
+        log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
+
+        return responseDTOWithPaging;
     }
 
     /**
@@ -464,24 +508,19 @@ public class ReportService {
     */
     public ReportRoundDTO selectReportRoundDetailByRoundCode(int memberCode, Long reportCode, Long roundCode) {
 
-        try {
-            log.info("[ReportService] selectReportRoundDetailByRoundCode Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
-            log.info("[ReportService] roundCode : " + roundCode);
-            verifyMemberReportAccess(memberCode, reportCode);
+        log.info("[ReportService] selectReportRoundDetailByRoundCode Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] roundCode : " + roundCode);
 
-            updateReportReadStatusToRead(memberCode,reportCode);
+        verifyMemberReportAccess(memberCode, reportCode);
 
-            ReportRoundDTO reportRoundDetail = reportMapper.selectReportRoundDetailByRoundCode(roundCode);
-            log.info("[ReportService] reportRoundDetail : " + reportRoundDetail);
+        updateReportReadStatusToRead(memberCode,reportCode);
 
-            return reportRoundDetail;
-        } catch (Exception e) {
-            log.error("[ReportService] selectReportRoundDetailByRoundCode Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        ReportRoundDTO reportRoundDetail = reportMapper.selectReportRoundDetailByRoundCode(roundCode);
+        log.info("[ReportService] reportRoundDetail : " + reportRoundDetail);
+
+        return reportRoundDetail;
     }
 
     /**
@@ -492,55 +531,24 @@ public class ReportService {
     */
     public HashMap<String, Object> selectCasualReportDetailByReportCode(int memberCode, Long reportCode) {
 
-        try {
-            log.info("[ReportService] selectCasualReportDetailByReportCode Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] selectCasualReportDetailByReportCode Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
 
-            verifyMemberReportAccess(memberCode, reportCode);
+        verifyMemberReportAccess(memberCode, reportCode);
 
-            if(reportMapper.selectReportType(reportCode) == "Routine") {
-                throw new Exception("해당 보고서는 비정기보고가 아닙니다!");
-            }
-
-            updateReportReadStatusToRead(memberCode,reportCode);
-
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("ReportDTO", reportMapper.selectCasualReportDetailByReportCode(reportCode));
-            response.put("attachmentList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
-            log.info("[ReportService] response : " + response);
-
-            return response;
-        } catch (Exception e) {
-            log.error("[ReportService] selectCasualReportDetailByReportCode Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(reportMapper.selectReportType(reportCode) == "Routine") {
+            throw new InvalidReportTypeException("해당 보고서는 비정기보고가 아닙니다!");
         }
-    }
 
-    /**
-    	* @MethodName : isReportNotCompleted
-    	* @Date : 2023-03-27
-    	* @Writer : 김수용
-    	* @Description : 완료된 보고인지 체크
-    */
-    public void isReportNotCompleted(long reportCode) {
+        updateReportReadStatusToRead(memberCode,reportCode);
 
-        try {
-            log.info("[ReportService] isReportNotCompleted Start");
-            log.info("[ReportService] reportCode : " + reportCode);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("ReportDTO", reportMapper.selectCasualReportDetailByReportCode(reportCode));
+        response.put("attachmentList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
+        log.info("[ReportService] selectCasualReportDetailByReportCode response : " + response);
 
-            char result = reportMapper.selectReportCompletionStatus(reportCode);
-            log.info("[ReportService] result : " + result);
-
-            if(result == 'Y') {
-                throw new Exception("해당 보고는 이미 완료된 보고입니다!");
-            }
-        } catch (Exception e) {
-            log.error("[ReportService] isReportNotCompleted Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        return response;
     }
 
     /**
@@ -551,26 +559,20 @@ public class ReportService {
     */
     public boolean registerReportDetail(long reportCode, ReportDetailDTO reportDetailDTO) {
 
-        try {
-            log.info("[ReportService] registerReportDetail Start");
-            log.info("[ReportService] reportDetailDTO : " + reportDetailDTO);
+        log.info("[ReportService] registerReportDetail Start");
+        log.info("[ReportService] reportDetailDTO : " + reportDetailDTO);
 
-            isReportNotCompleted(reportCode);
+        isReportNotCompleted(reportCode);
 
-            verifyMemberReportAccess(reportDetailDTO.getMemberCode(), reportCode);
+        verifyMemberReportAccess(reportDetailDTO.getMemberCode(), reportCode);
 
-            int result = reportMapper.registerReportDetail(reportDetailDTO);
-            log.info("[ReportService] result : " + result);
+        int result = reportMapper.registerReportDetail(reportDetailDTO);
+        log.info("[ReportService] registerReportDetail result : " + result);
 
-            if(result == 0) {
-                throw new Exception("상세 보고 작성 실패!");
-            }
-            return result > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] registerReportDetail Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(result == 0) {
+            throw new CreationFailedException("상세 보고 작성 실패!");
         }
+        return result > 0;
     }
 
     /**
@@ -581,26 +583,17 @@ public class ReportService {
     */
     public boolean updateReportDetail(long reportCode, ReportDetailDTO reportDetailDTO) {
 
-        try {
-            log.info("[ReportService] updateReportDetail Start");
-            log.info("[ReportService] reportDetailDTO : " + reportDetailDTO);
-            isReportNotCompleted(reportCode);
+        log.info("[ReportService] updateReportDetail Start");
+        log.info("[ReportService] reportDetailDTO : " + reportDetailDTO);
 
-            boolean isAuthor = reportDetailDTO.getMemberCode() != reportMapper.selectMemberCodeByDetailCode(reportDetailDTO.getDetailCode());
-            log.info("[ReportService] isAuthor : " + isAuthor);
+        isReportNotCompleted(reportCode);
 
-            if(isAuthor) {
-                throw new Exception("오류 : 해당 상세 보고의 작성자가 아닙니다!");
-            }
-            int result = reportMapper.updateReportDetail(reportDetailDTO);
-            log.info("[ReportService] result : " + result);
+        isDetailReportAuthor(reportDetailDTO.getMemberCode(), reportDetailDTO.getDetailCode());
 
-            return result > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] updateReportDetail Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        int result = reportMapper.updateReportDetail(reportDetailDTO);
+        log.info("[ReportService] updateReportDetail result : " + result);
+
+        return result > 0;
     }
 
     /**
@@ -611,25 +604,20 @@ public class ReportService {
     */
     public List<ReportDetailDTO> selectReportDetailListByRoundCode(int memberCode, long reportCode, long roundCode) {
 
-        try {
-            log.info("[ReportService] selectReportDetailListByRoundCode Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] reportCode : " + reportCode);
-            log.info("[ReportService] roundCode : " + roundCode);
-            verifyMemberReportAccess(memberCode, reportCode);
+        log.info("[ReportService] selectReportDetailListByRoundCode Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
+        log.info("[ReportService] roundCode : " + roundCode);
 
-            List<ReportDetailDTO> reportDetailList = reportMapper.selectReportDetailListByRoundCode(roundCode);
-            log.info("[ReportService] reportDetailList : " + reportDetailList);
+        verifyMemberReportAccess(memberCode, reportCode);
 
-            if(reportDetailList.size() == 0) {
-                throw new Exception("조회된 상세보고 목록이 없습니다!");
-            }
-            return reportDetailList;
-        } catch (Exception e) {
-            log.error("[ReportService] selectReportDetailListByRoundCode Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        List<ReportDetailDTO> reportDetailList = reportMapper.selectReportDetailListByRoundCode(roundCode);
+        log.info("[ReportService] reportDetailList : " + reportDetailList);
+
+        if(reportDetailList.size() == 0) {
+            throw new DataNotFoundException("조회된 상세보고 목록이 없습니다!");
         }
+        return reportDetailList;
     }
 
     /**
@@ -640,23 +628,13 @@ public class ReportService {
     */
     public boolean deleteReportDetail(int memberCode, long detailCode) {
 
-        try {
-            log.info("[ReportService] deleteReportDetail Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] detailCode : " + detailCode);
+        log.info("[ReportService] deleteReportDetail Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] detailCode : " + detailCode);
 
-            boolean isAuthor = (memberCode != reportMapper.selectMemberCodeByDetailCode(detailCode));
-            log.info("[ReportService] isAuthor : " + isAuthor);
+        isDetailReportAuthor(memberCode, detailCode);
 
-            if(isAuthor) {
-                throw new Exception("오류 : 해당 상세 보고의 작성자가 아닙니다!");
-            }
-            return reportMapper.deleteReportDetail(detailCode) > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] deleteReportDetail Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        return reportMapper.deleteReportDetail(detailCode) > 0;
     }
 
     /**
@@ -667,25 +645,20 @@ public class ReportService {
     */
     public boolean registerReportRoundReply(long reportCode, ReportRoundReplyDTO reportRoundReplyDTO) {
 
-        try {
-            log.info("[ReportService] registerReportRoundReply Start");
-            log.info("[ReportService] memberCode : " + reportRoundReplyDTO.getMemberCode());
-            log.info("[ReportService] roundCode : " + reportRoundReplyDTO.getRoundCode());
-            log.info("[ReportService] replyBody : " + reportRoundReplyDTO.getReplyBody());
+        log.info("[ReportService] registerReportRoundReply Start");
+        log.info("[ReportService] memberCode : " + reportRoundReplyDTO.getMemberCode());
+        log.info("[ReportService] roundCode : " + reportRoundReplyDTO.getRoundCode());
+        log.info("[ReportService] replyBody : " + reportRoundReplyDTO.getReplyBody());
 
-            verifyMemberReportAccess(reportRoundReplyDTO.getMemberCode(), reportCode);
+        verifyMemberReportAccess(reportRoundReplyDTO.getMemberCode(), reportCode);
 
-            int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
+        int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
+        log.info("[ReportService] registerReportRoundReply result : " + result);
 
-            if(result == 0 ) {
-                throw new Exception("보고 댓글 작성 실패!");
-            }
-            return result > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] registerReportRoundReply Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(result == 0 ) {
+            throw new CreationFailedException("보고 댓글 작성 실패!");
         }
+        return result > 0;
     }
 
     /**
@@ -696,25 +669,19 @@ public class ReportService {
     */
     public List<ReportRoundReplyDTO> selectReportRoundReply(int memberCode, long reportCode, long roundCode) {
 
-        try {
-            log.info("[ReportService] selectReportRoundReply Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] roundCode : " + roundCode);
+        log.info("[ReportService] selectReportRoundReply Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] roundCode : " + roundCode);
 
-            verifyMemberReportAccess(memberCode, reportCode);
+        verifyMemberReportAccess(memberCode, reportCode);
 
-            List<ReportRoundReplyDTO> reportReplyList = reportMapper.selectReportRoundReply(roundCode);
-            log.info("[ReportService] reportReplyList : " + reportReplyList);
+        List<ReportRoundReplyDTO> reportReplyList = reportMapper.selectReportRoundReply(roundCode);
+        log.info("[ReportService] reportReplyList : " + reportReplyList);
 
-            if(reportReplyList.isEmpty()) {
-                throw new Exception("조회된 보고 댓글이 없습니다!");
-            }
-            return reportReplyList;
-        } catch (Exception e) {
-            log.error("[ReportService] selectReportRoundReply Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        if(reportReplyList.isEmpty()) {
+            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
         }
+        return reportReplyList;
     }
 
     /**
@@ -723,23 +690,17 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 수정
     */
-    public boolean updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO) {
+    public boolean updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO) throws Exception {
 
-        try {
-            log.info("[ReportService] updateReportRoundReply Start");
-            log.info("[ReportService] reportRoundReplyDTO : " + reportRoundReplyDTO);
+        log.info("[ReportService] updateReportRoundReply Start");
+        log.info("[ReportService] reportRoundReplyDTO : " + reportRoundReplyDTO);
 
-            boolean isAuthor = reportRoundReplyDTO.getMemberCode() == reportMapper.selectMemberCodeByReplyCode(reportRoundReplyDTO.getReplyCode());
+        isReplyAuthor(reportRoundReplyDTO.getMemberCode(), reportRoundReplyDTO.getReplyCode());
 
-            if(!isAuthor) {
-                throw new Exception("해당 보고 댓글의 작성자가 아닙니다!");
-            }
-            return reportMapper.updateReportRoundReply(reportRoundReplyDTO) > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] updateReportRoundReply Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        int result = reportMapper.updateReportRoundReply(reportRoundReplyDTO);
+        log.info("[ReportService] updateReportRoundReply result : " + result);
+
+        return result > 0;
     }
 
     /**
@@ -748,23 +709,17 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 삭제
     */
-    public boolean deleteReportRoundReply(int memberCode, long replyCode) {
+    public boolean deleteReportRoundReply(int memberCode, long replyCode) throws Exception {
 
-        try {
-            log.info("[ReportService] deleteReportRoundReply Start");
-            log.info("[ReportService] memberCode : " + memberCode);
-            log.info("[ReportService] replyCode : " + replyCode);
+        log.info("[ReportService] deleteReportRoundReply Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] replyCode : " + replyCode);
 
-            boolean isAuthor = memberCode == reportMapper.selectMemberCodeByReplyCode(replyCode);
+        isReplyAuthor(memberCode,replyCode);
 
-            if(!isAuthor) {
-                throw new Exception("해당 보고 댓글의 작성자가 아닙니다!");
-            }
-            return reportMapper.deleteReportRoundReply(replyCode) > 0;
-        } catch (Exception e) {
-            log.error("[ReportService] deleteReportRoundReply Error : " + e.getMessage());
-            // 에러에 대한 응답 처리
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        int result = reportMapper.deleteReportRoundReply(replyCode);
+        log.info("[ReportService] deleteReportRoundReply result : " + result);
+
+        return result > 0;
     }
 }
