@@ -63,7 +63,8 @@ public class ReportController {
 
         log.info("[ReportController] fileList : " + fileList);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공", reportService.registerReport(reportDTO, memberList, fileList)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공",
+                reportService.registerReport(reportDTO, memberList, fileList)));
     }
 
     /**
@@ -160,7 +161,8 @@ public class ReportController {
         searchConditions.put("completionStatus", 'N');
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 목록 조회 성공",
+                reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
     /**
@@ -183,7 +185,8 @@ public class ReportController {
         searchConditions.put("completionStatus", 'Y');
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공",
+                reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
     /**
@@ -206,7 +209,8 @@ public class ReportController {
         searchConditions.put("completionStatus", 'N');
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공",
+                reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
     /**
@@ -229,7 +233,8 @@ public class ReportController {
         searchConditions.put("completionStatus", 'Y');
         log.info("[ReportController] searchConditions : " + searchConditions);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공", reportService.selectReportListByConditions(offset, searchConditions)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공",
+                reportService.selectReportListByConditions(offset, searchConditions)));
     }
 
     /**
@@ -249,7 +254,8 @@ public class ReportController {
         log.info("[ReportController] reportCode : " + reportCode);
         log.info("[ReportController] offset : " + offset);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 목록 조회 성공", reportService.selectReportRoundListByReportCode(memberCode, reportCode, offset)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 목록 조회 성공",
+                reportService.selectReportRoundListByReportCode(memberCode, reportCode, offset)));
     }
 
     /**
@@ -272,7 +278,8 @@ public class ReportController {
         ReportRoundDTO reportRoundDetail = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
         log.info("[ReportController] reportRoundDetail : " + reportRoundDetail);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 상세 조회 성공", reportRoundDetail));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 상세 조회 성공",
+                reportRoundDetail));
     }
 
     /**
@@ -292,7 +299,8 @@ public class ReportController {
 
         HashMap<String, Object> casualReportDetail = reportService.selectCasualReportDetailByReportCode(memberCode, reportCode);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 상세 조회 성공", casualReportDetail));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 상세 조회 성공",
+                casualReportDetail));
     }
 
     /**
@@ -310,7 +318,8 @@ public class ReportController {
         log.info("[ReportController] memberCode : " + memberCode);
         log.info("[ReportController] reportCode : " + reportCode);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 완료상태 수정 성공", reportService.updateReportCompletionStatusToComplete(memberCode, reportCode)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 완료상태 수정 성공",
+                reportService.updateReportCompletionStatusToComplete(memberCode, reportCode)));
     }
 
     /**
@@ -334,7 +343,8 @@ public class ReportController {
         reportDetailDTO.setRoundCode(roundCode);
         log.info("[ReportController] reportDetailDTO : " + reportDetailDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 작성 성공", reportService.registerReportDetail(reportCode, reportDetailDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 작성 성공",
+                reportService.registerReportDetail(reportCode, reportDetailDTO)));
     }
 
     /**
@@ -358,6 +368,48 @@ public class ReportController {
         reportDetailDTO.setRoundCode(roundCode);
         log.info("[ReportController] reportDetailDTO : " + reportDetailDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 수정 성공", reportService.updateReportDetail(reportCode, reportDetailDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 수정 성공",
+                reportService.updateReportDetail(reportCode, reportDetailDTO)));
+    }
+
+    /**
+    	* @MethodName : selectReportDetailListByRoundCode
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 상세보고 목록 조회
+    */
+    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
+    public ResponseEntity<ResponseDTO> selectReportDetailListByRoundCode(HttpServletRequest request,
+                                                                         @PathVariable long reportCode,
+                                                                         @PathVariable long roundCode) {
+
+        log.info("[ReportController] selectReportDetailListByRoundCode Start");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+        log.info("[ReportController] reportCode : " + reportCode);
+        log.info("[ReportController] roundCode : " + roundCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 목록 조회 성공",
+                reportService.selectReportDetailListByRoundCode(memberCode, reportCode, roundCode)));
+    }
+
+    /**
+    	* @MethodName : deleteReportDetail
+    	* @Date : 2023-03-28
+    	* @Writer : 김수용
+    	* @Description : 상세 보고 삭제
+    */
+    // [] Optional Path Parameters : 해당 값을 선택적으로 입력 할 수 있음, 대부분 웹 프레임워크에서 지원 x
+    @DeleteMapping("/reports/rounds/detail-reports/{detailCode}")
+    public ResponseEntity<ResponseDTO> deleteReportDetail(HttpServletRequest request,
+                                                          @PathVariable long detailCode) {
+
+        log.info("[ReportController] selectReportDetailListByRoundCode Start");
+        Integer memberCode = (Integer) request.getAttribute("memberCode");
+        log.info("[ReportController] memberCode : " + memberCode);
+        log.info("[ReportController] detailCode : " + detailCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 삭제 성공",
+                reportService.deleteReportDetail(memberCode, detailCode)));
     }
 }

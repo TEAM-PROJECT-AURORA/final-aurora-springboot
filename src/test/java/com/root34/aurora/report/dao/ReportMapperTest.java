@@ -463,4 +463,30 @@ public class ReportMapperTest {
         // then
         assertEquals(1, result);
     }
+
+    @Test
+    void 회차별_상세_보고_목록_조회_맵퍼_테스트() {
+
+        // given
+        long roundCode = 1L;
+
+        // when
+        List<ReportDetailDTO> result = reportMapper.selectReportDetailListByRoundCode(roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 회차별_상세_보고_삭제_맵퍼_테스트() {
+
+        // given
+        long detailCode = 5L;
+
+        // when
+        int result = reportMapper.deleteReportDetail(detailCode);
+
+        // then
+        assertEquals(1, result);
+    }
 }
