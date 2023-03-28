@@ -16,5 +16,5 @@ public interface ReservationMapper {
 
 	List<AssetDTO> selectAllAssetCategory();
 
-    List<AssetDTO> selectAllAssetsAvailable();
+    List<AssetDTO> selectAllAssets();
 }

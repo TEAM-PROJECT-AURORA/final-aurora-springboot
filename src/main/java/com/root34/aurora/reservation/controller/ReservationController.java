@@ -35,10 +35,10 @@ public class ReservationController {
 	}
 
 	@GetMapping("/reservation/assets")
-	public ResponseEntity<ResponseDTO> selectAllAssetsAvailable() {
+	public ResponseEntity<ResponseDTO> selectAllAssets() {
 
-		log.info("[ReservationController] selectAllAssetsAvailable start");
+		log.info("[ReservationController] selectAllAssets start");
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", reservationService.selectAllAssetsAvailable()));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", reservationService.selectAllAssets()));
 	}
 }

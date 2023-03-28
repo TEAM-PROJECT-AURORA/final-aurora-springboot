@@ -32,12 +32,12 @@ public class ReservationService {
         return assets;
     }
 
-    public List<AssetDTO> selectAllAssetsAvailable() {
+    public List<AssetDTO> selectAllAssets() {
 
-        log.info("[ReservationService] selectAllAssetsAvailable Start ===================================");
-        List<AssetDTO> assets = reservationMapper.selectAllAssetsAvailable();
+        log.info("[ReservationService] selectAllAssets Start ===================================");
+        List<AssetDTO> assets = reservationMapper.selectAllAssets();
 
-        log.info("[ReservationService] selectAllAssetsAvailable End ===================================");
+        log.info("[ReservationService] selectAllAssets End ===================================");
         return assets;
     }
 }
