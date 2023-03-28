@@ -16,9 +16,12 @@
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
+		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
+		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="addressBookMapper.xml" />
+		<mapper resource="reservationMapper.xml" />
 	</mappers>
 </configuration>
