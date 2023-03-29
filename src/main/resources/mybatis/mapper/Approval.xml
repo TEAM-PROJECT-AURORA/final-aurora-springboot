@@ -68,6 +68,7 @@
         from TBL_APPROVAL ta
                  JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
                  JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
+
         where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY) and ta.MEMBER_CODE = #{ memberCode }
     </select>
 
@@ -103,7 +104,7 @@
         select
         *
         from TBL_APPROVAL ta
-                 join TBL_APPROVAL_LINE tal
+                 join TBL_APPRsetLineApprovalOVAL_LINE tal
                       ON   (ta.APP_CODE = tal.APP_CODE)
         where tal.APP_STATUS = 'Y' and ta.MEMBER_CODE = #{ memberCode }
     </select>
