@@ -1,5 +1,11 @@
 package com.root34.aurora.exception.report;
 
+/**
+	@ClassName : AlreadyCompletedReportException
+	@Date : 2023-03-28
+	@Writer : 김수용 
+	@Description : 이미 완료된 보고에 대한 예외
+*/
 public class AlreadyCompletedReportException extends RuntimeException{
 
     public AlreadyCompletedReportException() {

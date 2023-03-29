@@ -296,9 +296,12 @@ public class ReportService {
                         fileDTO.setFileName(replaceFileName);
                         fileDTO.setFilePath(FILE_DIR + replaceFileName);
                         fileDTO.setReportCode(generatedPk);
-                        double fileSizeInMB = (double) file.getSize() / (1024 * 1024);
-                        log.info("[ReportService] fileSizeInMB : " + fileSizeInMB);
-                        String fileSizeString = String.format("%.2f MB", fileSizeInMB);
+
+                        double fileSizeInBytes = (double) file.getSize();
+
+                        String fileSizeString = fileSizeInBytes < 1024?
+                                String.format("%.2f KB", fileSizeInBytes / 1024) :
+                                String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
                         log.info("[ReportService] fileSizeString : " + fileSizeString);
                         fileDTO.setFileSize(fileSizeString);
                         log.info("[ReportService] fileDTO : " + fileDTO);
@@ -368,7 +371,12 @@ public class ReportService {
         log.info("[ReportService] registerReportRound Start");
         log.info("[ReportService] reportRoundDTO : " + reportRoundDTO);
 
-        if(reportMapper.selectReportType(reportRoundDTO.getReportCode()).equals("Casual")) {
+        String reportType = reportMapper.selectReportType(reportRoundDTO.getReportCode());
+        log.info("[ReportService] reportType : " + reportType);
+
+        if(reportType == null) {
+            throw new NullPointerException("해당 보고서의 유형을 확인할 수 없습니다!");
+        } else if(reportType.equals("Casual")) {
             throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
         }
 
@@ -548,7 +556,7 @@ public class ReportService {
             throw new InvalidReportTypeException("해당 보고서는 비정기보고가 아닙니다!");
         }
 
-        updateReportReadStatusToRead(memberCode,reportCode);
+        updateReportReadStatusToRead(memberCode, reportCode);
 
         HashMap<String, Object> response = new HashMap<>();
         response.put("ReportDTO", reportMapper.selectCasualReportDetailByReportCode(reportCode));

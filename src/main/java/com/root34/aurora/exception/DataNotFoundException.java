@@ -1,5 +1,11 @@
 package com.root34.aurora.exception;
 
+/**
+	@ClassName : DataNotFoundException
+	@Date : 2023-03-28
+	@Writer : 김수용
+	@Description : 데이터 조회 실패시 예외
+*/
 public class DataNotFoundException extends RuntimeException{
 
     public DataNotFoundException() {

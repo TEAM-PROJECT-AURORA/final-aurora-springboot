@@ -493,7 +493,7 @@ public class ReportMapperTest {
 
     @Test
     @Transactional
-    @Rollback(false)
+    @Rollback
     void 보고_댓글_작성_맵퍼_테스트() {
 
         // given
