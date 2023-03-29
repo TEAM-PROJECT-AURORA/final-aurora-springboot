@@ -44,11 +44,11 @@ public class ReservationDTO {
     /**
     	* @variable 시간 시간 
     */
-    private Date startTime;
+    private String startTime;
     /**
     	* @variable 끝 시간 
     */
-    private Date endTime;
+    private String endTime;
     /**
     	* @variable 예약일 
     */

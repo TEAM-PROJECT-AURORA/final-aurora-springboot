@@ -15,6 +15,47 @@
             DISTINCT ASSET_CATEGORY
           FROM TBL_ASSET
     </select>
-
-
+    <select id="selectTotalMyReservation" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_RESERVATION
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectAllMyReservation" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+        LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <select id="selectReservationForUpdate" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.RESERVATION_NO = #{ reservationNo }
+    </select>
 </mapper>
