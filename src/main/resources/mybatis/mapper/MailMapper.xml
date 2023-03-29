@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.mail.dao.MailMapper">
+    <!--메일 보내기-->
+    <insert id="sendMail" parameterType="MailDTO">
+        INSERT INTO TBL_MAIL
+            ( MAIL_CODE, TAG_CODE, MAIL_TITLE, MAIL_BODY, SENDER, RECIPIENT )
+        VALUES
+            ( DEFAULT, NULL, 'Test 제목', 'Test 내용', 'TEST-01@project-aurora.co.kr', 'ssssong125@gmail.com' )
+    </insert>
+    <!--메일 휴지통으로 이동-->
+    <update id="moveMailToTrash" parameterType="long">
+        UPDATE TBL_MAIL
+           SET DELETE_STATUS = 'Y'
+         WHERE MAIL_CODE = #{ mailCode }
+    </update>
+</mapper>

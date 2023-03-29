@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.addressBook.dao.AddressBookMapper">
+    <select id="selectTotalMemberAddresses" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER
+    </select>
+    <select id="selectAllMemberAddresses" parameterType="selectCriteria" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            C.JOB_NAME AS JOB_NAME,
+            B.DEPT_NAME AS DEPARTMENT,
+            IF(A.TEAM, '', '대기중') AS COMPANY
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
+         LIMIT #{ startRow }, #{ limit }
+    </select>
+    <select id="selectTotalMemberAddressesByDept" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER
+         WHERE DEPT_CODE = #{ deptCode }
+    </select>
+    <select id="selectAllMemberAddressesByDept" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            C.JOB_NAME AS JOB_NAME,
+            B.DEPT_NAME AS DEPARTMENT,
+            IF(A.TEAM, '', '대기중') AS COMPANY
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.DEPT_CODE = #{ deptCode }
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <insert id="insertGroup" parameterType="addressGroupDTO">
+        INSERT INTO TBL_ADDRESS_GROUP
+            (GROUP_NAME
+        <if test="memberCode != null and memberCode != ''">
+            ,MEMBER_CODE
+        </if>
+        <if test="team != null and team != ''">
+            ,TEAM
+        </if>
+             )
+        VALUES
+            (#{ groupName }
+        <if test="memberCode != null and memberCode != ''">
+            ,#{ memberCode }
+        </if>
+        <if test="team != null and team != ''">
+            ,#{ team }
+        </if>
+            )
+    </insert>
+    <select id="selectOneMemberAddress" parameterType="_int" resultType="memberDTO">
+        SELECT
+            MEMBER_CODE,
+            MEMBER_NAME,
+            DEPT_CODE,
+            JOB_CODE,
+            TASK_CODE,
+            MEMBER_EMAIL,
+            INTRODUCTION,
+            BIRTHDAY,
+            TEAM,
+            PHONE
+          FROM TBL_MEMBER
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectTotalGroupAddresses" parameterType="String" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ADDRESS_BOOK
+         WHERE GROUP_CODE = #{ groupCode }
+    </select>
+    <select id="selectAllGroupAddresses" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            A.ADDBOOK_NO,
+            A.GROUP_CODE,
+            B.GROUP_NAME,
+            A.NAME,
+            A.PHONE,
+            A.EMAIL,
+            A.COMPANY,
+            A.DEPARTMENT,
+            A.JOB_NAME
+          FROM TBL_ADDRESS_BOOK A
+          JOIN TBL_ADDRESS_GROUP B
+            ON A.GROUP_CODE = B.GROUP_CODE
+         WHERE A.GROUP_CODE = #{ groupCode }
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <insert id="insertGroupAddress" parameterType="addressBookDTO">
+        INSERT INTO TBL_ADDRESS_BOOK
+            (NAME, GROUP_CODE, PHONE, EMAIL, COMPANY, DEPARTMENT, JOB_NAME)
+        VALUES
+            (#{ name }, #{ groupCode }, #{ phone }, #{ email }, #{ company }, #{ department }, #{ jobName })
+    </insert>
+    <update id="updateAddress" parameterType="map">
+        UPDATE TBL_ADDRESS_BOOK
+        <set>
+            <if test="address.name != null and address.name != ''">
+                NAME = #{ address.name },
+            </if>
+            <if test="address.phone != null and address.phone != ''">
+                PHONE = #{ address.phone },
+            </if>
+            <if test="address.email != null and address.email != ''">
+                EMAIL = #{ address.email },
+            </if>
+            <if test="address.company != null and address.company != ''">
+                COMPANY = #{ address.company },
+            </if>
+            <if test="address.department != null and address.department != ''">
+                DEPARTMENT = #{ address.department },
+            </if>
+            <if test="address.jobName != null and address.jobName != ''">
+                JOB_NAME = #{ address.jobName },
+            </if>
+            <if test="address.groupCode != null and address.groupCode != ''">
+                GROUP_CODE = #{ address.groupCode }
+            </if>
+        </set>
+         WHERE ADDBOOK_NO IN
+        <foreach collection=" addBookNos " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </update>
+    <delete id="deleteAddress" parameterType="String">
+        DELETE FROM TBL_ADDRESS_BOOK
+         WHERE ADDBOOK_NO IN
+        <foreach collection=" addBookNos " item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectPersonalGroups" parameterType="_int" resultType="addressGroupDTO">
+        SELECT
+            GROUP_CODE,
+            GROUP_NAME
+          FROM TBL_ADDRESS_GROUP
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectTeamGroups" parameterType="_int" resultType="addressGroupDTO">
+        SELECT
+            GROUP_CODE,
+            GROUP_NAME
+          FROM TBL_ADDRESS_GROUP
+         WHERE TEAM = (SELECT
+                           TEAM
+                         FROM TBL_MEMBER
+                        WHERE MEMBER_CODE = #{ memberCode })
+    </select>
+    <select id="selectTotalMembersSearch" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+         WHERE 1 = 1
+        <if test="searchCondition == 'name'">
+           AND A.MEMBER_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND B.DEPT_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND A.MEMBER_EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+    </select>
+    <select id="selectMembersWithSearch" parameterType="selectCriteria" resultType="addressBookDTO">
+        SELECT
+            A.MEMBER_CODE AS ADDBOOK_NO,
+            A.MEMBER_NAME AS NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL AS EMAIL,
+            C.JOB_NAME AS JOB_NAME,
+            B.DEPT_NAME AS DEPARTMENT,
+            IF(A.TEAM, '', '대기중') AS COMPANY
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
+        <if test="searchCondition == 'name'">
+           AND A.MEMBER_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND B.DEPT_NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND A.MEMBER_EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+         LIMIT #{ startRow }, #{ limit }
+    </select>
+    <select id="selectTotalGroupsWithSearch" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ADDRESS_BOOK
+         WHERE GROUP_CODE = #{ groupCode }
+        <if test="searchCondition == 'name'">
+           AND NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND DEPARTMENT LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'company'">
+           AND COMPANY LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+    </select>
+    <select id="selectGroupsWithSearch" parameterType="map" resultType="addressBookDTO">
+        SELECT
+            ADDBOOK_NO,
+            NAME,
+            PHONE,
+            EMAIL,
+            JOB_NAME,
+            DEPARTMENT,
+            COMPANY
+          FROM TBL_ADDRESS_BOOK
+         WHERE GROUP_CODE = #{ groupCode }
+        <if test="searchCondition == 'name'">
+           AND NAME LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'department'">
+           AND DEPARTMENT LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'email'">
+           AND EMAIL LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+        <if test="searchCondition == 'company'">
+           AND COMPANY LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
+         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <insert id="insertMemberToGroup" parameterType="map">
+        INSERT INTO TBL_ADDRESS_BOOK
+            (GROUP_CODE, NAME, PHONE, EMAIL, COMPANY, DEPARTMENT, JOB_NAME)
+        SELECT
+            #{ groupCode },
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            CONCAT('우리회사-', IFNULL(NULLIF(A.TEAM, ''), '대기중')),
+            B.DEPT_NAME,
+            C.JOB_NAME
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B
+            ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C
+            ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.MEMBER_CODE IN
+        <foreach collection="memberCodes" item="item" index="index" open="(" close=")" separator=",">
+               #{ item }
+        </foreach>
+    </insert>
+    <delete id="deleteAddressInGroup" parameterType="String">
+        DELETE FROM TBL_ADDRESS_BOOK
+         WHERE GROUP_CODE = #{ groupCode }
+    </delete>
+    <delete id="deleteGroup" parameterType="String">
+        DELETE FROM TBL_ADDRESS_GROUP
+         WHERE GROUP_CODE = #{ groupCode }
+    </delete>
+    <update id="updateGroup" parameterType="addressGroupDTO">
+        UPDATE TBL_ADDRESS_GROUP
+           SET GROUP_NAME = #{ groupName }
+         WHERE GROUP_CODE = #{ groupCode }
+    </update>
+    <select id="selectAddressForUpdate" parameterType="String" resultType="addressBookDTO">
+        SELECT
+            GROUP_CODE,
+            ADDBOOK_NO,
+            NAME,
+            PHONE,
+            EMAIL,
+            JOB_NAME,
+            DEPARTMENT,
+            COMPANY
+          FROM TBL_ADDRESS_BOOK
+         WHERE ADDBOOK_NO = #{ addBookNo }
+    </select>
+</mapper>

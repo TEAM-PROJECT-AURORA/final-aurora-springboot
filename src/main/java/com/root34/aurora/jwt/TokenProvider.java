@@ -26,7 +26,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;     //30분       // 30분
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;     // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;     // 24시간
     private final UserDetailsService userDetailsService;
     private final Key key;
 
@@ -51,6 +52,7 @@ public class TokenProvider {
                 .setSubject(member.getMemberId());// sub : subject. 토큰 제목을 나타낸다.
         claims.put(AUTHORITIES_KEY, roles);// 권한 담기
         claims.put("memberCode", member.getMemberCode());
+        claims.put("team", member.getTeam());
 
         long now = (new Date()).getTime();// 만료시간 때문에 현재 시간을 구하는 듯
 
@@ -74,6 +76,30 @@ public class TokenProvider {
                 .parseClaimsJws(accessToken)
                 .getBody()
                 .getSubject();
+    }
+
+    /**
+    	* @MethodName : getMemberCodeFromToken
+    	* @Date : 2023-03-23
+    	* @Writer : 김수용
+    	* @Description : 토큰에서 memberCode를 추출
+    */
+    public Integer getMemberCodeFromToken(String accessToken) {
+
+        // 토큰에서 Payload 부분을 파싱하고 서명을 검증합니다.
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+
+        // "memberCode" 클레임에서 값을 추출합니다.
+//        Integer memberCodeInteger = (Integer) claims.get("memberCode");
+//        String memberCode = String.valueOf(memberCodeInteger);
+
+        Integer memberCode = (Integer) claims.get("memberCode");
+
+        return memberCode;
     }
 
     // Token 에 담겨있는 정보를 이용해 Authentication 객체 리턴
