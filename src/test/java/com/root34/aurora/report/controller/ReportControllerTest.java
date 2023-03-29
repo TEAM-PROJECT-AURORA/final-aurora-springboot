@@ -1,5 +1,8 @@
 package com.root34.aurora.report.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.root34.aurora.jwt.JwtFilter;
+import com.root34.aurora.jwt.TokenProvider;
 import com.root34.aurora.report.dto.ReportDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,9 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import({JwtFilter.class, TokenProvider.class})
 public class ReportControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(ReportControllerTest.class);
@@ -37,14 +39,18 @@ public class ReportControllerTest {
     private final String REPORT_TYPE = "Routine";
     private final char COMPLETION_STATUS = 'N';
 
-    private final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MDEiLCJhdXRoIjpbIlJPTEVfVVNFUiJdLCJtZW1iZXJDb2RlIjoxLCJleHAiOjE2ODAxMzkyMTl9.HwLc27HYojV9BR3qX6OKf7qNIT1YnXhXZ1njL2bvCzv_h2kHWjqaL9Ov-qR5GnN0PU7wk5yHHw2YJ3Qt5G-m3g"; // JWT
-
-    // MockMvc 애플리케이션을 서버에 배포하지 않고도 스프링의 MVC 테스트를 할 수 있게 해준다.
-    @Autowired
-    private MockMvc mockMvc;
+    private final String TOKEN =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MDEiLCJhdXRoIjpbIlJPTEVfVVNFUiJdLCJtZW1iZXJDb2RlIjoxLCJleHAiOjE2ODAxNTI2Nzd9.yhWufM9QxjNbgcn-L6NN6cr80G_Q-G7vq0WIMWb8UYXVj1ywafSJFZTU8LomBP5vYLwqp_r1CmCkf8mZuP76BA"; // JWT
 
     @Autowired
     private ReportController reportController;
+
+//    @Autowired
+//    private ReportService reportService;
+
+    // MockMvc 애플리케이션을 서버에 배포하지 않고도 스프링의 MVC 테스트를 할 수 있게 해준다.
+//    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     public void testInit(){
@@ -61,7 +67,6 @@ public class ReportControllerTest {
     }
 
     @Test
-//    @WithMockUser(username = "testUser", roles = {"USER", "ADMIN"})
     void 보고_작성_컨트롤러_테스트() throws Exception {
 
         // given
@@ -77,48 +82,45 @@ public class ReportControllerTest {
         memberList.add(3);
 
         // 가상의 파일 생성
-//        byte[] content1 = "Hello, world!".getBytes();
-//        String fileName1 = "test.txt";
-//        MultipartFile file1 = new MockMultipartFile("file", fileName1, "text/plain", content1);
-//
-//        byte[] content2 = "Hello, world!".getBytes();
-//        String fileName2 = "test.jpg";
-//        MultipartFile file2 = new MockMultipartFile("file", fileName2, "jpg/plain", content2);
+        MockMultipartFile file1 = new MockMultipartFile("file1.txt", "file1.txt", "text/plain", "This is file1 content".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("file2.txt", "file2.txt", "text/plain", "This is file2 content".getBytes());
 
-        MockMultipartFile file1 = new MockMultipartFile("file1", "test1.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World 1!".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile("file2", "test2.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World 2!".getBytes());
-
-        List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+        List<MockMultipartFile> fileList = new ArrayList<>();
         fileList.add(file1);
         fileList.add(file2);
 
-        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        params.add("reportDTO", reportDTO);
-        params.add("memberList", memberList);
-        params.add("fileList", fileList);
-//        params.add("fileList", new FileSystemResource(new File("file.txt")));
+        // JSON 문자열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String reportDTOJson = objectMapper.writeValueAsString(reportDTO);
+        String memberListJson = objectMapper.writeValueAsString(memberList);
+        log.info("reportDTOJson" + reportDTOJson);
+        log.info("memberListJson" + memberListJson);
 
-//        doNothing().when(reportService).registerReport(reportDTO, memberList, fileList);
+        // MockMultipartFile 형태로 변환
+        MockMultipartFile reportDtoMultipartFile = new MockMultipartFile("reportDTO", "", "application/json", reportDTOJson.getBytes());
+        MockMultipartFile memberListMultipartFile = new MockMultipartFile("memberList", "", "application/json", memberListJson.getBytes());
 
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .post("/reports")v
-                .post("/api/v1/reports")
+//                .post("/reports")
+//                .post("/api/v1/reports")
 //                .multipart("/api/v1/reports")
-//                .file(file1)
-//                .file(file2)
-//                .content(reportDTO)
+                .multipart("http://localhost:8090/api/v1/reports")
+                .file("fileList", file1.getBytes()) // Add files with the proper key
+                .file("fileList", file2.getBytes()) // Add files with the proper key
+                .file(reportDtoMultipartFile)
+                .file(memberListMultipartFile)
+//                .param("reportDTO", reportDTOJson)
+//                .param("memberList", memberListJson)
                 .header("Authorization", "Bearer " + TOKEN)
 //                .contentType(MediaType.APPLICATION_JSON);
                 .contentType(MediaType.MULTIPART_FORM_DATA);
 
+        // then
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print());
-
-        // then
-//        verify(reportService, times(1)).registerReport(reportDTO, memberList, fileList);
     }
 
 //    @Test
