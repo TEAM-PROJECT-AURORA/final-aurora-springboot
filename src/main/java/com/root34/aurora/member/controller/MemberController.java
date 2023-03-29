@@ -43,13 +43,13 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 사원 리스트 출력 및 페이징 처리
      */
-    @GetMapping("/members")
+    @GetMapping("/hrm")
     public ResponseEntity<ResponseDTO> memberList(@RequestParam(name="offset", defaultValue = "1") String offset) {
 
         log.info("[MemberController] selectMemberListWithPaging :" + offset);
 
         int totalCount = memberService.selectMemberTotal();
-        int limit = 10;
+        int limit = 20;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
 
@@ -69,7 +69,7 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 사원 상세정보 조회
      */
-    @GetMapping("/members/{memberCode}")
+    @GetMapping("/hrm/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
@@ -81,7 +81,7 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 사원 정보 수정
      */
-    @PutMapping("/members/{memberCode}")
+    @PutMapping("/hrm/{memberCode}")
     public ResponseEntity<ResponseDTO> memberModify(@RequestBody MemberDTO memberDTO, @PathVariable int memberCode) {
 
         memberDTO.setMemberCode(memberCode);
@@ -96,13 +96,34 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 이름으로 사원 검색
      */
-    @GetMapping("/members/search")
-    public ResponseEntity<ResponseDTO> selectSearchListAboutName(@RequestParam(name="name", defaultValue = "all") String search) {
+    @GetMapping("/hrm/search")
+    public ResponseEntity<ResponseDTO> selectSearchListAboutName(@RequestParam(name="name", defaultValue = "all") String search,
+                                                                 @RequestParam(name="offset", defaultValue = "1") String offset) {
+
+        log.info("[MemberController] selectSearchListAboutName :" + offset);
+
+        int totalCount = memberService.selectMemberTotal();
+        int limit = 20;
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+        log.info("[MemberController] selectCriteria : " + selectCriteria);
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutName( search, selectCriteria));
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search, selectCriteria)));
 
     }
+
+//       log.info("[MemberController] selectCriteria : " + selectCriteria);
+//
+//        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+//        responseDTOWithPaging.setPageInfo(selectCriteria);
+//        responseDTOWithPaging.setData(memberService.memberList(selectCriteria));
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     /**
      * @MethodName : selectMemberListAboutEmail
@@ -110,11 +131,24 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 이메일로 사원 검색
      */
-    @GetMapping("/members/email")
-    public ResponseEntity<ResponseDTO> selectMemberListAboutEmail(@RequestParam(name="email", defaultValue = "all") String search) {
+    @GetMapping("/hrm/email")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutEmail(@RequestParam(name="email", defaultValue = "all") String search,
+                                                                  @RequestParam(name="offset", defaultValue = "1") String offset) {
+
+        log.info("[MemberController] selectMemberListAboutEmail :" + offset);
+
+        int totalCount = memberService.selectMemberTotal();
+        int limit = 20;
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+        log.info("[MemberController] selectCriteria : " + selectCriteria);
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutEmail( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutEmail(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search, selectCriteria)));
     }
 
     /**
@@ -123,11 +157,24 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 부서별 사원 검색
      */
-    @GetMapping("/members/dept")
-    public ResponseEntity<ResponseDTO> selectMemberListAboutDept(@RequestParam(name="dept", defaultValue = "all") String search) {
+    @GetMapping("/hrm/dept")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutDept(@RequestParam(name="dept", defaultValue = "all") String search,
+                                                                 @RequestParam(name="offset", defaultValue = "1") String offset) {
+
+        log.info("[MemberController] selectMemberListAboutDept :" + offset);
+
+        int totalCount = memberService.selectMemberTotal();
+        int limit = 20;
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+        log.info("[MemberController] selectCriteria : " + selectCriteria);
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutDept( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutDept(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search, selectCriteria)));
 
     }
 
@@ -137,11 +184,24 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 직위별 사원 검색
      */
-    @GetMapping("/members/job")
-    public ResponseEntity<ResponseDTO> selectMemberListAboutJob(@RequestParam(name="job", defaultValue = "all") String search) {
+    @GetMapping("/hrm/job")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutJob(@RequestParam(name="job", defaultValue = "all") String search,
+                                                                @RequestParam(name="offset", defaultValue = "1") String offset) {
+
+        log.info("[MemberController] selectMemberListAboutJob :" + offset);
+
+        int totalCount = memberService.selectMemberTotal();
+        int limit = 20;
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+        log.info("[MemberController] selectCriteria : " + selectCriteria);
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutJob( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutJob(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search, selectCriteria)));
 
     }
 
@@ -151,10 +211,23 @@ public class MemberController {
      * @Writer : 정근호
      * @Description : 직무별 사원 검색
      */
-    @GetMapping("/members/task")
-    public ResponseEntity<ResponseDTO> selectMemberListAboutTask(@RequestParam(name="task", defaultValue = "all") String search) {
+    @GetMapping("/hrm/task")
+    public ResponseEntity<ResponseDTO> selectMemberListAboutTask(@RequestParam(name="task", defaultValue = "all") String search,
+                                                                 @RequestParam(name="offset", defaultValue = "1") String offset) {
+
+        log.info("[MemberController] selectMemberListAboutTask :" + offset);
+
+        int totalCount = memberService.selectMemberTotal();
+        int limit = 20;
+        int buttonAmount = 5;
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+        log.info("[MemberController] selectCriteria : " + selectCriteria);
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+        responseDTOWithPaging.setPageInfo(selectCriteria);
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutTask( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutTask(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutTask(search)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutTask(search, selectCriteria)));
     }
 }
