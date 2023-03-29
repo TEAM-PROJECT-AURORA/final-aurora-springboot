@@ -48,8 +48,8 @@
             C.MEMBER_NAME,
             A.TEAM,
             A.DESCRIPTION,
-            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
-            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
             A.RESERVATION_DATE
           FROM TBL_RESERVATION A
           JOIN TBL_ASSET B
@@ -58,4 +58,12 @@
             ON A.MEMBER_CODE = C.MEMBER_CODE
          WHERE A.RESERVATION_NO = #{ reservationNo }
     </select>
+    <update id="updateReservation" parameterType="reservationDTO">
+        UPDATE TBL_RESERVATION
+           SET START_TIME = #{ startTime },
+               END_TIME = #{ endTime },
+               RESERVATION_DATE = #{ reservationDate },
+               DESCRIPTION = #{ description }
+         WHERE RESERVATION_NO = #{ reservationNo }
+    </update>
 </mapper>

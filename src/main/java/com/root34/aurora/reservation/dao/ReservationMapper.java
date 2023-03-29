@@ -25,4 +25,6 @@ public interface ReservationMapper {
 	List<ReservationDTO> selectAllMyReservation(Map map);
 
 	ReservationDTO selectReservationForUpdate(String reservationNo);
+
+	int updateReservation(ReservationDTO reservationDTO);
 }
