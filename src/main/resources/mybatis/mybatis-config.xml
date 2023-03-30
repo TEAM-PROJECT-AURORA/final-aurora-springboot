@@ -23,6 +23,8 @@
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
+		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 	</typeAliases>
 
 	<mappers>
@@ -32,5 +34,7 @@
 		<mapper resource="Approval.xml"/>
 		<mapper resource="MailMapper.xml" />
 		<mapper resource="ReportMapper.xml" />
+		<mapper resource="vacationMapper.xml"/>
+
 	</mappers>
 </configuration>

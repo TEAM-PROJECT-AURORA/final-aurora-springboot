@@ -33,15 +33,15 @@ public interface MemberMapper {
 
     int memberModify(MemberDTO memberDTO);
 
-    List<MemberDTO> selectMemberListAboutName(String search);
+    List<MemberDTO> selectMemberListAboutName(String search, SelectCriteria selectCriteria);
 
-    List<MemberDTO> selectMemberListAboutEmail(String search);
+    List<MemberDTO> selectMemberListAboutEmail(String search, SelectCriteria selectCriteria);
 
-    List<MemberDTO> selectMemberListAboutDept(String search);
+    List<MemberDTO> selectMemberListAboutDept(String search, SelectCriteria selectCriteria);
 
-    List<MemberDTO> selectMemberListAboutJob(String search);
+    List<MemberDTO> selectMemberListAboutJob(String search, SelectCriteria selectCriteria);
 
-    List<MemberDTO> selectMemberListAboutTask(String search);
+    List<MemberDTO> selectMemberListAboutTask(String search, SelectCriteria selectCriteria);
 //
 //    List<MemberDTO> selectMemberListAboutEmail();
 

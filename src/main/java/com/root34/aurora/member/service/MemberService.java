@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- @ClassName : MemberMapper
+ @ClassName : MemberService
  @Date : 23.03.20.
  @Writer : 정근호
- @Description : 회원 SQL을 호출하기 위한 인터페이스
+ @Description :
  */
 @Slf4j
 @Service
@@ -113,11 +113,11 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 이름으로 사원 검색
      */
-    public List<MemberDTO> selectMemberListAboutName(String search) {
+    public List<MemberDTO> selectMemberListAboutName(String search, SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectSearchMemberList Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> selectMemberListAboutName = memberMapper.selectMemberListAboutName(search);
+        List<MemberDTO> selectMemberListAboutName = memberMapper.selectMemberListAboutName(search, selectCriteria);
         log.info("[MemberService] selectSearchMemberList : " + selectMemberListAboutName);
 
         log.info("[MemberService] selectSearchMemberList End =============================");
@@ -131,11 +131,11 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 이메일로 사원 검색
      */
-    public List<MemberDTO> selectMemberListAboutEmail(String search) {
+    public List<MemberDTO> selectMemberListAboutEmail(String search, SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListAboutEmail Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> memberListAboutEmail = memberMapper.selectMemberListAboutEmail(search);
+        List<MemberDTO> memberListAboutEmail = memberMapper.selectMemberListAboutEmail(search, selectCriteria);
         log.info("[MemberService] selectMemberListAboutEmail : " + memberListAboutEmail);
 
         log.info("[MemberService] selectMemberListAboutEmail End =============================");
@@ -150,11 +150,11 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 부서별 사원 검색
      */
-    public List<MemberDTO> selectMemberListAboutDept(String search) {
+    public List<MemberDTO> selectMemberListAboutDept(String search, SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListAboutDept Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> memberListAboutDept = memberMapper.selectMemberListAboutDept(search);
+        List<MemberDTO> memberListAboutDept = memberMapper.selectMemberListAboutDept(search, selectCriteria);
         log.info("[MemberService] selectMemberListAboutDept : " + memberListAboutDept);
 
         log.info("[MemberService] selectMemberListAboutDept End =============================");
@@ -168,11 +168,11 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 직위별 사원 검색
      */
-    public List<MemberDTO> selectMemberListAboutJob(String search) {
+    public List<MemberDTO> selectMemberListAboutJob(String search, SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListAboutJob Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> memberListAboutJob = memberMapper.selectMemberListAboutJob(search);
+        List<MemberDTO> memberListAboutJob = memberMapper.selectMemberListAboutJob(search, selectCriteria);
         log.info("[MemberService] selectMemberListAboutJob : " + memberListAboutJob);
 
         log.info("[MemberService] selectMemberListAboutJob End =============================");
@@ -186,11 +186,11 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 직무별 사원 검색
      */
-    public List<MemberDTO> selectMemberListAboutTask(String search) {
+    public List<MemberDTO> selectMemberListAboutTask(String search, SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListAboutTask Start =========================");
         log.info("[MemberService] searchValue : " + search);
-        List<MemberDTO> memberListAboutTask = memberMapper.selectMemberListAboutTask(search);
+        List<MemberDTO> memberListAboutTask = memberMapper.selectMemberListAboutTask(search, selectCriteria);
         log.info("[MemberService] selectMemberListAboutTask : " + memberListAboutTask);
 
         log.info("[MemberService] selectMemberListAboutTask End =============================");

@@ -17,46 +17,108 @@ import java.util.Date;
 public class MemberDTO implements UserDetails {
 
     /**
-     * @param memberCode     사원코드
-     * @param deptCode       부서코드
-     * @param jobCode        직윝코드
-     * @param taskCode       직무코드
-     * @param memberName     이름
-     * @param memberId       아이디
-     * @param memberPWD      비밀번호
-     * @param memberEmail    이메일
-     * @param address        주소
-     * @param gender         성별
-     * @param memberRole     권한
-     * @param memberHireDate 입사일
-     * @param memberEndDate  퇴사일
-     * @param introduction   자기소개
-     * @param significant    특이사항
-     * @param status         재직상태
-     * @param birthDay       생년월일
-     * @param team           소속팀
-     * @param fileCode       사진파일코드
-     * @param phone          핸드폰
+     * @variable memberCode     사원코드
+     * /
+     *
+     * @variable deptCode       부서코드
+     * @variable jobCode        직윝코드
+     * @variable taskCode       직무코드
+     * @variable memberName     이름
+     * @variable memberId       아이디
+     * @variable memberPWD      비밀번호
+     * @variable memberEmail    이메일
+     * @variable address        주소
+     * @variable gender         성별
+     * @variable memberRole     권한
+     * @variable memberHireDate 입사일
+     * @variable memberEndDate  퇴사일
+     * @variable introduction   자기소개
+     * @variable significant    특이사항
+     * @variable status         재직상태
+     * @variable birthDay       생년월일
+     * @variable team           소속팀
+     * @variable fileCode       사진파일코드
+     * @variable phone          핸드폰
      */
+    /**
+     * @variable memberCode 사원코드
+     **/
     private int memberCode;
+    /**
+     * @variable jobCode 직윝코드
+     **/
     private String deptCode;
+    /**
+     * @variable jobCode 직윝코드
+     **/
     private String jobCode;
+    /**
+     * @variable taskCode 직무코드
+     **/
     private String taskCode;
+    /**
+     * @variable memberName 이름
+     **/
     private String memberName;
+    /**
+     * @variable memberId 아이디
+     **/
     private String memberId;
+    /**
+     * @variable memberPWD 비밀번호
+     **/
     private String memberPWD;
+    /**
+     * @variable memberEmail 이메일
+     **/
     private String memberEmail;
+    /**
+     * @variable address 주소
+     **/
     private String address;
+    /**
+     * @variable gender 성별
+     **/
     private String gender;
+    /**
+     * @variable memberRole 권한
+     **/
     private String memberRole;
+    /**
+     * @variable memberHireDate 입사일
+     **/
     private String memberHireDate;
+    /**
+     * @variable memberEndDate 퇴사일
+     **/
     private String memberEndDate;
+    /**
+     * @variable introduction 자기소개
+     **/
     private String introduction;
+    /**
+     * @variable significant 특이사항
+     **/
     private String significant;
+    /**
+     * @variable status 재직상태
+     **/
     private String status;
+    /**
+     * @variable birthDay 생년월일
+     **/
     private Date birthDay;
+    /**
+     * @variable team 소속팀
+     **/
     private String team;
+    /**
+     * @variable fileCode 사진파일코드
+     **/
     private String fileCode;
+    /**
+     * @variable phone 핸드폰
+     **/
     private String phone;
 
     // 이하 코드는 security 를 위한 용도
