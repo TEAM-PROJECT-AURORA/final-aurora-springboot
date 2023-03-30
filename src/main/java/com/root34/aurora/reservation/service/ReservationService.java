@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -97,5 +96,24 @@ public class ReservationService {
 
         log.info("[ReservationService] updateReservation End ===================================");
         return result > 0? "예약 수정 성공":"예약 수정 실패";
+    }
+
+    @Transactional
+    public String deleteReservation(String[] reservationNos) {
+
+        log.info("[ReservationService] deleteReservation Start ===================================");
+        int result  = reservationMapper.deleteReservation(reservationNos);
+
+        log.info("[ReservationService] deleteReservation End ===================================");
+        return result > 0? "예약 삭제 성공" : "예약 삭제 실패";
+    }
+
+    public List<ReservationDTO> selectAllReservationsByAsset(Map map) {
+
+        log.info("[ReservationService] selectAllReservationsByAsset Start ===================================");
+        List<ReservationDTO> reservations = reservationMapper.selectAllReservationsByAsset(map);
+
+        log.info("[ReservationService] selectAllReservationsByAsset End ===================================");
+        return reservations;
     }
 }

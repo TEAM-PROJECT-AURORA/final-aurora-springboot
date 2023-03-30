@@ -66,4 +66,31 @@
                DESCRIPTION = #{ description }
          WHERE RESERVATION_NO = #{ reservationNo }
     </update>
+    <delete id="deleteReservation" parameterType="String">
+        DELETE FROM TBL_RESERVATION
+         WHERE RESERVATION_NO IN
+        <foreach collection=" reservationNos " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </delete>
+    <select id="selectAllReservationsByAsset" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.ASSET_CODE = #{ assetCode }
+<!--           AND A.START_TIME >= #{ startTime }-->
+<!--           AND A.END_TIME <= #{ endTime }-->
+    </select>
 </mapper>

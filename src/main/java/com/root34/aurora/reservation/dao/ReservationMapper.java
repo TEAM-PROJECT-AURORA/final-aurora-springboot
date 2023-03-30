@@ -27,4 +27,8 @@ public interface ReservationMapper {
 	ReservationDTO selectReservationForUpdate(String reservationNo);
 
 	int updateReservation(ReservationDTO reservationDTO);
+
+	int deleteReservation(String[] reservationNos);
+
+	List<ReservationDTO> selectAllReservationsByAsset(Map map);
 }

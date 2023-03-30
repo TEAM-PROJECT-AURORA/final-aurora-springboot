@@ -7,6 +7,7 @@ import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.reservation.dto.ReservationDTO;
 import com.root34.aurora.reservation.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -91,7 +92,7 @@ public class ReservationController {
 		* @MethodName : selectReservationForUpdate
 		* @Date : 2023-03-30
 		* @Writer : 오승재
-		* @Description : 수정을 위한 예약 조회
+		* @Description : 수정을 위한 내 예약 조회
 	*/
 	@GetMapping("/reservation/{reservationNo}")
 	public ResponseEntity<ResponseDTO> selectReservationForUpdate(@PathVariable String reservationNo) {
@@ -100,7 +101,13 @@ public class ReservationController {
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", reservationService.selectReservationForUpdate(reservationNo)));
 	}
-
+	
+	/**
+		* @MethodName : updateReservation
+		* @Date : 2023-03-30
+		* @Writer : 오승재
+		* @Description : 내 예약 수정
+	*/
 	@PutMapping("/reservation/{reservationNo}")
 	public ResponseEntity<ResponseDTO> updateReservation(@RequestBody ReservationDTO reservationDTO, @PathVariable String reservationNo) {
 
@@ -108,5 +115,35 @@ public class ReservationController {
 		log.info("[ReservationController] updateReservation start" + reservationDTO);
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 수정 성공", reservationService.updateReservation(reservationDTO)));
+	}
+	
+	/**
+		* @MethodName : deleteReservation
+		* @Date : 2023-03-30
+		* @Writer : 오승재
+		* @Description : 내 예약 삭제
+	*/
+	@DeleteMapping("/reservation")
+	public ResponseEntity<ResponseDTO> deleteReservation(@RequestBody JSONObject object) {
+
+		String objectAsString = object.getAsString("reservationNos");
+		String[] reservationNos = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+
+		log.info("[ReservationController] deleteReservation : " + reservationNos);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 취소 성공", reservationService.deleteReservation(reservationNos)));
+	}
+
+	@GetMapping("/reservations/{assetCode}")
+	public ResponseEntity<ResponseDTO> selectAllReservationsByAsset(@PathVariable String assetCode, @RequestParam String startTime, @RequestParam String endTime) {
+
+		log.info("[ReservationController] selectAllReservationsByAsset start" + assetCode + startTime + endTime);
+
+		Map map = new HashMap<>();
+		map.put("assetCode", assetCode);
+		map.put("startTime", startTime);
+		map.put("endTime", endTime);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 수정 성공", reservationService.selectAllReservationsByAsset(map)));
 	}
 }
