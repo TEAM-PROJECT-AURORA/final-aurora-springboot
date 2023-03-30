@@ -113,7 +113,8 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutName( search, selectCriteria));
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" ,responseDTOWithPaging ));
+//        memberService.selectMemberListAboutName(search, selectCriteria)
 
     }
 
@@ -148,7 +149,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutEmail( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutEmail(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
     }
 
     /**
@@ -174,7 +175,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutDept( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutDept(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
 
     }
 
@@ -201,7 +202,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutJob( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutJob(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     }
 
@@ -228,6 +229,6 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutTask( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutTask(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutTask(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
     }
 }

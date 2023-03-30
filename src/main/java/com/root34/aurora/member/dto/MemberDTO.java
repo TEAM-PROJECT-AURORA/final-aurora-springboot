@@ -120,6 +120,19 @@ public class MemberDTO implements UserDetails {
      * @variable phone 핸드폰
      **/
     private String phone;
+    /**
+     * @variable deptName 부서명
+     **/
+    private String deptName;
+    /**
+     * @variable jobName 직급명
+     **/
+    private String jobName;
+    /**
+     * @variable taskName 직무명
+     **/
+    private String taskName;
+
 
     // 이하 코드는 security 를 위한 용도
     private Collection<? extends GrantedAuthority> authorities;
