@@ -12,7 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -139,11 +144,17 @@ public class ReservationController {
 
 		log.info("[ReservationController] selectAllReservationsByAsset start" + assetCode + startTime + endTime);
 
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-M-d", Locale.KOREA);
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.KOREA);
+		LocalDate startDate = LocalDate.parse(startTime, inputFormatter);
+		LocalDate endDate = LocalDate.parse(endTime, inputFormatter);
+		LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0,0));
+		LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23,59));
 		Map map = new HashMap<>();
 		map.put("assetCode", assetCode);
-		map.put("startTime", startTime);
-		map.put("endTime", endTime);
+		map.put("startTime", outputFormatter.format(startDateTime));
+		map.put("endTime", outputFormatter.format(endDateTime));
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 수정 성공", reservationService.selectAllReservationsByAsset(map)));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByAsset(map)));
 	}
 }
