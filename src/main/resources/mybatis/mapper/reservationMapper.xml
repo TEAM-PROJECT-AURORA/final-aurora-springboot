@@ -94,4 +94,24 @@
            AND A.START_TIME >= #{ startTime }
            AND A.END_TIME <= #{ endTime }]]>
     </select>
+    <select id="selectAllReservationsByDate" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            A.START_TIME,
+            A.END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.ASSET_CODE = #{ assetCode }
+           AND (A.START_TIME BETWEEN #{ startTime } AND #{ endTime }
+             OR A.END_TIME BETWEEN #{ startTime } AND #{ endTime })
+    </select>
 </mapper>

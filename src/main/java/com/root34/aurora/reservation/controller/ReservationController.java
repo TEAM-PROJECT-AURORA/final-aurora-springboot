@@ -138,7 +138,13 @@ public class ReservationController {
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 취소 성공", reservationService.deleteReservation(reservationNos)));
 	}
-
+	
+	/**
+		* @MethodName : selectAllReservationsByAsset
+		* @Date : 2023-03-31
+		* @Writer : 오승재
+		* @Description : 자산에 따른 예약 리스트 조회
+	*/
 	@GetMapping("/reservations/{assetCode}")
 	public ResponseEntity<ResponseDTO> selectAllReservationsByAsset(@PathVariable String assetCode, @RequestParam String startTime, @RequestParam String endTime) {
 
@@ -156,5 +162,26 @@ public class ReservationController {
 		map.put("endTime", outputFormatter.format(endDateTime));
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByAsset(map)));
+	}
+
+	@GetMapping("/reservations/{assetCode}/date/{selectedDate}")
+	public ResponseEntity<ResponseDTO> selectAllReservationsByDate(@PathVariable String selectedDate, @PathVariable String assetCode) {
+
+		log.info("[ReservationController] selectAllReservationsByDate assetCode" + assetCode);
+
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy. M. d.", Locale.KOREA);
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm", Locale.KOREA);
+		LocalDate startDate = LocalDate.parse(selectedDate, inputFormatter);
+		LocalDate endDate = LocalDate.parse(selectedDate, inputFormatter);
+		LocalDateTime startLocalDateTime = LocalDateTime.of(startDate, LocalTime.of(0,0));
+		LocalDateTime endLocalDateTime = LocalDateTime.of(endDate, LocalTime.of(23,59));
+		log.info("[ReservationController] selectAllReservationsByDate selectedLocalDateTime" + startLocalDateTime);
+		log.info("[ReservationController] selectAllReservationsByDate selectedLocalDateTime" + endLocalDateTime);
+		Map map = new HashMap<>();
+		map.put("assetCode", assetCode);
+		map.put("startTime", outputFormatter.format(startLocalDateTime));
+		map.put("endTime", outputFormatter.format(endLocalDateTime));
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByDate(map)));
 	}
 }

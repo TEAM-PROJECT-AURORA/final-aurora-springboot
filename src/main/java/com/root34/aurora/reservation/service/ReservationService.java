@@ -117,4 +117,14 @@ public class ReservationService {
         log.info("[ReservationService] selectAllReservationsByAsset End ===================================");
         return reservations;
     }
+
+    public List<ReservationDTO> selectAllReservationsByDate(Map map) {
+
+        log.info("[ReservationService] selectAllReservationsByDate Start ===================================");
+
+        List<ReservationDTO> reservations = reservationMapper.selectAllReservationsByDate(map);
+
+        log.info("[ReservationService] selectAllReservationsByDate End ===================================");
+        return reservations;
+    }
 }

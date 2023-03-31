@@ -31,4 +31,6 @@ public interface ReservationMapper {
 	int deleteReservation(String[] reservationNos);
 
 	List<ReservationDTO> selectAllReservationsByAsset(Map map);
+
+	List<ReservationDTO> selectAllReservationsByDate(Map map);
 }
