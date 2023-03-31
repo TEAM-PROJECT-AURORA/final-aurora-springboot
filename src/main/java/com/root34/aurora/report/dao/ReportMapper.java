@@ -34,7 +34,7 @@ public interface ReportMapper {
 
     List<ReportRoundDTO> selectReportRoundSummaryListByReportCode(Long reportCode); // 정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력
 
-    List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 10개 조회
+    List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 20개 조회
 
     int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
 
@@ -52,7 +52,7 @@ public interface ReportMapper {
 
     ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
 
-    ReportDTO selectCasualReportDetailByReportCode(Long reportCode); // 비정기보고 상세 조회
+    ReportDTO selectReportDetailByReportCode(Long reportCode); // 보고 상세 조회
 
     List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
 
@@ -85,4 +85,6 @@ public interface ReportMapper {
     int deleteReportRoundReply(long replyCode); // 보고 댓글 삭제
 
     Integer selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
+
+    Integer getReportDetailCountByRoundCode(long roundCode); // 상세 보고 갯수 조회
 }

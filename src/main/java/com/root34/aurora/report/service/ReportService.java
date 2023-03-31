@@ -327,20 +327,26 @@ public class ReportService {
         log.info("[ReportService] getReportSummary Start");
         log.info("[ReportService] memberCode : " + memberCode);
 
+        HashMap<String, Object> response = new HashMap<>();
+
         List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
         log.info("[ReportService] recentRoutineReportCodeList : " + recentRoutineReportCodeList);
+
+        for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
+
+            ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(recentRoutineReportCodeList.get(i));
+//            String reportTitle = "routineReportTitle" + (i + 1);
+            response.put("routineReportTitle" + (i + 1), reportDTO.getReportTitle());
+        }
 
         if(recentRoutineReportCodeList.isEmpty()) {
             throw new DataNotFoundException("조회된 정기보고가 없습니다!");
         }
-
         HashMap<String, Object> searchConditions = new HashMap<>();
         searchConditions.put("memberCode", memberCode);
         searchConditions.put("reportType", "Routine");
         searchConditions.put("completionStatus", "N");
         log.info("[ReportService] searchConditions : " + searchConditions);
-
-        HashMap<String, Object> response = new HashMap<>();
 
         for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
 
@@ -356,7 +362,6 @@ public class ReportService {
         if(casualList.isEmpty()) {
             throw new DataNotFoundException("조회된 비정기보고가 없습니다!");
         }
-
         return response;
     }
 
@@ -559,7 +564,7 @@ public class ReportService {
         updateReportReadStatusToRead(memberCode, reportCode);
 
         HashMap<String, Object> response = new HashMap<>();
-        response.put("ReportDTO", reportMapper.selectCasualReportDetailByReportCode(reportCode));
+        response.put("ReportDTO", reportMapper.selectReportDetailByReportCode(reportCode));
         response.put("attachmentList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
         log.info("[ReportService] selectCasualReportDetailByReportCode response : " + response);
 

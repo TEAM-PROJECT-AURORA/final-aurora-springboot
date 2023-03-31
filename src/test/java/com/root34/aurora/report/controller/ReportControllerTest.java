@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,26 +30,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import({JwtFilter.class, TokenProvider.class})
+//@Import({JwtFilter.class, TokenProvider.class})
 public class ReportControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(ReportControllerTest.class);
-    private final int MEMBER_CODE = 1;
-    private final String REPORT_TYPE = "Routine";
-    private final char COMPLETION_STATUS = 'N';
-
-    private final String TOKEN =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MDEiLCJhdXRoIjpbIlJPTEVfVVNFUiJdLCJtZW1iZXJDb2RlIjoxLCJleHAiOjE2ODAxNTI2Nzd9.yhWufM9QxjNbgcn-L6NN6cr80G_Q-G7vq0WIMWb8UYXVj1ywafSJFZTU8LomBP5vYLwqp_r1CmCkf8mZuP76BA"; // JWT
 
     @Autowired
     private ReportController reportController;
 
-//    @Autowired
-//    private ReportService reportService;
+    @Autowired
+    private TokenProvider tokenProvider;
 
-    // MockMvc 애플리케이션을 서버에 배포하지 않고도 스프링의 MVC 테스트를 할 수 있게 해준다.
-//    @Autowired
+    private final String TOKEN =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MDEiLCJhdXRoIjpbIlJPTEVfVVNFUiJdLCJtZW1iZXJDb2RlIjoxLCJ0ZWFtIjoiIiwiZXhwIjoxNjgwMTcxOTAwfQ.Te2bfxJQ2Ev6OI957imVyTlBElssifvGx7UA35qLPm8LMKy749BLUBBQFkyEAmVfNyjveCJf-R04CUPGk572jg"; // JWT
+
     private MockMvc mockMvc;
+
+    private final int MEMBER_CODE = 1;
+    private final String REPORT_TYPE = "Routine";
+    private final char COMPLETION_STATUS = 'N';
 
     @Test
     public void testInit(){
@@ -63,9 +61,10 @@ public class ReportControllerTest {
     @BeforeEach // 각 테스트 메소드 실행 전에 매번 실행
     public void setUp(){
 
-        mockMvc = MockMvcBuilders.standaloneSetup(reportController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(reportController).addFilter(new JwtFilter(tokenProvider)).build();
     }
 
+//    @Secured("ADMIN")
     @Test
     void 보고_작성_컨트롤러_테스트() throws Exception {
 
@@ -102,13 +101,11 @@ public class ReportControllerTest {
 
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .post("/reports")
 //                .post("/api/v1/reports")
-//                .multipart("/api/v1/reports")
-                .multipart("http://localhost:8090/api/v1/reports")
-                .file("fileList", file1.getBytes()) // Add files with the proper key
-                .file("fileList", file2.getBytes()) // Add files with the proper key
-                .file(reportDtoMultipartFile)
+                .multipart("/api/v1/reports") // 맵핑 방식별로 수정
+                .file("fileList", file1.getBytes()) // fileList에 추가
+                .file("fileList", file2.getBytes())
+                .file(reportDtoMultipartFile) // Json문자열화한 객체를 MockMultipartFile로 변환해서 업로드
                 .file(memberListMultipartFile)
 //                .param("reportDTO", reportDTOJson)
 //                .param("memberList", memberListJson)
@@ -118,45 +115,9 @@ public class ReportControllerTest {
 
         // then
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print());
     }
 
-//    @Test
-//    @Transactional
-//    @Rollback(false)
-//    void 보고_작성_컨트롤러_테스트() {
-//
-//        // given
-//        Map<String, Object> requestData = new HashMap<String, Object>();
-//
-//        ReportDTO reportDTO = new ReportDTO();
-//        reportDTO.setMemberCode(1);
-//        reportDTO.setReportType("Routine");
-//        reportDTO.setReportTitle("TestReportTitle");
-//        reportDTO.setReportInfo("TestReportInfo");
-//        reportDTO.setReportCycle("Mon");
-//
-//        List<Integer> memberList = new ArrayList<>();
-//        memberList.add(2);
-//        memberList.add(3);
-//
-//        requestData.put("reportDTO", reportDTO);
-//        requestData.put("memberList", memberList);
-//
-//        try {
-//            String requestDataJson = objectMapper.writeValueAsString(requestData);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        // when
-//        mockMvc.perform(
-//                post("/saveRequestData")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestDataJson)
-//        )
-//                .andExpect(status().isOk());
-//    }
 }
