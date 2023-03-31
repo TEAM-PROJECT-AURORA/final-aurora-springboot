@@ -1,9 +1,12 @@
 package com.root34.aurora.report.dao;
 
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.report.dto.ReportDTO;
+import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +56,7 @@ public class ReportMapperTest {
         // when
         int result = reportMapper.registerReport(reportDTO);
 
-        int generatedPk = reportDTO.getId();
+        Long generatedPk = reportDTO.getReportCode();
 
         int count = 0;
 
@@ -285,8 +288,6 @@ public class ReportMapperTest {
         assertNotNull(result);
     }
 
-
-//    List<Integer> selectMemberListInvolvedInReport(Long reportCode); // 보고 관련자 목록 조회
     @Test
     void 보고_관련자_목록_조회_맵퍼_테스트() {
 
@@ -299,4 +300,267 @@ public class ReportMapperTest {
         // then
         assertNotNull(result);
     }
+
+    @Test
+    void 정기보고_회차_상세_조회_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        ReportRoundDTO result = reportMapper.selectReportRoundDetailByRoundCode(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 비정기보고_상세_조회() {
+
+        // given
+        Long reportCode = 3L;
+
+        // when
+        ReportDTO result = reportMapper.selectCasualReportDetailByReportCode(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_첨부파일_등록_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+
+        // when
+        List<FileDTO> result = reportMapper.selectReportAttachmentListByReportCode(reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+    
+    @Test 
+    @Transactional
+    @Rollback(false)
+    void 보고_완료상태_수정_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+        char completionStatus = 'Y';
+        int memberCode = 1;
+
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("reportCode", reportCode);
+        parameter.put("completionStatus", completionStatus);
+        parameter.put("memberCode", memberCode);
+
+        // when
+        int result = reportMapper.updateReportCompletionStatus(parameter);
+
+        // then
+        assertNotEquals(0, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void 보고_읽음상태_수정_맵퍼_테스트() {
+
+        // given
+        Long reportCode = 1L;
+        char readStatus = 'Y';
+        int memberCode = 1;
+
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("reportCode", reportCode);
+        parameter.put("readStatus", readStatus);
+        parameter.put("memberCode", memberCode);
+
+        // when
+        int result = reportMapper.updateReportReadStatus(parameter);
+
+        // then
+        assertNotEquals(0, result);
+    }
+    
+    @Test 
+    void 보고_책임자_확인_맵퍼_테스트() {
+        
+        // given 
+        int memberCode = 1;
+        Long reportCode = 1L;
+        
+        HashMap<String, Object> parameter = new HashMap<>();
+        parameter.put("memberCode", memberCode);
+        parameter.put("reportCode", reportCode);
+        
+        // when
+        int result = reportMapper.countInChargeMember(parameter);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+//    @Transactional
+//    @Rollback(false)
+    void 회차별_상세_보고_작성_맵퍼_테스트() {
+
+        // given
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setRoundCode(5L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("TestBody");
+
+        // when
+        int result = reportMapper.registerReportDetail(reportDetailDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_완료_상태_확인_맵퍼_테스트() {
+
+        // given
+        long reportCode = 6L;
+
+        // when
+        char result = reportMapper.selectReportCompletionStatus(reportCode);
+
+        // then
+        assertEquals('N', result);
+    }
+
+    @Test
+    void 회차별_상세_보고_수정_맵퍼_테스트() {
+
+        // given
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setDetailCode(2L);
+        reportDetailDTO.setRoundCode(5L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("Modified TestBody");
+
+        // when
+        int result = reportMapper.updateReportDetail(reportDetailDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 상세_보고_작성자_본인_확인_맵퍼_테스트() {
+
+        // given
+        long detailCode = 2L;
+
+        // when
+        int result = reportMapper.selectMemberCodeByDetailCode(detailCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 회차별_상세_보고_목록_조회_맵퍼_테스트() {
+
+        // given
+        long roundCode = 1L;
+
+        // when
+        List<ReportDetailDTO> result = reportMapper.selectReportDetailListByRoundCode(roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 회차별_상세_보고_삭제_맵퍼_테스트() {
+
+        // given
+        long detailCode = 5L;
+
+        // when
+        int result = reportMapper.deleteReportDetail(detailCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_댓글_작성_맵퍼_테스트() {
+
+        // given
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setRoundCode(21L);
+        reportRoundReplyDTO.setMemberCode(1);
+        reportRoundReplyDTO.setReplyBody("Test Report Reply Body");
+
+        // when
+        int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_목록_조회_맵퍼_테스트() {
+
+        // given
+        long roundCode = 21L;
+
+        // when
+        List<ReportRoundReplyDTO> result = reportMapper.selectReportRoundReply(roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 보고_댓글_수정_맵퍼_테스트() {
+
+        // given
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setReplyCode(1L);
+        reportRoundReplyDTO.setReplyBody("Modified Test Report Reply Body");
+
+        // when
+        int result = reportMapper.updateReportRoundReply(reportRoundReplyDTO);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_삭제_맵퍼_테스트() {
+
+        // given
+        long replyCode = 1L;
+
+        // when
+        int result = reportMapper.deleteReportRoundReply(replyCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
+    @Test
+    void 보고_댓글_작성자_확인_맵퍼_테스트() {
+
+        // given
+        long replyCode = 4L;
+
+        // when
+        int result = reportMapper.selectMemberCodeByReplyCode(replyCode);
+
+        // then
+        assertEquals(1, result);
+    }
+
 }

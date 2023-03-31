@@ -1,20 +1,26 @@
 package com.root34.aurora.report.service;
 
-import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
-import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.report.dao.ReportMapper;
+import com.root34.aurora.exception.DataNotFoundException;
+import com.root34.aurora.exception.NotAuthorException;
+import com.root34.aurora.exception.report.AlreadyCompletedReportException;
+import com.root34.aurora.exception.report.NotInvolvedInReportException;
+import com.root34.aurora.exception.report.NotReportSupervisorException;
 import com.root34.aurora.report.dto.ReportDTO;
+import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
+import com.root34.aurora.report.dto.ReportRoundReplyDTO;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,16 +38,11 @@ public class ReportServiceTest {
     private final char COMPLETION_STATUS = 'N';
 
     @Autowired
-//    @MockBean
-    private ReportMapper reportMapper;
-
-    @Autowired
     private ReportService reportService;
 
     @Test
     public void 보고_맵퍼_의존성_주입_테스트() {
 
-        assertNotNull(reportMapper);
         assertNotNull(reportService);
     }
 
@@ -50,22 +51,136 @@ public class ReportServiceTest {
 
         // given
         int memberCode = 1;
-        Long reportCode1 = 5L;
-        Long reportCode2 = 999999L;
+        Long reportCode1 = 1L;
+        Long reportCode2 = 0L;
 
         // when
-        boolean result1 = reportService.verifyMemberReportAccess(memberCode, reportCode1);
-        boolean result2 = reportService.verifyMemberReportAccess(memberCode, reportCode2);
 
         // then
-        assertEquals(true, result1);
-        assertEquals(false, result2);
+        reportService.verifyMemberReportAccess(memberCode, reportCode1);
+
+        assertThrows(NotInvolvedInReportException.class, () -> {
+            reportService.verifyMemberReportAccess(memberCode, reportCode2);
+        });
     }
 
-    @Transactional
-    @Rollback(false)
     @Test
-//    @Rollback
+    void 보고_책임자_확인_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+
+        // when
+        boolean result = reportService.countInChargeMember(memberCode, reportCode);
+
+        // then
+        assertEquals(true, result);
+    }
+
+    @Test
+    void 완료된_보고인지_체크_서비스_테스트() {
+
+        // given
+        long reportCode = 1L;
+
+        // when
+
+        // then
+        assertThrows(AlreadyCompletedReportException.class, () -> {
+            reportService.isReportNotCompleted(reportCode);
+        });
+    }
+
+    @Test
+    void 상세보고_작성자_확인_서비스_테스트() {
+
+        // given
+        int memberCode = 0;
+        long detailCode1 = 0L;
+        long detailCode2 = 2L;
+
+        // when
+
+        // then
+        assertThrows(DataNotFoundException.class, () -> {
+            reportService.isDetailReportAuthor(memberCode, detailCode1);
+        });
+        assertThrows(NotAuthorException.class, () -> {
+            reportService.isDetailReportAuthor(memberCode, detailCode2);
+        });
+    }
+
+    @Test
+    void 보고_댓글_작성자_확인_서비스_테스트() {
+
+        // given
+        int memberCode = 2;
+        long replyCode1 = 0L;
+        long replyCode2 = 2L;
+
+        // when
+
+        // then
+        assertThrows(NotFoundException.class, () -> {
+            reportService.isReplyAuthor(memberCode, replyCode1);
+        });
+        assertThrows(NotAuthorException.class, () -> {
+            reportService.isReplyAuthor(memberCode, replyCode2);
+        });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_읽음상태_수정_읽음_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+
+        // when
+
+        // then
+        reportService.updateReportReadStatusToRead(memberCode, reportCode);
+    }
+    
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_읽음상태_수정_읽지않음_서비스_테스트() {
+
+        // given
+        long reportCode = 1L;
+
+        // when
+
+        // then
+        reportService.updateReportReadStatusToUnread(reportCode);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_완료상태_수정_완료_서비스_테스트() {
+
+        // given
+        int memberCode1 = 0;
+        int memberCode2 = 1;
+        long reportCode = 1L;
+
+        // when
+
+        // then
+        assertThrows(NotReportSupervisorException.class, () -> {
+            reportService.updateReportCompletionStatusToComplete(memberCode1, reportCode);
+        });
+        reportService.updateReportCompletionStatusToComplete(memberCode2, reportCode);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     void 보고_작성_서비스_테스트() {
 
         // given
@@ -80,233 +195,297 @@ public class ReportServiceTest {
         memberList.add(2);
         memberList.add(3);
 
-        log.info("[보고_작성_서비스_테스트] reportDTO : " + reportDTO);
-        log.info("[보고_작성_서비스_테스트] memberList : " + memberList);
+        // 가상의 파일 생성
+        byte[] content1 = "Hello, world!".getBytes();
+        String fileName1 = "test.txt";
+        MultipartFile file1 = new MockMultipartFile("file", fileName1, "text/plain", content1);
+
+        byte[] content2 = "Hello, world!".getBytes();
+        String fileName2 = "test.jpg";
+        MultipartFile file2 = new MockMultipartFile("file", fileName2, "jpg/plain", content2);
+
+        List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+        fileList.add(file1);
+        fileList.add(file2);
 
         // when
-        boolean result = reportService.registerReport(reportDTO, memberList);
-
-//        int result = reportMapper.registerReport(reportDTO);
-//
-//        int generatedPk = reportDTO.getId();
-//
-//        int count = 0;
-//
-//        for (Integer listItem : memberList) {
-//            HashMap<String, Object> parameter = new HashMap<>();
-//            parameter.put("reportCode", generatedPk);
-//            parameter.put("listItem", listItem);
-//
-//            reportMapper.registerReporter(parameter);
-//
-//            count++;
-//        }
+        boolean result = reportService.registerReport(reportDTO, memberList, fileList);
 
         // then
         assertEquals(true, result);
-//        assertEquals(1, result);
-//        assertEquals(memberList.size(), count);
     }
 
     @Test
-    void 정기_보고_갯수_조회_맵퍼_테스트() {
+    void 전체_보고_조회_서비스_테스트() {
 
         // given
-        HashMap<String, Object> conditions = new HashMap<>();
-        conditions.put("memberCode", MEMBER_CODE);
-        conditions.put("reportType", REPORT_TYPE);
-        conditions.put("completionStatus", COMPLETION_STATUS);
-
-        //when
-        int result = reportMapper.getReportCount(conditions);
-
-        // then
-        assertNotEquals(0, result);
-    }
-
-    @Test
-    void 완료되지_않은_정기_보고_목록_조회_맵퍼_테스트() {
-
-        // given
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        searchConditions.put("memberCode", MEMBER_CODE);
-        searchConditions.put("reportType", REPORT_TYPE);
-        searchConditions.put("completionStatus", COMPLETION_STATUS);
-
-        String offset = "1";
-
-        int totalCount = reportMapper.getReportCount(searchConditions);
-        int limit = 10;
-        int buttonAmount = 5;
-
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
-
-        selectCriteria.setSearchConditions(searchConditions);
-
-        log.info("selectCriteria : " + selectCriteria);
+        int memberCode1 = 0;
+        int memberCode2 = 1;
 
         // when
-        List<ReportDTO> routineReportList = reportMapper.selectReportListWithPaging(selectCriteria);
-
-        // then
-
-        for (ReportDTO reportDTO : routineReportList) {
-            log.info("reportDTO: {}", reportDTO);
-        }
-
-        assertNotEquals(0, routineReportList.size());
-        log.info("routineReportList.size = " + routineReportList.size());
-    }
-
-    @Test
-    void 정기보고_최근_3개_회차_목록_조회_서비스_테스트() {
-
-        // given
-        int memberCode = MEMBER_CODE;
-
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        searchConditions.put("memberCode", MEMBER_CODE);
-        searchConditions.put("reportType", REPORT_TYPE);
-        searchConditions.put("completionStatus", COMPLETION_STATUS);
-
-        HashMap<String, List<ReportRoundDTO>> resultMap = new HashMap<>();
-
-        // when
-        List<Long> recentRoutineReportCodeList = reportMapper.selectThreeReportCodesByMemberCode(memberCode);
-
-        for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
-
-            List<ReportRoundDTO> result = reportMapper.selectReportRoundSummaryListByReportCode(recentRoutineReportCodeList.get(i));
-            String resultName = "result" + (i + 1);
-            resultMap.put(resultName, result);
-        }
-        List<ReportRoundDTO> routineList1 = resultMap.get("result1");
-        List<ReportRoundDTO> routineList2 = resultMap.get("result2");
-        List<ReportRoundDTO> routineList3 = resultMap.get("result3");
-
-        List<ReportDTO> casualList = reportMapper.selectCasualReportListByMemberCode(memberCode);
+        HashMap<String, Object> result = reportService.getReportSummary(memberCode2);
 
 
         // then
-        assertNotNull(routineList1);
-        assertNotNull(routineList2);
-        assertNotNull(routineList3);
-        assertNotNull(casualList);
-
+        assertThrows(DataNotFoundException.class, () -> {
+            reportService.getReportSummary(memberCode1);
+        });
+        assertNotNull(result);
     }
 
     @Test
     @Transactional
-    @Rollback(false)
+    @Rollback
     void 보고_회차_등록_서비스_테스트() {
 
         // given
-        Long reportCode = 1L;
-
-        ReportRoundDTO reportRoundDTO = new ReportRoundDTO();
-        reportRoundDTO.setReportCode(1);
-        reportRoundDTO.setRoundBody("보고 회차 등록 Test");
-
-        LocalDate currentDate = LocalDate.now();
-        String today = currentDate + " 정기 보고";
-        reportRoundDTO.setRoundTitle(today);
+        ReportRoundDTO reportRoundDTO1 = new ReportRoundDTO();
+        reportRoundDTO1.setReportCode(0);
+        reportRoundDTO1.setRoundBody("Test");
+        ReportRoundDTO reportRoundDTO2 = new ReportRoundDTO();
+        reportRoundDTO2.setReportCode(1);
+        reportRoundDTO2.setRoundBody("Test");
 
         // when
-        int capacity = reportMapper.getReportRoundCapacity(reportCode);
-        reportRoundDTO.setCapacity(capacity);
-        int result = reportMapper.registerReportRound(reportRoundDTO);
+        boolean result = reportService.registerReportRound(reportRoundDTO2);
 
         // then
-        assertEquals(1, result);
+        assertThrows(NullPointerException.class, () -> {
+            reportService.registerReportRound(reportRoundDTO1);
+        });
+        assertEquals(true, result);
     }
-
 
     @Test
     @Transactional
-    @Rollback(false)
+    @Rollback
     void 보고_수정_서비스_테스트() {
 
         // given
+        int memberCode = 1;
+
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setReportCode(2L);
+        reportDTO.setReportCode(5L);
         reportDTO.setReportTitle("Modified Title");
         reportDTO.setReportInfo("Modified Information");
-        reportDTO.setMemberCode(2);
+        reportDTO.setMemberCode(1);
         reportDTO.setReportCycle("Tue");
         reportDTO.setCompletionStatus('N');
 
         List<Integer> memberList = new ArrayList<>();
         memberList.add(1);
-
-        Long reportCode = reportDTO.getReportCode();
+        memberList.add(2);
 
         // when
-        int result1 = reportMapper.updateReport(reportDTO);
-        int result2 = reportMapper.deleteReporter(reportCode);
-
-        int count = 0;
-
-        for (Integer listItem : memberList) {
-            HashMap<String, Object> parameter = new HashMap<>();
-            parameter.put("reportCode", reportCode);
-            parameter.put("listItem", listItem);
-
-            reportMapper.registerReporter(parameter);
-
-            count++;
-        }
+        boolean result = reportService.updateReport(memberCode, reportDTO, memberList);
 
         // then
-        assertEquals(1, result1);
-        assertNotEquals(0, result2);
-        assertNotEquals(0, count);
+        assertEquals(true, result);
     }
 
     @Test
     void 조건별_보고_목록_조회_서비스_테스트() {
 
         // given
-        HashMap<String, Object> searchConditions = new HashMap<>();
-        searchConditions.put("memberCode", MEMBER_CODE);
-        searchConditions.put("reportType", "Routine");
-        searchConditions.put("completionStatus", COMPLETION_STATUS);
-//        searchConditions.put("completionStatus", null);
-
-        String offset = "1";
-
-        int totalCount = reportMapper.getReportCount(searchConditions);
-        int limit = 10;
-        int buttonAmount = 5;
-
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
-
-        selectCriteria.setSearchConditions(searchConditions);
-
-        // when
-        List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
-
-        // then
-        assertNotNull(reportList);
-    }
-
-    @Test
-    void 보고_회차_목록_조회() {
-
-        // given
-        Long reportCode = 1L;
-
         int offset = 1;
-        int totalCount = reportMapper.getReportRoundCount(reportCode);
-        int limit = 10;
-        int buttonAmount = 5;
+        int memberCode = 1;
+        String reportType = "Routine";
+        char completionStatus = 'N';
 
-        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(offset, totalCount, limit, buttonAmount);
-        selectCriteria.setSearchCondition(String.valueOf(reportCode));
+        HashMap<String, Object> searchConditions = new HashMap<>();
+        searchConditions.put("memberCode", memberCode);
+        searchConditions.put("reportType", reportType);
+        searchConditions.put("completionStatus", completionStatus);
 
         // when
-        ResponseDTOWithPaging result = reportService.selectReportRoundListByReportCode(reportCode, offset);
+        ResponseDTOWithPaging result = reportService.selectReportListByConditions(offset, searchConditions);
 
         // then
         assertNotNull(result);
+    }
+
+    @Test
+    void 보고_회차_목록_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+        int offset = 1;
+
+        // when
+        ResponseDTOWithPaging result = reportService.selectReportRoundListByReportCode(memberCode, reportCode, offset);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 정기보고_회차_상세_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+        long roundCode = 1L;
+
+        // when
+        ReportRoundDTO result = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void 비정기보고_상세_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+
+        // when
+        HashMap<String ,Object> result = reportService.selectCasualReportDetailByReportCode(memberCode, reportCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 회차별_상세_보고_작성_서비스_테스트() {
+
+        // given
+        long reportCode = 11L;
+
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setRoundCode(20L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("TestBody");
+
+        // when
+        boolean result = reportService.registerReportDetail(reportCode, reportDetailDTO);
+
+        // then
+        assertEquals(true, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 회차별_상세_보고_수정_서비스_테스트() {
+
+        // given
+        long reportCode = 11L;
+
+        ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+        reportDetailDTO.setDetailCode(8);
+        reportDetailDTO.setRoundCode(20L);
+        reportDetailDTO.setMemberCode(1);
+        reportDetailDTO.setDetailBody("TestBody");
+
+        // when
+        boolean result = reportService.updateReportDetail(reportCode, reportDetailDTO);
+
+        // then
+        assertEquals(true, result);
+    }
+
+    @Test
+    void 회차별_상세보고_목록_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 1L;
+        long roundCode = 1;
+
+        // when
+        List<ReportDetailDTO> result = reportService.selectReportDetailListByRoundCode(memberCode, reportCode, roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 상세_보고_삭제_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long detailCode = 2L;
+
+        // when
+        boolean result = reportService.deleteReportDetail(memberCode, detailCode);
+
+        // then
+        assertEquals(true, result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_댓글_작성_서비스_테스트() {
+
+        // given
+        long reportCode = 11L;
+
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setRoundCode(21L);
+        reportRoundReplyDTO.setMemberCode(1);
+        reportRoundReplyDTO.setReplyBody("Test Report Reply Body");
+
+        // when
+        boolean result = reportService.registerReportRoundReply(reportCode, reportRoundReplyDTO);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    void 보고_댓글_목록_조회_서비스_테스트() {
+
+        // given
+        int memberCode = 1;
+        long reportCode = 11L;
+        long roundCode = 21L;
+
+        // when
+        List<ReportRoundReplyDTO> result = reportService.selectReportRoundReply(memberCode, reportCode, roundCode);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_댓글_수정_서비스_테스트() throws Exception {
+
+        // given
+        ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+        reportRoundReplyDTO.setMemberCode(1);
+        reportRoundReplyDTO.setReplyCode(2L);
+        reportRoundReplyDTO.setReplyBody("Modified Test Report Reply Body");
+
+        // when
+        boolean result = reportService.updateReportRoundReply(reportRoundReplyDTO);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void 보고_댓글_삭제() throws Exception {
+
+        // given
+        int memberCode = 1;
+        long replyCode = 2L;
+
+        // when
+        boolean result = reportService.deleteReportRoundReply(memberCode, replyCode);
+
+        // then
+        assertTrue(result);
     }
 }
