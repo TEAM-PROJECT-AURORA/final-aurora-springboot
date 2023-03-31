@@ -160,6 +160,7 @@ public class ReportMapperTest {
             List<ReportRoundDTO> result = reportMapper.selectReportRoundSummaryListByReportCode(reportCodeList.get(i));
             String resultName = "result" + (i + 1);
             resultMap.put(resultName, result);
+            log.info("result : " + result);
         }
         List<ReportRoundDTO> routineList1 = resultMap.get("result1");
         List<ReportRoundDTO> routineList2 = resultMap.get("result2");
@@ -321,7 +322,7 @@ public class ReportMapperTest {
         Long reportCode = 3L;
 
         // when
-        ReportDTO result = reportMapper.selectCasualReportDetailByReportCode(reportCode);
+        ReportDTO result = reportMapper.selectReportDetailByReportCode(reportCode);
 
         // then
         assertNotNull(result);
