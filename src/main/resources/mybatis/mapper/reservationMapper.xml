@@ -95,6 +95,7 @@
            AND A.END_TIME <= #{ endTime }]]>
     </select>
     <select id="selectAllReservationsByDate" parameterType="map" resultType="reservationDTO">
+        <![CDATA[
         SELECT
             A.RESERVATION_NO,
             A.ASSET_CODE,
@@ -111,7 +112,7 @@
           JOIN TBL_MEMBER C
             ON A.MEMBER_CODE = C.MEMBER_CODE
          WHERE A.ASSET_CODE = #{ assetCode }
-           AND (A.START_TIME BETWEEN #{ startTime } AND #{ endTime }
-             OR A.END_TIME BETWEEN #{ startTime } AND #{ endTime })
+           AND (A.START_TIME >= #{startDateTime} AND A.START_TIME <= #{endDateTime})
+            OR (A.END_TIME >= #{startDateTime} AND A.END_TIME <= #{endDateTime})]]>
     </select>
 </mapper>

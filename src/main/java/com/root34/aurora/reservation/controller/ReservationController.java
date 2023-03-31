@@ -164,23 +164,15 @@ public class ReservationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByAsset(map)));
 	}
 
-	@GetMapping("/reservations/{assetCode}/date/{selectedDate}")
-	public ResponseEntity<ResponseDTO> selectAllReservationsByDate(@PathVariable String selectedDate, @PathVariable String assetCode) {
+	@GetMapping("/reservations/{assetCode}/date")
+	public ResponseEntity<ResponseDTO> selectAllReservationsByDate(@RequestParam String startDateTime, @RequestParam String endDateTime, @PathVariable String assetCode) {
 
 		log.info("[ReservationController] selectAllReservationsByDate assetCode" + assetCode);
 
-		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy. M. d.", Locale.KOREA);
-		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm", Locale.KOREA);
-		LocalDate startDate = LocalDate.parse(selectedDate, inputFormatter);
-		LocalDate endDate = LocalDate.parse(selectedDate, inputFormatter);
-		LocalDateTime startLocalDateTime = LocalDateTime.of(startDate, LocalTime.of(0,0));
-		LocalDateTime endLocalDateTime = LocalDateTime.of(endDate, LocalTime.of(23,59));
-		log.info("[ReservationController] selectAllReservationsByDate selectedLocalDateTime" + startLocalDateTime);
-		log.info("[ReservationController] selectAllReservationsByDate selectedLocalDateTime" + endLocalDateTime);
 		Map map = new HashMap<>();
 		map.put("assetCode", assetCode);
-		map.put("startTime", outputFormatter.format(startLocalDateTime));
-		map.put("endTime", outputFormatter.format(endLocalDateTime));
+		map.put("startDateTime", startDateTime);
+		map.put("endDateTime", endDateTime);
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByDate(map)));
 	}
