@@ -52,5 +52,5 @@ public class ReservationDTO {
     /**
     	* @variable 예약일 
     */
-    private Date reservationDate;
+    private String reservationDate;
 }

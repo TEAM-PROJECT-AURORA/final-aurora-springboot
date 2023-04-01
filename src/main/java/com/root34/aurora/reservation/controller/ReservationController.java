@@ -198,11 +198,11 @@ public class ReservationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정보 조회 성공", reservationService.selectMemberInfoForRegister(memberCode)));
 	}
 
-//	@PostMapping("/reservation")
-//	public ResponseEntity<ResponseDTO> insertReservation(@RequestBody ReservationDTO reservationDTO) {
-//
-//		log.info("[ReservationController] insertReservation start" + reservationDTO);
-//
-//		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 등록 성공", reservationService.insertReservation(reservationDTO)));
-//	}
+	@PostMapping("/reservation")
+	public ResponseEntity<ResponseDTO> insertReservation(@RequestBody ReservationDTO reservationDTO) {
+
+		log.info("[ReservationController] insertReservation start" + reservationDTO);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 등록 성공", reservationService.insertReservation(reservationDTO)));
+	}
 }

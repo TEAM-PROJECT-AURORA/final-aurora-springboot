@@ -138,4 +138,13 @@ public class ReservationService {
         log.info("[ReservationService] selectMemberInfoForRegister End ===================================");
         return memberDTO;
     }
+    
+    public String insertReservation(ReservationDTO reservationDTO) {
+
+        log.info("[ReservationService] insertReservation Start ===================================");
+        int result  = reservationMapper.insertReservation(reservationDTO);
+
+        log.info("[ReservationService] insertReservation End ===================================");
+        return result > 0? "예약 등록 성공" : "예약 등록 실패";
+    }
 }

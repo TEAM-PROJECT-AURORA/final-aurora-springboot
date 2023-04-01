@@ -36,4 +36,6 @@ public interface ReservationMapper {
 	List<ReservationDTO> selectAllReservationsByDate(Map map);
 
 	MemberDTO selectMemberInfoForRegister(int memberCode);
+
+	int insertReservation(ReservationDTO reservationDTO);
 }

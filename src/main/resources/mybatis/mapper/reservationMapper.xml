@@ -31,7 +31,7 @@
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
-            A.RESERVATION_DATE
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
           FROM TBL_RESERVATION A
           JOIN TBL_ASSET B
             ON A.ASSET_CODE = B.ASSET_CODE
@@ -50,7 +50,7 @@
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
-            A.RESERVATION_DATE
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
           FROM TBL_RESERVATION A
           JOIN TBL_ASSET B
             ON A.ASSET_CODE = B.ASSET_CODE
@@ -84,7 +84,7 @@
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
-            A.RESERVATION_DATE
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
           FROM TBL_RESERVATION A
           JOIN TBL_ASSET B
             ON A.ASSET_CODE = B.ASSET_CODE
@@ -104,7 +104,7 @@
             A.DESCRIPTION,
             A.START_TIME,
             A.END_TIME,
-            A.RESERVATION_DATE
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
           FROM TBL_RESERVATION A
           JOIN TBL_ASSET B
             ON A.ASSET_CODE = B.ASSET_CODE
@@ -123,4 +123,10 @@
           FROM TBL_MEMBER
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
+    <insert id="insertReservation" parameterType="reservationDTO">
+        INSERT INTO TBL_RESERVATION
+            (ASSET_CODE, MEMBER_CODE, TEAM, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
+        VALUES
+            (#{ assetCode }, #{ memberCode }, #{ team }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
+    </insert>
 </mapper>
