@@ -1,5 +1,6 @@
 package com.root34.aurora.reservation.service;
 
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.reservation.dao.ReservationMapper;
 import com.root34.aurora.reservation.dto.AssetDTO;
 import com.root34.aurora.reservation.dto.ReservationDTO;
@@ -126,5 +127,15 @@ public class ReservationService {
 
         log.info("[ReservationService] selectAllReservationsByDate End ===================================");
         return reservations;
+    }
+
+    public MemberDTO selectMemberInfoForRegister(int memberCode) {
+
+        log.info("[ReservationService] selectMemberInfoForRegister Start ===================================");
+
+        MemberDTO memberDTO = reservationMapper.selectMemberInfoForRegister(memberCode);
+
+        log.info("[ReservationService] selectMemberInfoForRegister End ===================================");
+        return memberDTO;
     }
 }

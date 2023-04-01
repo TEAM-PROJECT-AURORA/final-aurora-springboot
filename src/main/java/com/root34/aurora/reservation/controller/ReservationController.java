@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -164,6 +165,12 @@ public class ReservationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByAsset(map)));
 	}
 
+	/**
+		* @MethodName : selectAllReservationsByDate
+		* @Date : 2023-04-01
+		* @Writer : 오승재
+		* @Description : 날짜에 따른 예약 정보 조회
+	*/
 	@GetMapping("/reservations/{assetCode}/date")
 	public ResponseEntity<ResponseDTO> selectAllReservationsByDate(@RequestParam String startDateTime, @RequestParam String endDateTime, @PathVariable String assetCode) {
 
@@ -176,4 +183,26 @@ public class ReservationController {
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 조회 성공", reservationService.selectAllReservationsByDate(map)));
 	}
+
+	/**
+		* @MethodName : selectMemberInfoForRegister
+		* @Date : 2023-04-01
+		* @Writer : 오승재
+		* @Description : 예약하기를 위한 사원 정보 조회
+	*/
+	@GetMapping("/reservation/member-info/{memberCode}")
+	public ResponseEntity<ResponseDTO> selectMemberInfoForRegister(@PathVariable int memberCode) {
+
+		log.info("[ReservationController] selectMemberInfoForRegister start" + memberCode);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정보 조회 성공", reservationService.selectMemberInfoForRegister(memberCode)));
+	}
+
+//	@PostMapping("/reservation")
+//	public ResponseEntity<ResponseDTO> insertReservation(@RequestBody ReservationDTO reservationDTO) {
+//
+//		log.info("[ReservationController] insertReservation start" + reservationDTO);
+//
+//		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 등록 성공", reservationService.insertReservation(reservationDTO)));
+//	}
 }
