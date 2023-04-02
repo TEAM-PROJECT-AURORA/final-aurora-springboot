@@ -339,9 +339,9 @@ public class ReportService {
             response.put("routineReportTitle" + (i + 1), reportDTO.getReportTitle());
         }
 
-        if(recentRoutineReportCodeList.isEmpty()) {
-            throw new DataNotFoundException("조회된 정기보고가 없습니다!");
-        }
+//        if(recentRoutineReportCodeList.isEmpty()) {
+//            throw new DataNotFoundException("조회된 정기보고가 없습니다!");
+//        }
         HashMap<String, Object> searchConditions = new HashMap<>();
         searchConditions.put("memberCode", memberCode);
         searchConditions.put("reportType", "Routine");
@@ -359,9 +359,9 @@ public class ReportService {
         response.put("casualList", casualList);
         log.info("[ReportService] casualList : " + casualList);
 
-        if(casualList.isEmpty()) {
-            throw new DataNotFoundException("조회된 비정기보고가 없습니다!");
-        }
+//        if(casualList.isEmpty()) {
+//            throw new DataNotFoundException("조회된 비정기보고가 없습니다!");
+//        }
         return response;
     }
 
