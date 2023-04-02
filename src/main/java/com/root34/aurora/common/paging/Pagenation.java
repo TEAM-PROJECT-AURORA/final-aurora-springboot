@@ -26,7 +26,8 @@ public class Pagenation {
             endPage = startPage;
         }
 
-        startRow = (pageNo - 1) * limit;
+        //startRow = (pageNo - 1) * limit + 1; //오라클에선 이렇게 해서 첫번째 데이터를 가져온다
+        startRow = (pageNo - 1) * limit; // mysql에선 이렇게 해서 첫번째 데이터를 가져온다
         endRow = startRow + limit - 1;
 
         System.out.println("startRow : " + startRow);
