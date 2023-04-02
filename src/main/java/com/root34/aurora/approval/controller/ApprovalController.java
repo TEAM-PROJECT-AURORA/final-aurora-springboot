@@ -43,7 +43,7 @@ public class ApprovalController {
 
         log.info("[ApprovalController] GetMapping lastList start ");
 
-        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK,"조회 성공",approvalService.lastList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.lastList()));
     }
 
     /**
