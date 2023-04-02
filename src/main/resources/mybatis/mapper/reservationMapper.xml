@@ -115,6 +115,7 @@
            AND (A.START_TIME >= #{startDateTime} AND A.START_TIME <= #{endDateTime}
             OR A.END_TIME >= #{startDateTime} AND A.END_TIME <= #{endDateTime})
         ]]>
+         ORDER BY (A.END_TIME - A.START_TIME) DESC
     </select>
     <select id="selectMemberInfoForRegister" parameterType="_int" resultType="memberDTO">
         SELECT
