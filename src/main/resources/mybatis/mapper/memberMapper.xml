@@ -55,8 +55,9 @@
                  JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
     </select>
 
-    <select id="memberDetail" resultType="MemberDTO">
+    <select id="selectMemberDetail" parameterType="int" resultType="MemberDTO">
         SELECT
+               A.MEMBER_ID,
                A.MEMBER_CODE,
                A.DEPT_CODE,
                B.DEPT_NAME,
@@ -68,7 +69,7 @@
                A.MEMBER_NAME,
                A.PHONE,
                A.MEMBER_EMAIL,
-               A.BIRTHDAY,
+               DATE_FORMAT( A.BIRTHDAY, '%Y-%m-%d') AS BIRTHDAY,
                A.ADDRESS,
                A.STATUS,
                A.MEMBER_HIRE_DATE,
@@ -237,6 +238,20 @@
         WHERE A.TASK_CODE LIKE CONCAT ('%', #{ search } ,'%')
           AND A.STATUS = '재직'
         ORDER BY A.MEMBER_CODE
+    </select>
+
+    <select id="selectJob" resultType="JobDTO">
+        SELECT
+              *
+        FROM TBL_JOB
+
+    </select>
+
+    <select id="selectDept" resultType="DeptDTO">
+        SELECT
+            *
+        FROM TBL_Department
+
     </select>
 
 

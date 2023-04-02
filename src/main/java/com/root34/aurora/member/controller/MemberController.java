@@ -5,12 +5,18 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.member.dto.DeptDTO;
+import com.root34.aurora.member.dto.JobDTO;
 import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  @ClassName : MemberController
@@ -70,9 +76,20 @@ public class MemberController {
      * @Description : 사원 상세정보 조회
      */
     @GetMapping("/hrm/{memberCode}")
-    public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
+    public ResponseEntity<ResponseDTO> memberDetail(@PathVariable int memberCode) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
+        List<DeptDTO> selectDept = memberService.selectDept();
+        List<JobDTO> selectJob = memberService.selectJob();
+        MemberDTO memberDTO = memberService.selectMemberDetail(memberCode);
+        Map map = new HashMap();
+        map.put("memberDTO", memberDTO);
+        map.put("memberCode", memberCode);
+        map.put("selectJob", selectJob);
+        map.put("selectDept", selectDept);
+        log.info("[memberService(map))]" + map);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", map));
     }
 
     /**

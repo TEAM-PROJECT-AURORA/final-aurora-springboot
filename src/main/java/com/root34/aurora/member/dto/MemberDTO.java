@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  @ClassName : MemberDTO
@@ -91,7 +91,7 @@ public class MemberDTO implements UserDetails {
     /**
      * @variable memberEndDate 퇴사일
      **/
-    private String memberEndDate;
+    private LocalDateTime memberEndDate;
     /**
      * @variable introduction 자기소개
      **/
@@ -107,7 +107,7 @@ public class MemberDTO implements UserDetails {
     /**
      * @variable birthDay 생년월일
      **/
-    private Date birthDay;
+    private String birthDay;
     /**
      * @variable team 소속팀
      **/
