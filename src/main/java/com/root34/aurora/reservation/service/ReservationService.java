@@ -1,5 +1,6 @@
 package com.root34.aurora.reservation.service;
 
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.reservation.dao.ReservationMapper;
 import com.root34.aurora.reservation.dto.AssetDTO;
 import com.root34.aurora.reservation.dto.ReservationDTO;
@@ -7,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -97,5 +97,54 @@ public class ReservationService {
 
         log.info("[ReservationService] updateReservation End ===================================");
         return result > 0? "예약 수정 성공":"예약 수정 실패";
+    }
+
+    @Transactional
+    public String deleteReservation(String[] reservationNos) {
+
+        log.info("[ReservationService] deleteReservation Start ===================================");
+        int result  = reservationMapper.deleteReservation(reservationNos);
+
+        log.info("[ReservationService] deleteReservation End ===================================");
+        return result > 0? "예약 삭제 성공" : "예약 삭제 실패";
+    }
+
+    public List<ReservationDTO> selectAllReservationsByAsset(Map map) {
+
+        log.info("[ReservationService] selectAllReservationsByAsset Start ===================================");
+
+        List<ReservationDTO> reservations = reservationMapper.selectAllReservationsByAsset(map);
+
+        log.info("[ReservationService] selectAllReservationsByAsset End ===================================");
+        return reservations;
+    }
+
+    public List<ReservationDTO> selectAllReservationsByDate(Map map) {
+
+        log.info("[ReservationService] selectAllReservationsByDate Start ===================================");
+
+        List<ReservationDTO> reservations = reservationMapper.selectAllReservationsByDate(map);
+
+        log.info("[ReservationService] selectAllReservationsByDate End ===================================");
+        return reservations;
+    }
+
+    public MemberDTO selectMemberInfoForRegister(int memberCode) {
+
+        log.info("[ReservationService] selectMemberInfoForRegister Start ===================================");
+
+        MemberDTO memberDTO = reservationMapper.selectMemberInfoForRegister(memberCode);
+
+        log.info("[ReservationService] selectMemberInfoForRegister End ===================================");
+        return memberDTO;
+    }
+    
+    public String insertReservation(ReservationDTO reservationDTO) {
+
+        log.info("[ReservationService] insertReservation Start ===================================");
+        int result  = reservationMapper.insertReservation(reservationDTO);
+
+        log.info("[ReservationService] insertReservation End ===================================");
+        return result > 0? "예약 등록 성공" : "예약 등록 실패";
     }
 }

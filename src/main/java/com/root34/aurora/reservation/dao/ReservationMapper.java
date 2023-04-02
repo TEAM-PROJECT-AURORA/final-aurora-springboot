@@ -1,5 +1,6 @@
 package com.root34.aurora.reservation.dao;
 
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.reservation.dto.AssetDTO;
 import com.root34.aurora.reservation.dto.ReservationDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,4 +28,14 @@ public interface ReservationMapper {
 	ReservationDTO selectReservationForUpdate(String reservationNo);
 
 	int updateReservation(ReservationDTO reservationDTO);
+
+	int deleteReservation(String[] reservationNos);
+
+	List<ReservationDTO> selectAllReservationsByAsset(Map map);
+
+	List<ReservationDTO> selectAllReservationsByDate(Map map);
+
+	MemberDTO selectMemberInfoForRegister(int memberCode);
+
+	int insertReservation(ReservationDTO reservationDTO);
 }
