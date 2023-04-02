@@ -43,4 +43,5 @@
 <!--        <appender-ref ref="stash" />-->
         <appender-ref ref="ROLLING" />
     </root>
+
 </configuration>

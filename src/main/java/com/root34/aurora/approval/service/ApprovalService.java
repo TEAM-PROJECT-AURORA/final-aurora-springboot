@@ -36,10 +36,10 @@ public class ApprovalService {
      @Writer : heojaehong
      @Description : 최근 결재 리스트 조회
      */
-    public List<ApprovalDTO> lastList(int memberCode) {
+    public List<ApprovalDTO> lastList() {
 
         try {
-            List<ApprovalDTO> approvalDtoList = approvalMapper.lastList(memberCode);
+            List<ApprovalDTO> approvalDtoList = approvalMapper.lastList();
             log.info("[ApprovalService] lastList :" + approvalDtoList);
             if (approvalDtoList == null) {
                 throw new Exception("목록이 없습니다.");
@@ -58,10 +58,10 @@ public class ApprovalService {
     	@Writer : heojaehong
     	@Description : 미결재 리스트 메소드
     */
-    public List<ApprovalDTO> pendingList(int memberCode) {
+    public List<ApprovalDTO> pendingList() {
 
         try {
-            List<ApprovalDTO> pendingList = approvalMapper.pendingList(memberCode);
+            List<ApprovalDTO> pendingList = approvalMapper.pendingList();
             if(pendingList == null){
                 throw new Exception("조회할 목록이 없습니다.");
             }
@@ -79,10 +79,10 @@ public class ApprovalService {
     	@Writer : heojaehong
     	@Description : 결재완료 리스트 메소드
     */
-    public List<ApprovalDTO> completedList(int memberCode) {
+    public List<ApprovalDTO> completedList() {
 
         try {
-            List<ApprovalDTO> pendingList = approvalMapper.completedList(memberCode);
+            List<ApprovalDTO> pendingList = approvalMapper.completedList();
             if(pendingList == null){
                 throw new Exception("조회할 목록이 없습니다.");
             }
@@ -203,27 +203,5 @@ public class ApprovalService {
             log.error("error 발생! 결재선 작성에 실패 했습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 접근!", e);
         }
-    }
-    /**
-     @FileName : ApprovalService
-     @Date : 11:03 AM
-     @작성자 : heojaehong
-     @설명 : 결재선 상태 보여주는 메서드
-     */
-    public List<ApprovalLineDTO> approvalLine(int appCode) {
-
-        try {
-            log.info("[ApprovalService] approvalLine 실행");
-            List<ApprovalLineDTO> list = approvalMapper.approvalLine(appCode);
-
-            if(appCode < 0){
-                throw new Exception("해당 결재문서가 없습니다");
-            }
-            return list;
-        } catch (Exception e) {
-            log.error("error 발생! 결재선 확인에 실패 했습니다. : " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "확인할 수 없습니다.", e);
-        }
-
     }
 }

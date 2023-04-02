@@ -42,7 +42,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
 
         return (web) -> web.ignoring()
-                .antMatchers("/auroraFiles/**");
+                .antMatchers("/imgs/**");
     }
 
     @Bean
