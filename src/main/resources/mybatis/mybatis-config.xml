@@ -19,7 +19,6 @@
 		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
 		<typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/>
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
-		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
