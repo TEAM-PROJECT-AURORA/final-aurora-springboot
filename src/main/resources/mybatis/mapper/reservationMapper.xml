@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.reservation.dao.ReservationMapper">
+    <select id="selectAllAssets" resultType="assetDTO">
+        SELECT
+            ASSET_CODE,
+            ASSET_NAME,
+            ASSET_CATEGORY
+          FROM TBL_ASSET
+    </select>
+    <select id="selectAllAssetCategory" resultType="assetDTO">
+        SELECT
+            DISTINCT ASSET_CATEGORY
+          FROM TBL_ASSET
+    </select>
+    <select id="selectTotalMyReservation" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_RESERVATION
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectAllMyReservation" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+        LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <select id="selectReservationForUpdate" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            A.TEAM,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
+            A.RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+         WHERE A.RESERVATION_NO = #{ reservationNo }
+    </select>
+    <update id="updateReservation" parameterType="reservationDTO">
+        UPDATE TBL_RESERVATION
+           SET START_TIME = #{ startTime },
+               END_TIME = #{ endTime },
+               RESERVATION_DATE = #{ reservationDate },
+               DESCRIPTION = #{ description }
+         WHERE RESERVATION_NO = #{ reservationNo }
+    </update>
+</mapper>
