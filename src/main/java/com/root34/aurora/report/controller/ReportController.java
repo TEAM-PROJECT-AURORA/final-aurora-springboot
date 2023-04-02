@@ -44,7 +44,8 @@ public class ReportController {
      * @Description : 보고 작성
      */
     @Transactional
-    @PostMapping(value = "/reports", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+//    @PostMapping(value = "/reports", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(value = "/reports", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> registerReport(HttpServletRequest request,
                                                       @RequestPart("reportDTO") ReportDTO reportDTO,
                                                       @RequestPart("memberList") List<Integer> memberList,

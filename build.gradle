@@ -43,7 +43,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     // test시 H2 내장 데이터베이스 연결 김수용 23.03.24
-    testImplementation 'com.h2database:h2:1.4.200'
+//    testImplementation 'com.h2database:h2:1.4.200'
 }
 
 tasks.named('test') {
