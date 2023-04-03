@@ -20,7 +20,7 @@ public class AssetDTO {
     */
     private String assetName;
     /**
-    	* @variable 자산 설명 
+    	* @variable 자산 카테고리
     */
     private String assetCategory;
     /**

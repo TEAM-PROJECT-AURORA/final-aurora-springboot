@@ -131,4 +131,18 @@
         VALUES
             (#{ assetCode }, #{ memberCode }, #{ team }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
     </insert>
+    <select id="selectTotalAssets" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ASSET
+    </select>
+    <select id="selectAllAssetsForManagement" parameterType="selectCriteria" resultType="assetDTO">
+        SELECT
+            ASSET_CODE,
+            ASSET_NAME,
+            ASSET_CATEGORY,
+            STATUS
+          FROM TBL_ASSET
+         LIMIT #{ startRow }, #{ limit }
+    </select>
 </mapper>

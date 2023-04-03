@@ -1,5 +1,6 @@
 package com.root34.aurora.reservation.dao;
 
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.reservation.dto.AssetDTO;
 import com.root34.aurora.reservation.dto.ReservationDTO;
@@ -38,4 +39,8 @@ public interface ReservationMapper {
 	MemberDTO selectMemberInfoForRegister(int memberCode);
 
 	int insertReservation(ReservationDTO reservationDTO);
+
+	int selectTotalAssets();
+
+	List<AssetDTO> selectAllAssetsForManagement(SelectCriteria selectCriteria);
 }

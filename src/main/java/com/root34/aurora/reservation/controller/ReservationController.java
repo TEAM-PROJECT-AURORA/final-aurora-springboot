@@ -84,7 +84,7 @@ public class ReservationController {
 		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
 		map.put("selectCriteria", selectCriteria);
 
-		log.info("[AddressBookController] selectCriteria : " + selectCriteria);
+		log.info("[ReservationController] selectCriteria : " + selectCriteria);
 
 		ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
 		responseDTOWithPaging.setPageInfo(selectCriteria);
@@ -197,11 +197,41 @@ public class ReservationController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정보 조회 성공", reservationService.selectMemberInfoForRegister(memberCode)));
 	}
 
+	/**
+		* @MethodName : insertReservation
+		* @Date : 2023-04-03
+		* @Writer : 오승재
+		* @Description : 예약 등록
+	*/
 	@PostMapping("/reservation")
 	public ResponseEntity<ResponseDTO> insertReservation(@RequestBody ReservationDTO reservationDTO) {
 
 		log.info("[ReservationController] insertReservation start" + reservationDTO);
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "예약 등록 성공", reservationService.insertReservation(reservationDTO)));
+	}
+	
+	/**
+		* @MethodName : selectAllAssetsForManagement
+		* @Date : 2023-04-03
+		* @Writer : 오승재
+		* @Description : 예약 품목 관리용 조회
+	*/
+	@GetMapping("/reservation/asset-management")
+	public ResponseEntity<ResponseDTO> selectAllAssetsForManagement(@RequestParam(name="offset", defaultValue="1") String offset) {
+
+		log.info("[ReservationController] selectAllAssetsForManagement start");
+		int totalCount = reservationService.selectTotalAssets();
+		int limit = 15;
+		int buttonAmount = 5;
+		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+
+		log.info("[ReservationController] selectCriteria : " + selectCriteria);
+
+		ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+		responseDTOWithPaging.setPageInfo(selectCriteria);
+		responseDTOWithPaging.setData(reservationService.selectAllAssetsForManagement(selectCriteria));
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 	}
 }
