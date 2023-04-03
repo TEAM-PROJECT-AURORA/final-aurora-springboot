@@ -109,9 +109,9 @@ public class MemberDTO implements UserDetails {
      **/
     private String birthDay;
     /**
-     * @variable team 소속팀
+     * @variable teamCode 소속팀코드
      **/
-    private String team;
+    private String teamCode;
     /**
      * @variable fileCode 사진파일코드
      **/
@@ -132,6 +132,11 @@ public class MemberDTO implements UserDetails {
      * @variable taskName 직무명
      **/
     private String taskName;
+    /**
+     * @variable teamName 팀명
+     **/
+    private String teamName;
+
 
 
     // 이하 코드는 security 를 위한 용도

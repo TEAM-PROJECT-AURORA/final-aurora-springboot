@@ -5,9 +5,7 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.member.dto.DeptDTO;
-import com.root34.aurora.member.dto.JobDTO;
-import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.*;
 import com.root34.aurora.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -76,14 +74,18 @@ public class MemberController {
      * @Description : 사원 상세정보 조회
      */
     @GetMapping("/hrm/{memberCode}")
-    public ResponseEntity<ResponseDTO> memberDetail(@PathVariable int memberCode) {
+    public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
+
+
 
         List<DeptDTO> selectDept = memberService.selectDept();
         List<JobDTO> selectJob = memberService.selectJob();
-        MemberDTO memberDTO = memberService.selectMemberDetail(memberCode);
         Map map = new HashMap();
-        map.put("memberDTO", memberDTO);
-        map.put("memberCode", memberCode);
+        if(memberCode != null) {
+            MemberDTO memberDTO = memberService.selectMemberDetail(memberCode);
+            map.put("memberDTO", memberDTO);
+        }
+
         map.put("selectJob", selectJob);
         map.put("selectDept", selectDept);
         log.info("[memberService(map))]" + map);
@@ -248,4 +250,32 @@ public class MemberController {
         log.info("[memberService.selectMemberListAboutTask(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
     }
+
+    /**
+    	@MethodName : selectCode
+    	@Date : 2023-04-03
+    	@Writer : 정근호
+    	@Description :
+    */
+    @GetMapping("/hrm/code")
+    public ResponseEntity<ResponseDTO> selectCode() {
+
+        List<DeptDTO> selectDept = memberService.selectDept();
+        List<JobDTO> selectJob = memberService.selectJob();
+        List<TaskDTO> selectTask = memberService.selectTask();
+        List<TeamDTO> selectTeam = memberService.selectTeam();
+
+        Map map = new HashMap();
+        map.put("selectJob", selectJob);
+        map.put("selectDept", selectDept);
+        map.put("selectTask", selectTask);
+        map.put("selectTeam", selectTeam);
+        log.info("[memberService(map))]" + map);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", map));
+    }
+
+
 }
+

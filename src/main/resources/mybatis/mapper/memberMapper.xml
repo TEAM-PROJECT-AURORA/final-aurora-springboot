@@ -5,13 +5,13 @@
 <mapper namespace="com.root34.aurora.member.dao.MemberMapper">
     <insert id="insertMember" parameterType="memberDTO">
         INSERT INTO TBL_MEMBER
-            (MEMBER_CODE, DEPT_CODE, JOB_CODE, TASK_CODE, MEMBER_NAME, MEMBER_ID, MEMBER_PWD, MEMBER_EMAIL, ADDRESS,
-             GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY, TEAM,
+            (MEMBER_CODE, DEPT_CODE, JOB_CODE, TASK_CODE, TEAM_CODE, MEMBER_NAME, MEMBER_ID, MEMBER_PWD, MEMBER_EMAIL, ADDRESS,
+             GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY,
              FILE_CODE, PHONE)
         VALUES
-            ( NULL, #{ deptCode }, #{ jobCode }, #{ taskCode }, #{ memberName }, #{ memberId }, #{ memberPWD }, #{ memberEmail },
+            ( NULL, #{ deptCode }, #{ jobCode }, #{ taskCode },#{ teamCode }, #{ memberName }, #{ memberId }, #{ memberPWD }, #{ memberEmail },
              #{ address }, #{ gender }, DEFAULT, DEFAULT, #{ memberEndDate }, #{ introduction }, #{ significant }, DEFAULT,
-             #{ birthDay }, #{ team }, #{ fileCode }, #{ phone } )
+             #{ birthDay }, #{ fileCode }, #{ phone } )
 
     </insert>
 
@@ -65,7 +65,8 @@
                C.JOB_NAME,
                A.TASK_CODE,
                D.TASK_NAME,
-               A.TEAM,
+               A.TEAM_CODE,
+               E.TEAM_NAME,
                A.MEMBER_NAME,
                A.PHONE,
                A.MEMBER_EMAIL,
@@ -80,6 +81,7 @@
                    JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
                    JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
                    JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
+                   JOIN TBL_TEAM E ON A.TEAM_CODE = E.TEAM_CODE
          WHERE A.MEMBER_CODE = #{ memberCode }
     </select>
 
@@ -97,7 +99,7 @@
                PHONE = #{ phone },
                JOB_CODE = #{ jobCode },
                TASK_CODE = #{ taskCode },
-               TEAM = #{ team },
+               TEAM_CODE = #{ teamCode },
                ADDRESS = #{ address },
                STATUS = #{ status },
                MEMBER_END_DATE = #{ memberEndDate },
@@ -250,7 +252,21 @@
     <select id="selectDept" resultType="DeptDTO">
         SELECT
             *
-        FROM TBL_Department
+        FROM TBL_DEPARTMENT
+
+    </select>
+
+    <select id="selectTask" resultType="TaskDTO">
+        SELECT
+            *
+        FROM TBL_TASK
+
+    </select>
+
+    <select id="selectTeam" resultType="TeamDTO">
+        SELECT
+            *
+        FROM TBL_TEAM
 
     </select>
 
