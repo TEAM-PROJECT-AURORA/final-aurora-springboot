@@ -267,11 +267,11 @@ public class ReportController {
             log.info("[ReportController] reportCode : " + reportCode);
             log.info("[ReportController] roundCode : " + roundCode);
 
-            ReportRoundDTO reportRoundDetail = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
-            log.info("[ReportController] reportRoundDetail : " + reportRoundDetail);
+            HashMap<String, Object> response = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
+            log.info("[ReportController] response : " + response);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정기보고 회차 상세 조회 성공",
-                    reportRoundDetail));
+                    response));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -397,7 +397,7 @@ public class ReportController {
     	* @MethodName : selectReportDetailListByRoundCode
     	* @Date : 2023-03-28
     	* @Writer : 김수용
-    	* @Description : 상세보고 목록 조회
+    	* @Description : 상세 보고 목록 조회
     */
     @GetMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
     public ResponseEntity<ResponseDTO> selectReportDetailListByRoundCode(HttpServletRequest request,
@@ -563,6 +563,33 @@ public class ReportController {
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
     }
+
+//    /**
+//    	* @MethodName : selectReporterCount
+//    	* @Date : 2023-04-03
+//    	* @Writer : 김수용
+//    	* @Description : 보고 현황 조회
+//    */
+//    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/reporters")
+//    public ResponseEntity<ResponseDTO> selectReporterCount(HttpServletRequest request,
+//                                                           @PathVariable long reportCode,
+//                                                           @PathVariable long roundCode) {
+//
+//        try{
+//            log.info("[ReportController] selectReporterCount Start");
+//            Integer memberCode = (Integer) request.getAttribute("memberCode");
+//            log.info("[ReportController] memberCode : " + memberCode);
+//            log.info("[ReportController] reportCode : " + reportCode);
+//            log.info("[ReportController] roundCode : " + roundCode);
+//
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 현황 조회 성공",
+//                    reportService.selectReporterCount(reportCode, roundCode)));
+//        } catch (Exception e) {
+//            log.info("[ReportController] Exception : " + e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+//        }
+//    }
 }
 
 //    /**

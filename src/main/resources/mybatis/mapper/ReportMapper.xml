@@ -40,6 +40,7 @@
                REPORT_TITLE,
                REPORT_INFO,
                REPORT_CYCLE,
+               REG_DATE,
                READ_STATUS,
                COMPLETION_STATUS
           FROM TBL_REPORT
@@ -48,6 +49,18 @@
            AND COMPLETION_STATUS = #{ searchConditions.completionStatus }
          ORDER BY REPORT_CODE DESC
          LIMIT #{ startRow }, #{ limit }
+    </select>
+    <!--멤버 정보 조회-->
+    <select id="selectReporterDetail" parameterType="Integer" resultType="MemberDTO">
+        SELECT
+               A.MEMBER_CODE,
+               B.DEPT_NAME,
+               C.JOB_NAME,
+               A.MEMBER_NAME
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
     </select>
     <!--최근 정기보고 3개-->
     <select id="selectThreeReportCodesByMemberCode" parameterType="int" resultType="Long">
@@ -80,6 +93,7 @@
                REPORT_TITLE,
                REPORT_INFO,
                REPORT_CYCLE,
+               REG_DATE,
                READ_STATUS,
                COMPLETION_STATUS
          FROM TBL_REPORT
@@ -163,6 +177,7 @@
                A.REPORT_TITLE,
                A.REPORT_INFO,
                A.REPORT_CYCLE,
+               A.REG_DATE,
                A.READ_STATUS,
                A.COMPLETION_STATUS
           FROM TBL_REPORT A
@@ -213,9 +228,9 @@
         VALUES
             ( #{ roundCode }, #{ memberCode }, #{ detailBody } )
     </insert>
-    <!--상세 보고 갯수 조회-->
-    <select id="getReportDetailCountByRoundCode" parameterType="Long" resultType="int">
-        SELECT COUNT(*)
+    <!--보고 회차 보고한 인원수 조회-->
+    <select id="getReportedMemberCountByRoundCode" parameterType="Long" resultType="Integer">
+        SELECT COUNT(DISTINCT MEMBER_CODE)
           FROM TBL_REPORT_DETAIL
          WHERE ROUND_CODE = #{ roundCode }
     </select>
@@ -242,7 +257,8 @@
         SELECT DETAIL_CODE,
                ROUND_CODE,
                MEMBER_CODE,
-               DETAIL_BODY
+               DETAIL_BODY,
+               REG_DATE
           FROM TBL_REPORT_DETAIL
          WHERE ROUND_CODE = #{ roundCode }
     </select>
@@ -277,8 +293,7 @@
     <!--보고 댓글 수정-->
     <update id="updateReportRoundReply" parameterType="ReportRoundReplyDTO">
         UPDATE TBL_REPORT_ROUND_REPLY
-           SET REPLY_BODY = #{ replyBody },
-               REG_DATE = (CURRENT_DATE)
+           SET REPLY_BODY = #{ replyBody }
          WHERE REPLY_CODE = #{ replyCode }
     </update>
     <!--보고 댓글 삭제-->

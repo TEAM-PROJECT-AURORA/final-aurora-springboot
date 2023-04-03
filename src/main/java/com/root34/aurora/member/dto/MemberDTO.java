@@ -58,6 +58,8 @@ public class MemberDTO implements UserDetails {
     private String team;
     private String fileCode;
     private String phone;
+    private String deptName;
+    private String jobName;
 
     // 이하 코드는 security 를 위한 용도
     private Collection<? extends GrantedAuthority> authorities;
