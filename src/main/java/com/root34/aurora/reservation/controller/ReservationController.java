@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -80,7 +79,7 @@ public class ReservationController {
 		map.put("offset", offset);
 		map.put("memberCode", memberCode);
 		int totalCount = reservationService.selectTotalMyReservation(map);
-		int limit = 20;
+		int limit = 15;
 		int buttonAmount = 5;
 		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
 		map.put("selectCriteria", selectCriteria);

@@ -112,8 +112,9 @@
             ON A.MEMBER_CODE = C.MEMBER_CODE
          WHERE A.ASSET_CODE = #{ assetCode }
         <![CDATA[
-           AND (A.START_TIME >= #{startDateTime} AND A.START_TIME <= #{endDateTime}
-            OR A.END_TIME >= #{startDateTime} AND A.END_TIME <= #{endDateTime})
+           AND (A.START_TIME >= #{ startDateTime } AND A.START_TIME <= #{ endDateTime }
+            OR A.END_TIME >= #{ startDateTime } AND A.END_TIME <= #{ endDateTime })
+            OR (A.START_TIME < #{ startDateTime } AND A.END_TIME > #{ endDateTime })
         ]]>
          ORDER BY (A.END_TIME - A.START_TIME) DESC
     </select>
