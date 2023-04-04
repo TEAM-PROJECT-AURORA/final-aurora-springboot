@@ -1,5 +1,6 @@
 package com.root34.aurora.reservation.service;
 
+import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.reservation.dao.ReservationMapper;
 import com.root34.aurora.reservation.dto.AssetDTO;
@@ -146,5 +147,51 @@ public class ReservationService {
 
         log.info("[ReservationService] insertReservation End ===================================");
         return result > 0? "예약 등록 성공" : "예약 등록 실패";
+    }
+
+    public int selectTotalAssets() {
+
+        log.info("[ReservationService] selectTotalAssets Start ===================================");
+        int totalCount = reservationMapper.selectTotalAssets();
+
+        log.info("[ReservationService] selectTotalAssets End ===================================");
+        return totalCount;
+    }
+
+
+    public List<AssetDTO> selectAllAssetsForManagement(SelectCriteria selectCriteria) {
+
+        log.info("[ReservationService] selectAllAssetsForManagement Start ===================================");
+        List<AssetDTO> assetDTOS = reservationMapper.selectAllAssetsForManagement(selectCriteria);
+
+        log.info("[ReservationService] selectAllAssetsForManagement End ===================================");
+        return assetDTOS;
+    }
+    
+    public String updateAssetStatus(AssetDTO assetDTO) {
+
+        log.info("[ReservationService] updateAssetStatus Start ===================================");
+        int result = reservationMapper.updateAssetStatus(assetDTO);
+
+        log.info("[ReservationService] updateAssetStatus End ===================================");
+        return result > 0? "수정 성공" : "수정 실패";
+    }
+
+    public String deleteAsset(String[] assetCodes) {
+
+        log.info("[ReservationService] deleteAsset Start ===================================");
+        int result = reservationMapper.deleteAsset(assetCodes);
+
+        log.info("[ReservationService] deleteAsset End ===================================");
+        return result > 0? "삭제 성공" : "삭제 실패";
+    }
+
+    public String insertAsset(AssetDTO assetDTO) {
+
+        log.info("[ReservationService] insertAsset Start ===================================");
+        int result = reservationMapper.insertAsset(assetDTO);
+
+        log.info("[ReservationService] insertAsset End ===================================");
+        return result > 0? "추가 성공" : "추가 실패";
     }
 }

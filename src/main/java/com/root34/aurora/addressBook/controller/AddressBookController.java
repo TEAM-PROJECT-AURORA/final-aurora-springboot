@@ -38,7 +38,7 @@ public class AddressBookController {
 
         log.info("[AddressBookController] selectAllMemberAddressesWithPaging : " + offset);
         int totalCount = addressBookService.selectTotalMemberAddresses();
-        int limit = 20;
+        int limit = 15;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
 
@@ -62,7 +62,7 @@ public class AddressBookController {
 
         log.info("[AddressBookController] selectAllMemberAddressesByDeptWithPaging : " + offset);
         int totalCount = addressBookService.selectTotalMemberAddressesByDept(deptCode);
-        int limit = 20;
+        int limit = 15;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
@@ -117,7 +117,7 @@ public class AddressBookController {
 
         log.info("[AddressBookController] selectAllGroupAddressesWithPaging : " + offset);
         int totalCount = addressBookService.selectTotalGroupAddresses(groupCode);
-        int limit = 20;
+        int limit = 15;
         int buttonAmount = 5;
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
         Map map = new HashMap();
@@ -228,7 +228,7 @@ public class AddressBookController {
         map.put("searchValue", searchValue);
 
         int totalCount = addressBookService.selectTotalMembersSearch(map);
-        int limit = 20;
+        int limit = 15;
         int buttonAmount = 5;
 
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
@@ -261,7 +261,7 @@ public class AddressBookController {
         map.put("groupCode", groupCode);
 
         int totalCount = addressBookService.selectTotalGroupsWithSearch(map);
-        int limit = 20;
+        int limit = 15;
         int buttonAmount = 5;
 
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);

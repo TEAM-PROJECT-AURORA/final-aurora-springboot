@@ -7,7 +7,8 @@
         SELECT
             ASSET_CODE,
             ASSET_NAME,
-            ASSET_CATEGORY
+            ASSET_CATEGORY,
+            STATUS
           FROM TBL_ASSET
     </select>
     <select id="selectAllAssetCategory" resultType="assetDTO">
@@ -112,8 +113,9 @@
             ON A.MEMBER_CODE = C.MEMBER_CODE
          WHERE A.ASSET_CODE = #{ assetCode }
         <![CDATA[
-           AND (A.START_TIME >= #{startDateTime} AND A.START_TIME <= #{endDateTime}
-            OR A.END_TIME >= #{startDateTime} AND A.END_TIME <= #{endDateTime})
+           AND (A.START_TIME >= #{ startDateTime } AND A.START_TIME <= #{ endDateTime }
+            OR A.END_TIME >= #{ startDateTime } AND A.END_TIME <= #{ endDateTime })
+            OR (A.START_TIME < #{ startDateTime } AND A.END_TIME > #{ endDateTime })
         ]]>
          ORDER BY (A.END_TIME - A.START_TIME) DESC
     </select>
@@ -129,5 +131,37 @@
             (ASSET_CODE, MEMBER_CODE, TEAM, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
         VALUES
             (#{ assetCode }, #{ memberCode }, #{ team }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
+    </insert>
+    <select id="selectTotalAssets" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ASSET
+    </select>
+    <select id="selectAllAssetsForManagement" parameterType="selectCriteria" resultType="assetDTO">
+        SELECT
+            ASSET_CODE,
+            ASSET_NAME,
+            ASSET_CATEGORY,
+            STATUS
+          FROM TBL_ASSET
+         LIMIT #{ startRow }, #{ limit }
+    </select>
+    <update id="updateAssetStatus" parameterType="assetDTO">
+        UPDATE TBL_ASSET
+           SET STATUS = #{ status }
+         WHERE ASSET_CODE = #{ assetCode }
+    </update>
+    <delete id="deleteAsset" parameterType="String">
+        DELETE FROM TBL_ASSET
+         WHERE ASSET_CODE IN
+        <foreach collection=" assetCodes " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </delete>
+    <insert id="insertAsset" parameterType="assetDTO">
+        INSERT INTO TBL_ASSET
+            (ASSET_CODE, ASSET_NAME, ASSET_CATEGORY, STATUS)
+        VALUES
+            (#{ assetCode }, #{ assetName }, #{ assetCategory }, #{ status })
     </insert>
 </mapper>
