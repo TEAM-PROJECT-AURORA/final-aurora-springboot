@@ -28,9 +28,13 @@ public class AddressBookDTO {
     */
     private int memberCode;
     /**
-    	* @variable 소속팀 
+    	* @variable 소속팀 코드
     */
-    private String team;
+    private String teamCode;
+    /**
+    	* @variable 소속팀명 
+    */
+    private String teamName;
     /**
     	* @variable 이름 
     */
