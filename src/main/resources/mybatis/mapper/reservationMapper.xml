@@ -28,7 +28,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM,
+            A.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
@@ -47,7 +47,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM,
+            A.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
@@ -81,7 +81,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM,
+            A.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
@@ -101,7 +101,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM,
+            A.TEAM_NAME,
             A.DESCRIPTION,
             A.START_TIME,
             A.END_TIME,
@@ -122,15 +122,15 @@
     <select id="selectMemberInfoForRegister" parameterType="_int" resultType="memberDTO">
         SELECT
             MEMBER_NAME,
-            TEAM
+            TEAM_NAME
           FROM TBL_MEMBER
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
     <insert id="insertReservation" parameterType="reservationDTO">
         INSERT INTO TBL_RESERVATION
-            (ASSET_CODE, MEMBER_CODE, TEAM, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
+            (ASSET_CODE, MEMBER_CODE, TEAM_NAME, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
         VALUES
-            (#{ assetCode }, #{ memberCode }, #{ team }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
+            (#{ assetCode }, #{ memberCode }, #{ teamName }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
     </insert>
     <select id="selectTotalAssets" resultType="_int">
         SELECT
