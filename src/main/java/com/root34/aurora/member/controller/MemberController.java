@@ -8,10 +8,8 @@ import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -112,7 +110,7 @@ public class MemberController {
         log.info("[MemberController] selectCriteria : " + selectCriteria);
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(selectCriteria);
-        responseDTOWithPaging.setData(memberService.selectMemberListAboutName( search, selectCriteria));
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutName(search, selectCriteria));
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search, selectCriteria)));
