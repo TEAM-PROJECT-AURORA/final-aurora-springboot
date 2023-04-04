@@ -3,7 +3,7 @@ package com.root34.aurora.report.dto;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  @ClassName : ReportDTO
@@ -41,7 +41,7 @@ public class ReportDTO {
     /**
      * @variable regDate 보고 등록일
      */
-    private Date regDate;
+    private LocalDateTime regDate;
     /**
      * @variable readStatus 읽음 상태
      */

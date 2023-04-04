@@ -426,15 +426,13 @@ public class ReportServiceTest {
     void 보고_댓글_작성_서비스_테스트() {
 
         // given
-        long reportCode = 11L;
-
         ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
         reportRoundReplyDTO.setRoundCode(21L);
         reportRoundReplyDTO.setMemberCode(1);
         reportRoundReplyDTO.setReplyBody("Test Report Reply Body");
 
         // when
-        boolean result = reportService.registerReportRoundReply(reportCode, reportRoundReplyDTO);
+        boolean result = reportService.registerReportRoundReply(reportRoundReplyDTO);
 
         // then
         assertTrue(result);

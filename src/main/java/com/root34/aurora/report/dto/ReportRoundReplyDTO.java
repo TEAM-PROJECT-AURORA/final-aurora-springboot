@@ -2,7 +2,7 @@ package com.root34.aurora.report.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
 	@ClassName : ReportRoundReplyDTO
@@ -36,7 +36,7 @@ public class ReportRoundReplyDTO {
     /**
      * @variable regDate 보고 댓글 등록일
      */
-    private Date regDate;
+    private LocalDateTime regDate;
     /**
      * @variable deleteStatus 삭제 상태
      */

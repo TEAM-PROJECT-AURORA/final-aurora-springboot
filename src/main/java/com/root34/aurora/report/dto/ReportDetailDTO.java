@@ -2,7 +2,7 @@ package com.root34.aurora.report.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
 	@ClassName : ReportDetailDTO
@@ -13,6 +13,8 @@ import java.sql.Date;
 @Data
 public class ReportDetailDTO {
 
+    private LocalDateTime datetime;
+    private int second;
     /**
      * @variable detailCode 상세 보고 코드
      */
@@ -40,5 +42,5 @@ public class ReportDetailDTO {
     /**
      * @variable regDate 상세 보고 등록일
      */
-    private Date regDate;
+    private LocalDateTime regDate;
 }

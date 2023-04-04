@@ -261,6 +261,7 @@
                REG_DATE
           FROM TBL_REPORT_DETAIL
          WHERE ROUND_CODE = #{ roundCode }
+         ORDER BY DETAIL_CODE DESC
     </select>
     <!--회차별 상세 보고 삭제-->
     <delete id="deleteReportDetail" parameterType="Long">

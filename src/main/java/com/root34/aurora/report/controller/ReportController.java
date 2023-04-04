@@ -341,7 +341,8 @@ public class ReportController {
     public ResponseEntity<ResponseDTO> registerReportDetail(HttpServletRequest request,
                                                             @PathVariable long reportCode,
                                                             @PathVariable int roundCode,
-                                                            @RequestBody ReportDetailDTO reportDetailDTO) {
+                                                            @RequestBody String detailBody) {
+//                                                            @RequestBody ReportDetailDTO reportDetailDTO) {
 
         try {
             log.info("[ReportController] registerReportDetail Start");
@@ -349,6 +350,8 @@ public class ReportController {
 
             Integer memberCode = (Integer) request.getAttribute("memberCode");
 
+            ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+            reportDetailDTO.setDetailBody(detailBody);
             reportDetailDTO.setMemberCode(memberCode);
             reportDetailDTO.setRoundCode(roundCode);
             log.info("[ReportController] reportDetailDTO : " + reportDetailDTO);
@@ -452,23 +455,26 @@ public class ReportController {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 작성
     */
-    @PostMapping("/reports/{reportCode}/rounds/{roundCode}/comments")
+    @PostMapping("/reports/rounds/{roundCode}/comments")
     public ResponseEntity<ResponseDTO> registerReportRoundReply(HttpServletRequest request,
-                                                                @PathVariable long reportCode,
+//                                                                @PathVariable long reportCode,
                                                                 @PathVariable long roundCode,
-                                                                @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
+                                                                @RequestBody String replyBody) {
+//                                                                @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
 
         try {
             log.info("[ReportController] registerReportRoundReply Start");
-            log.info("[ReportController] reportCode : " + reportCode);
+//            log.info("[ReportController] reportCode : " + reportCode);
 
+            ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+            reportRoundReplyDTO.setReplyBody(replyBody);
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             reportRoundReplyDTO.setMemberCode(memberCode);
             reportRoundReplyDTO.setRoundCode(roundCode);
             log.info("[ReportController] reportRoundReplyDTO : " + reportRoundReplyDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 작성 성공",
-                    reportService.registerReportRoundReply(reportCode, reportRoundReplyDTO)));
+                    reportService.registerReportRoundReply(reportRoundReplyDTO)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -509,17 +515,20 @@ public class ReportController {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 수정
     */
-    @PutMapping("/reports/{reportCode}/rounds/{roundCode}/comments/{replyCode}")
+    @PutMapping("/reports/rounds/{roundCode}/comments/{replyCode}")
     public ResponseEntity<ResponseDTO> updateReportRoundReply(HttpServletRequest request,
-                                                              @PathVariable long reportCode,
+//                                                              @PathVariable long reportCode,
                                                               @PathVariable long roundCode,
                                                               @PathVariable long replyCode,
-                                                              @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
+                                                              @RequestBody String replyBody) {
+//                                                              @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
 
         try {
             log.info("[ReportController] updateReportRoundReply Start");
-            log.info("[ReportController] reportCode : " + reportCode);
+//            log.info("[ReportController] reportCode : " + reportCode);
 
+            ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
+            reportRoundReplyDTO.setReplyBody(replyBody);
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             reportRoundReplyDTO.setMemberCode(memberCode);
             reportRoundReplyDTO.setReplyCode(replyCode);
@@ -541,18 +550,16 @@ public class ReportController {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 삭제
     */
-    @DeleteMapping("/reports/{reportCode}/rounds/{roundCode}/comments/{replyCode}")
+    @DeleteMapping("/reports/rounds/comments/{replyCode}")
     public ResponseEntity<ResponseDTO> deleteReportRoundReply(HttpServletRequest request,
-                                                              @PathVariable long reportCode,
-                                                              @PathVariable long roundCode,
+//                                                              @PathVariable long reportCode,
+//                                                              @PathVariable long roundCode,
                                                               @PathVariable long replyCode) {
 
         try{
             log.info("[ReportController] updateReportRoundReply Start");
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             log.info("[ReportController] memberCode : " + memberCode);
-            log.info("[ReportController] reportCode : " + reportCode);
-            log.info("[ReportController] roundCode : " + roundCode);
             log.info("[ReportController] replyCode : " + replyCode);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 댓글 삭제 성공",

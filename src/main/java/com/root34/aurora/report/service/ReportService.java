@@ -701,15 +701,14 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 댓글 작성
     */
-    public boolean registerReportRoundReply(long reportCode, ReportRoundReplyDTO reportRoundReplyDTO) {
+    public boolean registerReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO) {
 
         log.info("[ReportService] registerReportRoundReply Start");
         log.info("[ReportService] memberCode : " + reportRoundReplyDTO.getMemberCode());
         log.info("[ReportService] roundCode : " + reportRoundReplyDTO.getRoundCode());
         log.info("[ReportService] replyBody : " + reportRoundReplyDTO.getReplyBody());
 
-        verifyMemberReportAccess(reportRoundReplyDTO.getMemberCode(), reportCode);
-
+//        verifyMemberReportAccess(reportRoundReplyDTO.getMemberCode(), reportCode);
         int result = reportMapper.registerReportRoundReply(reportRoundReplyDTO);
         log.info("[ReportService] registerReportRoundReply result : " + result);
 
