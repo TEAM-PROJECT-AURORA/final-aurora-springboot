@@ -7,7 +7,8 @@
         SELECT
             ASSET_CODE,
             ASSET_NAME,
-            ASSET_CATEGORY
+            ASSET_CATEGORY,
+            STATUS
           FROM TBL_ASSET
     </select>
     <select id="selectAllAssetCategory" resultType="assetDTO">
@@ -145,4 +146,22 @@
           FROM TBL_ASSET
          LIMIT #{ startRow }, #{ limit }
     </select>
+    <update id="updateAssetStatus" parameterType="assetDTO">
+        UPDATE TBL_ASSET
+           SET STATUS = #{ status }
+         WHERE ASSET_CODE = #{ assetCode }
+    </update>
+    <delete id="deleteAsset" parameterType="String">
+        DELETE FROM TBL_ASSET
+         WHERE ASSET_CODE IN
+        <foreach collection=" assetCodes " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </delete>
+    <insert id="insertAsset" parameterType="assetDTO">
+        INSERT INTO TBL_ASSET
+            (ASSET_CODE, ASSET_NAME, ASSET_CATEGORY, STATUS)
+        VALUES
+            (#{ assetCode }, #{ assetName }, #{ assetCategory }, #{ status })
+    </insert>
 </mapper>

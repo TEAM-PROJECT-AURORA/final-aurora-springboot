@@ -43,4 +43,10 @@ public interface ReservationMapper {
 	int selectTotalAssets();
 
 	List<AssetDTO> selectAllAssetsForManagement(SelectCriteria selectCriteria);
+
+	int updateAssetStatus(AssetDTO assetDTO);
+
+	int deleteAsset(String[] assetCodes);
+
+	int insertAsset(AssetDTO assetDTO);
 }

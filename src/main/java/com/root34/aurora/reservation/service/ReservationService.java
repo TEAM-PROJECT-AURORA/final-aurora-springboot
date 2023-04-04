@@ -167,4 +167,31 @@ public class ReservationService {
         log.info("[ReservationService] selectAllAssetsForManagement End ===================================");
         return assetDTOS;
     }
+    
+    public String updateAssetStatus(AssetDTO assetDTO) {
+
+        log.info("[ReservationService] updateAssetStatus Start ===================================");
+        int result = reservationMapper.updateAssetStatus(assetDTO);
+
+        log.info("[ReservationService] updateAssetStatus End ===================================");
+        return result > 0? "수정 성공" : "수정 실패";
+    }
+
+    public String deleteAsset(String[] assetCodes) {
+
+        log.info("[ReservationService] deleteAsset Start ===================================");
+        int result = reservationMapper.deleteAsset(assetCodes);
+
+        log.info("[ReservationService] deleteAsset End ===================================");
+        return result > 0? "삭제 성공" : "삭제 실패";
+    }
+
+    public String insertAsset(AssetDTO assetDTO) {
+
+        log.info("[ReservationService] insertAsset Start ===================================");
+        int result = reservationMapper.insertAsset(assetDTO);
+
+        log.info("[ReservationService] insertAsset End ===================================");
+        return result > 0? "추가 성공" : "추가 실패";
+    }
 }

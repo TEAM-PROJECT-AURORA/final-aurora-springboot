@@ -4,6 +4,7 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.reservation.dto.AssetDTO;
 import com.root34.aurora.reservation.dto.ReservationDTO;
 import com.root34.aurora.reservation.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
@@ -233,5 +234,50 @@ public class ReservationController {
 		responseDTOWithPaging.setData(reservationService.selectAllAssetsForManagement(selectCriteria));
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
+	}
+
+	/**
+		* @MethodName : updateAssetStatus
+		* @Date : 2023-04-04
+		* @Writer : 오승재
+		* @Description : 예약 물품 상태 수정
+	*/
+	@PutMapping("/reservation/asset-management")
+	public ResponseEntity<ResponseDTO> updateAssetStatus(@RequestBody AssetDTO assetDTO) {
+
+		log.info("[ReservationController] updateAssetStatus start");
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정 성공", reservationService.updateAssetStatus(assetDTO)));
+	}
+
+	/**
+		* @MethodName : deleteAsset
+		* @Date : 2023-04-04
+		* @Writer : 오승재
+		* @Description : 예약 품목 삭제
+	*/
+	@DeleteMapping("/reservation/asset-management")
+	public ResponseEntity<ResponseDTO> deleteAsset(@RequestBody JSONObject object) {
+
+		String objectAsString = object.getAsString("assetCodes");
+		String[] assetCodes = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+
+		log.info("[ReservationController] deleteAsset : " + assetCodes);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "품목 삭제 성공", reservationService.deleteAsset(assetCodes)));
+	}
+
+	/**
+		* @MethodName : insertAsset
+		* @Date : 2023-04-04
+		* @Writer : 오승재
+		* @Description : 예약 품목 추가
+	*/
+	@PostMapping("/reservation/asset-management")
+	public ResponseEntity<ResponseDTO> insertAsset(@RequestBody AssetDTO assetDTO) {
+
+		log.info("[ReservationController] insertAsset : " + assetDTO);
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "품목 추가 성공", reservationService.insertAsset(assetDTO)));
 	}
 }
