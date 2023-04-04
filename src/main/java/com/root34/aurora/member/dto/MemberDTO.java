@@ -55,7 +55,8 @@ public class MemberDTO implements UserDetails {
     private String significant;
     private String status;
     private Date birthDay;
-    private String team;
+    private String teamCode;
+    private String teamName;
     private String fileCode;
     private String phone;
 
