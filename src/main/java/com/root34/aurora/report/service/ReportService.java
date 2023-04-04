@@ -736,9 +736,14 @@ public class ReportService {
         List<ReportRoundReplyDTO> reportReplyList = reportMapper.selectReportRoundReply(roundCode);
         log.info("[ReportService] reportReplyList : " + reportReplyList);
 
-        if(reportReplyList.isEmpty()) {
-            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
+        for(ReportRoundReplyDTO reportReplyDTO : reportReplyList) {
+
+            reportReplyDTO.setMemberName(reportMapper.selectReporterDetail(memberCode).getMemberName());
         }
+
+//        if(reportReplyList.isEmpty()) {
+//            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
+//        }
         return reportReplyList;
     }
 

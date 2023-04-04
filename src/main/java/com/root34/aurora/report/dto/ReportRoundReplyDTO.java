@@ -26,6 +26,10 @@ public class ReportRoundReplyDTO {
      */
     private int memberCode;
     /**
+     * @variable memberName 보고 댓글 작성자명
+     */
+    private String memberName;
+    /**
      * @variable replyBody 보고 댓글 내용
      */
     private String replyBody;
