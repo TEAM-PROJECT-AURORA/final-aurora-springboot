@@ -10,7 +10,14 @@
         VALUES
             ( DEFAULT, NULL, 'Test 제목', 'Test 내용', 'TEST-01@project-aurora.co.kr', 'ssssong125@gmail.com' )
     </insert>
-<!--    <select id="select"-->
+    <!--메일 목록 조회-->
+    <select id="selectMailList" parameterType="HashMap" resultType="MailDTO">
+        SELECT *
+          FROM TBL_MAIL
+         WHERE RECIPIENT = #{ recipients }
+           AND SENDER = #{ sender }
+           AND 
+    </select>
     <!--메일 휴지통으로 이동-->
     <update id="moveMailToTrash" parameterType="long">
         UPDATE TBL_MAIL
