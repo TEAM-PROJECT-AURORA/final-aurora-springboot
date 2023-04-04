@@ -4,11 +4,15 @@ import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.exception.*;
+import com.root34.aurora.exception.CreationFailedException;
+import com.root34.aurora.exception.DataNotFoundException;
+import com.root34.aurora.exception.NotAuthorException;
+import com.root34.aurora.exception.UpdateFailedException;
 import com.root34.aurora.exception.report.AlreadyCompletedReportException;
 import com.root34.aurora.exception.report.InvalidReportTypeException;
 import com.root34.aurora.exception.report.NotInvolvedInReportException;
 import com.root34.aurora.exception.report.NotReportSupervisorException;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.report.dao.ReportMapper;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
@@ -336,7 +340,7 @@ public class ReportService {
 
             ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(recentRoutineReportCodeList.get(i));
 //            String reportTitle = "routineReportTitle" + (i + 1);
-            response.put("routineReportTitle" + (i + 1), reportDTO.getReportTitle());
+            response.put("routineReportDTO" + (i + 1), reportDTO);
         }
 
 //        if(recentRoutineReportCodeList.isEmpty()) {
@@ -472,6 +476,12 @@ public class ReportService {
         List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
         log.info("[ReportService] reportList : " + reportList);
 
+        for(ReportDTO report : reportList) {
+
+            report.setMemberDTO(reportMapper.selectReporterDetail(report.getMemberCode()));
+        }
+        log.info("[ReportService] reportList : " + reportList);
+
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setData(reportList);
         responseDTOWithPaging.setPageInfo(selectCriteria);
@@ -498,7 +508,6 @@ public class ReportService {
         if(reportMapper.selectReportType(reportCode) == "Casual") {
             throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
         }
-
         updateReportReadStatusToRead(memberCode,reportCode);
 
         int totalCount = reportMapper.getReportRoundCount(reportCode);
@@ -509,12 +518,26 @@ public class ReportService {
         selectCriteria.setSearchCondition(String.valueOf(reportCode));
         log.info("[ReportService] selectCriteria : " + selectCriteria);
 
+        ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
+        reportDTO.setMemberDTO(reportMapper.selectReporterDetail(reportDTO.getMemberCode()));
+        log.info("[ReportService] reportDTO : " + reportDTO);
+
         List<ReportRoundDTO> reportRoundList = reportMapper.selectReportRoundListByReportCode(selectCriteria);
         log.info("[ReportService] reportRoundList : " + reportRoundList);
 
-        ResponseDTOWithPaging responseDTOWithPaging =new ResponseDTOWithPaging();
+        for(ReportRoundDTO reportRound : reportRoundList) {
+
+            reportRound.setReportedMemberCount(reportMapper.getReportedMemberCountByRoundCode(reportRound.getRoundCode()));
+        }
+        log.info("[ReportService] reportRoundList : " + reportRoundList);
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("reportDTO", reportDTO);
+        result.put("reportRoundList", reportRoundList);
+
+        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(selectCriteria);
-        responseDTOWithPaging.setData(reportRoundList);
+        responseDTOWithPaging.setData(result);
         log.info("[ReportService] responseDTOWithPaging : " + responseDTOWithPaging);
 
         return responseDTOWithPaging;
@@ -526,7 +549,7 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 정기보고 회차 상세 조회
     */
-    public ReportRoundDTO selectReportRoundDetailByRoundCode(int memberCode, Long reportCode, Long roundCode) {
+    public HashMap<String, Object> selectReportRoundDetailByRoundCode(int memberCode, Long reportCode, Long roundCode) {
 
         log.info("[ReportService] selectReportRoundDetailByRoundCode Start");
         log.info("[ReportService] memberCode : " + memberCode);
@@ -535,12 +558,21 @@ public class ReportService {
 
         verifyMemberReportAccess(memberCode, reportCode);
 
-        updateReportReadStatusToRead(memberCode,reportCode);
+        updateReportReadStatusToRead(memberCode, reportCode);
 
         ReportRoundDTO reportRoundDetail = reportMapper.selectReportRoundDetailByRoundCode(roundCode);
         log.info("[ReportService] reportRoundDetail : " + reportRoundDetail);
+        ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
+        log.info("[ReportService] reportDTO : " + reportDTO);
+        MemberDTO memberDTO = reportMapper.selectReporterDetail(reportDTO.getMemberCode());
+        log.info("[ReportService] memberDTO : " + memberDTO);
 
-        return reportRoundDetail;
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("reportRoundDetail", reportRoundDetail);
+        result.put("reportDTO", reportDTO);
+        result.put("memberDTO", memberDTO);
+
+        return result;
     }
 
     /**
@@ -620,7 +652,7 @@ public class ReportService {
     	* @MethodName : selectReportDetailListByRoundCode
     	* @Date : 2023-03-28
     	* @Writer : 김수용
-    	* @Description : 회차별 상세보고 목록 조회
+    	* @Description : 회차별 상세 보고 목록 조회
     */
     public List<ReportDetailDTO> selectReportDetailListByRoundCode(int memberCode, long reportCode, long roundCode) {
 
@@ -634,9 +666,15 @@ public class ReportService {
         List<ReportDetailDTO> reportDetailList = reportMapper.selectReportDetailListByRoundCode(roundCode);
         log.info("[ReportService] reportDetailList : " + reportDetailList);
 
-        if(reportDetailList.size() == 0) {
-            throw new DataNotFoundException("조회된 상세보고 목록이 없습니다!");
+        for(ReportDetailDTO reportDetail : reportDetailList) {
+
+            MemberDTO memberDTO = reportMapper.selectReporterDetail(reportDetail.getMemberCode());
+            reportDetail.setMemberName(memberDTO.getMemberName());
+            reportDetail.setJobName(memberDTO.getJobName());
         }
+//        if(reportDetailList.size() == 0) {
+//            throw new DataNotFoundException("조회된 상세보고 목록이 없습니다!");
+//        }
         return reportDetailList;
     }
 
@@ -698,9 +736,14 @@ public class ReportService {
         List<ReportRoundReplyDTO> reportReplyList = reportMapper.selectReportRoundReply(roundCode);
         log.info("[ReportService] reportReplyList : " + reportReplyList);
 
-        if(reportReplyList.isEmpty()) {
-            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
+        for(ReportRoundReplyDTO reportReplyDTO : reportReplyList) {
+
+            reportReplyDTO.setMemberName(reportMapper.selectReporterDetail(memberCode).getMemberName());
         }
+
+//        if(reportReplyList.isEmpty()) {
+//            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
+//        }
         return reportReplyList;
     }
 
@@ -742,4 +785,28 @@ public class ReportService {
 
         return result > 0;
     }
+
+//    /**
+//    	* @MethodName : selectReporterCount
+//    	* @Date : 2023-04-03
+//    	* @Writer : 김수용
+//    	* @Description : 보고 현황 조회
+//    */
+//    public HashMap<String, Object> selectReporterCount(long reportCode, long roundCode) throws Exception {
+//
+//        log.info("[ReportService] selectReporterCount Start");
+//        log.info("[ReportService] reportCode : " + reportCode);
+//        log.info("[ReportService] roundCode : " + roundCode);
+//
+//        int totalReporter = reportMapper.getReportRoundCapacity(reportCode);
+//        int reportDetailCount = reportMapper.getReportDetailCountByRoundCode(roundCode);
+//        log.info("[ReportService] capacity : " + totalReporter);
+//        log.info("[ReportService] reportDetailCount : " + reportDetailCount);
+//
+//        HashMap<String, Object> result = new HashMap<>();
+//        result.put("totalReporter", totalReporter);
+//        result.put("reportDetailCount", reportDetailCount);
+//
+//        return result;
+//    }
 }

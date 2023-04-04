@@ -1,7 +1,8 @@
 package com.root34.aurora.report.dao;
 
-import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.common.FileDTO;
+import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
@@ -86,5 +87,7 @@ public interface ReportMapper {
 
     Integer selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
 
-    Integer getReportDetailCountByRoundCode(long roundCode); // 상세 보고 갯수 조회
+    Integer getReportedMemberCountByRoundCode(long roundCode); // 보고 회차 보고한 인원수 조회
+
+    MemberDTO selectReporterDetail(int memberCode); // 보고자 정보 조회
 }

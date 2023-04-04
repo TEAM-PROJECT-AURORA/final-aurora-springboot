@@ -328,7 +328,7 @@ public class ReportServiceTest {
         long roundCode = 1L;
 
         // when
-        ReportRoundDTO result = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
+        HashMap<String, Object> result = reportService.selectReportRoundDetailByRoundCode(memberCode, reportCode, roundCode);
 
         // then
         assertNotNull(result);

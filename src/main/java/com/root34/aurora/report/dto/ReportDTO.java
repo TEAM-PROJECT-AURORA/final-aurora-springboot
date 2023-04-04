@@ -1,6 +1,9 @@
 package com.root34.aurora.report.dto;
 
+import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
+
+import java.sql.Date;
 
 /**
  @ClassName : ReportDTO
@@ -36,6 +39,10 @@ public class ReportDTO {
      */
     private String reportCycle;
     /**
+     * @variable regDate 보고 등록일
+     */
+    private Date regDate;
+    /**
      * @variable readStatus 읽음 상태
      */
     private char readStatus;
@@ -43,4 +50,8 @@ public class ReportDTO {
      * @variable completionStatus 완료 상태
      */
     private char completionStatus;
+    /**
+     * @variable memberDTO 멤버 DTO
+     */
+    private MemberDTO memberDTO;
 }

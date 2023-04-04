@@ -2,6 +2,8 @@ package com.root34.aurora.report.dto;
 
 import lombok.Data;
 
+import java.sql.Date;
+
 /**
 	@ClassName : ReportDetailDTO
 	@Date : 2023-03-27
@@ -24,7 +26,19 @@ public class ReportDetailDTO {
      */
     private int memberCode;
     /**
+     * @variable memberName 사원 이름
+     */
+    private String memberName;
+    /**
+     * @variable jobName 직급명
+     */
+    private String jobName;
+    /**
      * @variable detailBody 상세 보고 내용
      */
     private String detailBody;
+    /**
+     * @variable regDate 상세 보고 등록일
+     */
+    private Date regDate;
 }

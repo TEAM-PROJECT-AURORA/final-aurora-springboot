@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 
+/**
+	* @MethodName :
+	* @Date : 2023-04-03
+	* @Writer : 김수용
+	* @Description : 메세지 컨버터 MediaType.APPLICATION_OCTET_STREAM 처리
+*/
 @Component
 public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
 

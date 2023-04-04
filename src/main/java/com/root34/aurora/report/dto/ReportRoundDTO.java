@@ -34,6 +34,10 @@ public class ReportRoundDTO {
      */
     private Date regDate;
     /**
+     * @variable 상세 보고 갯수
+     */
+    private int reportedMemberCount;
+    /**
      * @variable capacity 보고 정원
      */
     private int capacity;
