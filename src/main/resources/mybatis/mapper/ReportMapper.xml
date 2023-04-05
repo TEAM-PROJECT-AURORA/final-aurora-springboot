@@ -166,6 +166,16 @@
             COMPLETION_STATUS = #{ completionStatus }
         WHERE REPORT_CODE = #{ reportCode }
     </update>
+    <!--파일 삭제-->
+<!--    <update id="deleteFiles" parameterType="long">-->
+<!--        UPDATE TBL_FILE-->
+<!--           SET REPORT_CODE = 0-->
+<!--         WHERE REPORT_CODE = #{ reportCode }-->
+<!--    </update>-->
+    <delete id="deleteFiles" parameterType="long">
+        DELETE FROM TBL_FILE
+         WHERE REPORT_CODE = #{ reportCode }
+    </delete>
     <!--보고자 삭제-->
     <delete id="deleteReporter" parameterType="Long">
         DELETE FROM TBL_REPORTER
@@ -294,6 +304,12 @@
                MEMBER_CODE,
                REPLY_BODY,
                REG_DATE
+          FROM TBL_REPORT_ROUND_REPLY
+         WHERE ROUND_CODE = #{ roundCode }
+    </select>
+    <!--보고 회차 보고 댓글 갯수 조회-->
+    <select id="getReplyCountByRoundCode" parameterType="long" resultType="int">
+        SELECT COUNT(*)
           FROM TBL_REPORT_ROUND_REPLY
          WHERE ROUND_CODE = #{ roundCode }
     </select>

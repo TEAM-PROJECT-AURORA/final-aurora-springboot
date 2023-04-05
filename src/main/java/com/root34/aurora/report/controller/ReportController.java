@@ -1,6 +1,5 @@
 package com.root34.aurora.report.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
 	@ClassName : ReportController
@@ -188,6 +186,14 @@ public class ReportController {
         }
     }
 
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공",
+//                    reportService.registerReport(reportDTO, memberList, fileList)));
+//        } catch (Exception e) {
+//            log.info("[ReportController] Exception : " + e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+//        }
+//    }
     /**
      * @MethodName : updateReport
      * @Date : 2023-03-23
@@ -195,34 +201,68 @@ public class ReportController {
      * @Description : 보고 수정
      */
     @Transactional
-    @PutMapping(value = "/reports")
+    @PutMapping(value = "/reports", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
-                                                    @RequestBody Map<String, Object> requestData) {
+                                                      @RequestPart("reportDTO") ReportDTO reportDTO,
+                                                      @RequestPart("memberList") List<Integer> memberList,
+                                                      @RequestPart(name = "fileList", required = false)List<MultipartFile> fileList) {
 
         try {
             log.info("[ReportController] updateReport Start");
-            List<Integer> memberList = (List<Integer>) requestData.get("memberList");
 
             if(memberList.size() == 0) {
                 return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
             }
-            log.info("[ReportController] memberList : " + memberList);
-
             Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[ReportController] memberCode : " + memberCode);
-
-            ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
             reportDTO.setMemberCode(memberCode);
+
             log.info("[ReportController] reportDTO : " + reportDTO);
+            log.info("[ReportController] memberList : " + memberList);
+            log.info("[ReportController] fileList : " + fileList);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공",
-                    reportService.updateReport(memberCode, reportDTO, memberList)));
+                    reportService.updateReport(reportDTO, memberList, fileList)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
     }
+//    /**
+//     * @MethodName : updateReport
+//     * @Date : 2023-03-23
+//     * @Writer : 김수용
+//     * @Description : 보고 수정
+//     */
+//    @Transactional
+//    @PutMapping(value = "/reports")
+//    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
+//                                                    @RequestBody Map<String, Object> requestData) {
+//
+//        try {
+//            log.info("[ReportController] updateReport Start");
+//            List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+//
+//            if(memberList.size() == 0) {
+//                return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
+//            }
+//            log.info("[ReportController] memberList : " + memberList);
+//
+//            Integer memberCode = (Integer) request.getAttribute("memberCode");
+//            log.info("[ReportController] memberCode : " + memberCode);
+//
+//            ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
+//            reportDTO.setMemberCode(memberCode);
+//            log.info("[ReportController] reportDTO : " + reportDTO);
+//
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공",
+//                    reportService.updateReport(memberCode, reportDTO, memberList)));
+//        } catch (Exception e) {
+//            log.info("[ReportController] Exception : " + e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+//        }
+//    }
 
     /**
      * @MethodName : updateReportCompletionStatusToComplete

@@ -39,6 +39,8 @@ public interface ReportMapper {
 
     int updateReport(ReportDTO reportDTO); // 보고 수정
 
+    int deleteFiles(long reportCode); // 파일 DB에서 삭제
+
     int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
 
     int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
@@ -84,6 +86,8 @@ public interface ReportMapper {
     int registerReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO); // 보고 댓글 작성
 
     List<ReportRoundReplyDTO> selectReportRoundReply(long roundCode); // 보고 댓글 목록 조회
+
+    int getReplyCountByRoundCode(long roundCode); // 보고 회차 보고 댓글 갯수 조회
 
     int updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO); // 보고 댓글 수정
 

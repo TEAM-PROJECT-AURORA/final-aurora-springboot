@@ -43,4 +43,8 @@ public class ReportRoundDTO {
      * @variable capacity 보고 정원
      */
     private int capacity;
+    /**
+     * @variable replyCount 댓글 갯수
+     */
+    private int replyCount;
 }
