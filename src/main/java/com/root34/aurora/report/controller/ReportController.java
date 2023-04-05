@@ -51,7 +51,7 @@ public class ReportController {
                                                       @RequestPart("memberList") List<Integer> memberList,
                                                       @RequestPart(name = "fileList", required = false)List<MultipartFile> fileList) {
 
-//        try {
+        try {
             log.info("[ReportController] registerReport Start");
             log.info("[ReportController] request : " + request.getHeader("Authorization"));
             Integer memberCode = (Integer) request.getAttribute("memberCode");
@@ -63,13 +63,12 @@ public class ReportController {
             log.info("[ReportController] fileList : " + fileList);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공",
-//            return ResponseEntity.created().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공",
                     reportService.registerReport(reportDTO, memberList, fileList)));
-//        } catch (Exception e) {
-//            log.info("[ReportController] Exception : " + e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-//        }
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
     }
 
     /**
@@ -82,7 +81,7 @@ public class ReportController {
     public ResponseEntity<ResponseDTO> getReportSummary(HttpServletRequest request) {
 
         try {
-            log.info("[ReportController] getAllReportList");
+            log.info("[ReportController] getAllReportList Start");
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             log.info("[ReportController] memberCode : " + memberCode);
 
@@ -90,65 +89,6 @@ public class ReportController {
             log.info("[ReportController] response : " + response);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 보고서 목록 조회 성공", response));
-        } catch (Exception e) {
-            log.info("[ReportController] Exception : " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-        }
-    }
-
-    /**
-     * @MethodName : registerReportRound
-     * @Date : 2023-03-23
-     * @Writer : 김수용
-     * @Description : 보고 회차 등록
-     */
-    @Transactional
-    @PostMapping(value = "/reports/routines")
-    public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
-
-        try {
-            log.info("[ReportController] registerReportRound");
-            log.info("[ReportController] ReportRoundDTO : " + reportRoundDTO);
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고 회차 등록 성공",
-                    reportService.registerReportRound(reportRoundDTO)));
-        } catch (Exception e) {
-            log.info("[ReportController] Exception : " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-        }
-    }
-
-    /**
-     * @MethodName : updateReport
-     * @Date : 2023-03-23
-     * @Writer : 김수용
-     * @Description : 보고 수정
-     */
-    @Transactional
-    @PutMapping(value = "/reports")
-    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
-                                                    @RequestBody Map<String, Object> requestData) {
-
-        try {
-            log.info("[ReportController] updateReport");
-            List<Integer> memberList = (List<Integer>) requestData.get("memberList");
-
-            if(memberList.size() == 0) {
-                return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
-            }
-            log.info("[ReportController] memberList : " + memberList);
-
-            Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[ReportController] memberCode : " + memberCode);
-
-            ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
-            reportDTO.setMemberCode(memberCode);
-            log.info("[ReportController] reportDTO : " + reportDTO);
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공",
-                    reportService.updateReport(memberCode, reportDTO, memberList)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -169,13 +109,12 @@ public class ReportController {
                                                                @RequestParam int offset) {
 
         try {
-            log.info("[ReportController] selectRoutineReportList");
+            log.info("[ReportController] selectRoutineReportList Start");
             log.info("[ReportController] offset : " + offset);
 
             HashMap<String, Object> searchConditions = new HashMap<>();
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             searchConditions.put("memberCode", memberCode);
-//            searchConditions.put("reportType", reportType);
             searchConditions.put("reportType", "Routine");
             searchConditions.put("completionStatus", completionStatus);
             log.info("[ReportController] searchConditions : " + searchConditions);
@@ -202,7 +141,7 @@ public class ReportController {
                                                                     @RequestParam int offset) {
 
         try {
-            log.info("[ReportController] selectRoutineReportList");
+            log.info("[ReportController] selectRoutineReportList Start");
             log.info("[ReportController] offset : " + offset);
 
             HashMap<String, Object> searchConditions = new HashMap<>();
@@ -223,18 +162,129 @@ public class ReportController {
     }
 
     /**
+     * @MethodName : selectCasualReportDetailByReportCode
+     * @Date : 2023-03-27
+     * @Writer : 김수용
+     * @Description : 비정기보고 상세 조회
+     */
+    @GetMapping("/reports/casual/{reportCode}")
+    public ResponseEntity<ResponseDTO> selectCasualReportDetailByReportCode(HttpServletRequest request,
+                                                                            @PathVariable Long reportCode) {
+
+        try {
+            log.info("[ReportController] selectCasualReportDetailByReportCode Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            log.info("[ReportController] reportCode : " + reportCode);
+
+            HashMap<String, Object> casualReportDetail = reportService.selectCasualReportDetailByReportCode(memberCode, reportCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 상세 조회 성공",
+                    casualReportDetail));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+     * @MethodName : updateReport
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 보고 수정
+     */
+    @Transactional
+    @PutMapping(value = "/reports")
+    public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
+                                                    @RequestBody Map<String, Object> requestData) {
+
+        try {
+            log.info("[ReportController] updateReport Start");
+            List<Integer> memberList = (List<Integer>) requestData.get("memberList");
+
+            if(memberList.size() == 0) {
+                return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "보고서 수정 실패! - 보고자를 등록해주세요", null));
+            }
+            log.info("[ReportController] memberList : " + memberList);
+
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+
+            ReportDTO reportDTO = new ObjectMapper().convertValue(requestData.get("reportDTO"), ReportDTO.class);
+            reportDTO.setMemberCode(memberCode);
+            log.info("[ReportController] reportDTO : " + reportDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공",
+                    reportService.updateReport(memberCode, reportDTO, memberList)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+     * @MethodName : updateReportCompletionStatusToComplete
+     * @Date : 2023-03-27
+     * @Writer : 김수용
+     * @Description : 보고 완료상태 수정 - 완료
+     */
+    @DeleteMapping("/reports/{reportCode}")
+    public ResponseEntity<ResponseDTO> updateReportCompletionStatusToComplete(HttpServletRequest request,
+                                                                              @PathVariable Long reportCode) {
+
+        try {
+            log.info("[ReportController] updateReportCompletionStatusToComplete Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            log.info("[ReportController] reportCode : " + reportCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 완료상태 수정 성공",
+                    reportService.updateReportCompletionStatusToComplete(memberCode, reportCode)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+     * @MethodName : registerReportRound
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 보고 회차 등록
+     */
+    @Transactional
+    @PostMapping(value = "/reports/rounds")
+    public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
+
+        try {
+            log.info("[ReportController] registerReportRound Start");
+            log.info("[ReportController] ReportRoundDTO : " + reportRoundDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고 회차 등록 성공",
+                    reportService.registerReportRound(reportRoundDTO)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
     	* @MethodName : selectReportRoundListByReportCode
     	* @Date : 2023-03-26
     	* @Writer : 김수용
-    	* @Description : 정기보고 회차 목록 조회
+    	* @Description : 보고 회차 목록 조회
     */
-    @GetMapping(value = "/reports/routine/{reportCode}/rounds")
+    @GetMapping(value = "/reports/{reportCode}/rounds")
     public ResponseEntity<ResponseDTO> selectReportRoundListByReportCode(HttpServletRequest request,
                                                                          @PathVariable Long reportCode,
                                                                          @RequestParam int offset) {
 
         try {
-            log.info("[ReportController] selectReportRoundListByReportCode");
+            log.info("[ReportController] selectReportRoundListByReportCode Start");
             Integer memberCode = (Integer) request.getAttribute("memberCode");
             log.info("[ReportController] memberCode : " + memberCode);
             log.info("[ReportController] reportCode : " + reportCode);
@@ -250,11 +300,11 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : selectReportRoundDetailByRoundCode
-    	* @Date : 2023-03-27
-    	* @Writer : 김수용
-    	* @Description : 정기보고 회차 상세 조회
-    */
+     * @MethodName : selectReportRoundDetailByRoundCode
+     * @Date : 2023-03-27
+     * @Writer : 김수용
+     * @Description : 보고 회차 상세 조회
+     */
     @GetMapping(value = "/reports/routine/{reportCode}/rounds/{roundCode}")
     public ResponseEntity<ResponseDTO> selectReportRoundDetailByRoundCode(HttpServletRequest request,
                                                                           @PathVariable Long reportCode,
@@ -280,25 +330,21 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : selectCasualReportDetailByReportCode
-    	* @Date : 2023-03-27
-    	* @Writer : 김수용
-    	* @Description : 비정기보고 상세 조회
-    */
-    @GetMapping("/reports/casual/{reportCode}")
-    public ResponseEntity<ResponseDTO> selectCasualReportDetailByReportCode(HttpServletRequest request,
-                                                                            @PathVariable Long reportCode) {
+     * @MethodName : updateReportRound
+     * @Date : 2023-04-05
+     * @Writer : 김수용
+     * @Description : 보고 회차 수정
+     */
+    @Transactional
+    @PutMapping(value = "/reports/rounds")
+    public ResponseEntity<ResponseDTO> updateReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
 
         try {
-            log.info("[ReportController] selectCasualReportDetailByReportCode Start");
-            Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[ReportController] memberCode : " + memberCode);
-            log.info("[ReportController] reportCode : " + reportCode);
+            log.info("[ReportController] updateReportRound Start");
+            log.info("[ReportController] ReportRoundDTO : " + reportRoundDTO);
 
-            HashMap<String, Object> casualReportDetail = reportService.selectCasualReportDetailByReportCode(memberCode, reportCode);
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 상세 조회 성공",
-                    casualReportDetail));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 회차 수정 성공",
+                    reportService.updateReportRound(reportRoundDTO)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -307,23 +353,21 @@ public class ReportController {
     }
 
     /**
-    	* @MethodName : updateReportCompletionStatusToComplete
-    	* @Date : 2023-03-27
-    	* @Writer : 김수용
-    	* @Description : 보고 완료상태 수정 - 완료
-    */
-    @DeleteMapping("/reports/{reportCode}")
-    public ResponseEntity<ResponseDTO> updateReportCompletionStatusToComplete(HttpServletRequest request,
-                                                                              @PathVariable Long reportCode) {
+     * @MethodName : deleteReportRound
+     * @Date : 2023-04-05
+     * @Writer : 김수용
+     * @Description : 보고 회차 삭제
+     */
+    @Transactional
+    @DeleteMapping(value = "/reports/rounds")
+    public ResponseEntity<ResponseDTO> deleteReportRound(@RequestBody long roundCode) {
 
         try {
-            log.info("[ReportController] updateReportCompletionStatusToComplete Start");
-            Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[ReportController] memberCode : " + memberCode);
-            log.info("[ReportController] reportCode : " + reportCode);
+            log.info("[ReportController] deleteReportRound Start");
+            log.info("[ReportController] roundCode : " + roundCode);
 
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 완료상태 수정 성공",
-                    reportService.updateReportCompletionStatusToComplete(memberCode, reportCode)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 회차 삭제 성공",
+                    reportService.deleteReportRound(roundCode)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -366,6 +410,33 @@ public class ReportController {
     }
 
     /**
+     * @MethodName : selectReportDetailListByRoundCode
+     * @Date : 2023-03-28
+     * @Writer : 김수용
+     * @Description : 상세 보고 목록 조회
+     */
+    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
+    public ResponseEntity<ResponseDTO> selectReportDetailListByRoundCode(HttpServletRequest request,
+                                                                         @PathVariable long reportCode,
+                                                                         @PathVariable long roundCode) {
+
+        try {
+            log.info("[ReportController] selectReportDetailListByRoundCode Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            log.info("[ReportController] reportCode : " + reportCode);
+            log.info("[ReportController] roundCode : " + roundCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 목록 조회 성공",
+                    reportService.selectReportDetailListByRoundCode(memberCode, reportCode, roundCode)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
     	* @MethodName : updateReportDetail
     	* @Date : 2023-03-27
     	* @Writer : 김수용
@@ -389,33 +460,6 @@ public class ReportController {
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 수정 성공",
                     reportService.updateReportDetail(reportCode, reportDetailDTO)));
-        } catch (Exception e) {
-            log.info("[ReportController] Exception : " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-        }
-    }
-
-    /**
-    	* @MethodName : selectReportDetailListByRoundCode
-    	* @Date : 2023-03-28
-    	* @Writer : 김수용
-    	* @Description : 상세 보고 목록 조회
-    */
-    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/detail-reports")
-    public ResponseEntity<ResponseDTO> selectReportDetailListByRoundCode(HttpServletRequest request,
-                                                                         @PathVariable long reportCode,
-                                                                         @PathVariable long roundCode) {
-
-        try {
-            log.info("[ReportController] selectReportDetailListByRoundCode Start");
-            Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[ReportController] memberCode : " + memberCode);
-            log.info("[ReportController] reportCode : " + reportCode);
-            log.info("[ReportController] roundCode : " + roundCode);
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세 보고 목록 조회 성공",
-                    reportService.selectReportDetailListByRoundCode(memberCode, reportCode, roundCode)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -457,14 +501,11 @@ public class ReportController {
     */
     @PostMapping("/reports/rounds/{roundCode}/comments")
     public ResponseEntity<ResponseDTO> registerReportRoundReply(HttpServletRequest request,
-//                                                                @PathVariable long reportCode,
                                                                 @PathVariable long roundCode,
                                                                 @RequestBody String replyBody) {
-//                                                                @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
 
         try {
             log.info("[ReportController] registerReportRoundReply Start");
-//            log.info("[ReportController] reportCode : " + reportCode);
 
             ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
             reportRoundReplyDTO.setReplyBody(replyBody);
@@ -517,15 +558,12 @@ public class ReportController {
     */
     @PutMapping("/reports/rounds/{roundCode}/comments/{replyCode}")
     public ResponseEntity<ResponseDTO> updateReportRoundReply(HttpServletRequest request,
-//                                                              @PathVariable long reportCode,
                                                               @PathVariable long roundCode,
                                                               @PathVariable long replyCode,
                                                               @RequestBody String replyBody) {
-//                                                              @RequestBody ReportRoundReplyDTO reportRoundReplyDTO) {
 
         try {
             log.info("[ReportController] updateReportRoundReply Start");
-//            log.info("[ReportController] reportCode : " + reportCode);
 
             ReportRoundReplyDTO reportRoundReplyDTO = new ReportRoundReplyDTO();
             reportRoundReplyDTO.setReplyBody(replyBody);
@@ -552,8 +590,6 @@ public class ReportController {
     */
     @DeleteMapping("/reports/rounds/comments/{replyCode}")
     public ResponseEntity<ResponseDTO> deleteReportRoundReply(HttpServletRequest request,
-//                                                              @PathVariable long reportCode,
-//                                                              @PathVariable long roundCode,
                                                               @PathVariable long replyCode) {
 
         try{
@@ -570,103 +606,4 @@ public class ReportController {
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
     }
-
-//    /**
-//    	* @MethodName : selectReporterCount
-//    	* @Date : 2023-04-03
-//    	* @Writer : 김수용
-//    	* @Description : 보고 현황 조회
-//    */
-//    @GetMapping("/reports/{reportCode}/rounds/{roundCode}/reporters")
-//    public ResponseEntity<ResponseDTO> selectReporterCount(HttpServletRequest request,
-//                                                           @PathVariable long reportCode,
-//                                                           @PathVariable long roundCode) {
-//
-//        try{
-//            log.info("[ReportController] selectReporterCount Start");
-//            Integer memberCode = (Integer) request.getAttribute("memberCode");
-//            log.info("[ReportController] memberCode : " + memberCode);
-//            log.info("[ReportController] reportCode : " + reportCode);
-//            log.info("[ReportController] roundCode : " + roundCode);
-//
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 현황 조회 성공",
-//                    reportService.selectReporterCount(reportCode, roundCode)));
-//        } catch (Exception e) {
-//            log.info("[ReportController] Exception : " + e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-//        }
-//    }
 }
-
-//    /**
-//     * @MethodName : selectCompletedRoutineReportList
-//     * @Date : 2023-03-24
-//     * @Writer : 김수용
-//     * @Description : 완료된 정기보고 목록 조회
-//     */
-//    @GetMapping(value = "/reports/routine/completed")
-//    public ResponseEntity<ResponseDTO> selectCompletedRoutineReportList(HttpServletRequest request,
-//                                                                        @RequestParam int offset) {
-//
-//        log.info("[ReportController] selectCompletedRoutineReportList");
-//        log.info("[ReportController] offset : " + offset);
-//
-//        HashMap<String, Object> searchConditions = new HashMap<>();
-//        Integer memberCode = (Integer) request.getAttribute("memberCode");
-//        searchConditions.put("memberCode", memberCode);
-//        searchConditions.put("reportType", "Routine");
-//        searchConditions.put("completionStatus", 'Y');
-//        log.info("[ReportController] searchConditions : " + searchConditions);
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 정기보고 목록 조회 성공",
-//                reportService.selectReportListByConditions(offset, searchConditions)));
-//    }
-//
-//    /**
-//     * @MethodName : selectCasualReportList
-//     * @Date : 2023-03-24
-//     * @Writer : 김수용
-//     * @Description : 비정기보고 목록 조회
-//     */
-//    @GetMapping(value = "/reports/casual/active")
-//    public ResponseEntity<ResponseDTO> selectCasualReportList(HttpServletRequest request,
-//                                                              @RequestParam int offset) {
-//
-//        log.info("[ReportController] selectCasualReportList");
-//        log.info("[ReportController] offset : " + offset);
-//
-//        HashMap<String, Object> searchConditions = new HashMap<>();
-//        Integer memberCode = (Integer) request.getAttribute("memberCode");
-//        searchConditions.put("memberCode", memberCode);
-//        searchConditions.put("reportType", "Casual");
-//        searchConditions.put("completionStatus", 'N');
-//        log.info("[ReportController] searchConditions : " + searchConditions);
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비정기보고 목록 조회 성공",
-//                reportService.selectReportListByConditions(offset, searchConditions)));
-//    }
-//
-//    /**
-//     * @MethodName : selectCompletedCasualReportList
-//     * @Date : 2023-03-24
-//     * @Writer : 김수용
-//     * @Description : 완료된 비정기보고 목록 조회
-//     */
-//    @GetMapping(value = "/reports/casual/completed")
-//    public ResponseEntity<ResponseDTO> selectCompletedCasualReportList(HttpServletRequest request,
-//                                                                       @RequestParam int offset) {
-//
-//        log.info("[ReportController] selectCompletedCasualReportList");
-//        log.info("[ReportController] offset : " + offset);
-//
-//        HashMap<String, Object> searchConditions = new HashMap<>();
-//        Integer memberCode = (Integer) request.getAttribute("memberCode");
-//        searchConditions.put("memberCode", memberCode);
-//        searchConditions.put("reportType", "Casual");
-//        searchConditions.put("completionStatus", 'Y');
-//        log.info("[ReportController] searchConditions : " + searchConditions);
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "완료된 비정기보고 목록 조회 성공",
-//                reportService.selectReportListByConditions(offset, searchConditions)));
-//    }

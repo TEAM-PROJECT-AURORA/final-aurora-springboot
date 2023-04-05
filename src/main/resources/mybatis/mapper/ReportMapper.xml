@@ -3,6 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.report.dao.ReportMapper">
+    <!--멤버 정보 조회-->
+    <select id="selectReporterDetail" parameterType="Integer" resultType="MemberDTO">
+        SELECT
+            A.MEMBER_CODE,
+            B.DEPT_NAME,
+            C.JOB_NAME,
+            A.MEMBER_NAME
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+        WHERE A.MEMBER_CODE = #{ memberCode }
+    </select>
     <!--보고서 등록-->
     <insert id="registerReport" parameterType="ReportDTO" useGeneratedKeys="true" keyProperty="reportCode">
         INSERT INTO TBL_REPORT
@@ -50,17 +62,20 @@
          ORDER BY REPORT_CODE DESC
          LIMIT #{ startRow }, #{ limit }
     </select>
-    <!--멤버 정보 조회-->
-    <select id="selectReporterDetail" parameterType="Integer" resultType="MemberDTO">
-        SELECT
+    <!--보고 상세 조회-->
+    <select id="selectReportDetailByReportCode" parameterType="Long" resultType="ReportDTO">
+        SELECT A.REPORT_CODE,
                A.MEMBER_CODE,
-               B.DEPT_NAME,
-               C.JOB_NAME,
-               A.MEMBER_NAME
-          FROM TBL_MEMBER A
-          JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
-          JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
-         WHERE A.MEMBER_CODE = #{ memberCode }
+               A.REPORT_TYPE,
+               A.REPORT_TITLE,
+               A.REPORT_INFO,
+               A.REPORT_CYCLE,
+               A.REG_DATE,
+               A.READ_STATUS,
+               A.COMPLETION_STATUS
+        FROM TBL_REPORT A
+        WHERE A.REPORT_CODE = #{ reportCode }
+--            AND A.REPORT_TYPE = 'Casual'
     </select>
     <!--최근 정기보고 3개-->
     <select id="selectThreeReportCodesByMemberCode" parameterType="int" resultType="Long">
@@ -72,18 +87,58 @@
          ORDER BY REPORT_CODE DESC
          LIMIT 3
     </select>
-    <!--정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력-->
-    <select id="selectReportRoundSummaryListByReportCode" parameterType="Long" resultType="ReportRoundDTO">
-        SELECT ROUND_CODE,
-               REPORT_CODE,
-               ROUND_TITLE,
-               ROUND_BODY,
-               REG_DATE,
-               CAPACITY
-          FROM TBL_REPORT_ROUND
-         WHERE REPORT_CODE = #{ reportCode }
-         ORDER BY ROUND_CODE DESC
-         LIMIT 10
+    <!--보고 관련자 목록 조회-->
+    <select id="selectMemberListInvolvedInReport" parameterType="Long" resultType="Integer">
+        SELECT A.MEMBER_CODE
+        FROM TBL_REPORT A
+        WHERE A.REPORT_CODE = #{ reportCode }
+        UNION ALL
+        SELECT B.MEMBER_CODE
+        FROM TBL_REPORTER B
+        WHERE B.REPORT_CODE = #{ reportCode }
+    </select>
+    <!--비정기보고 첨부파일 목록 조회-->
+    <select id="selectReportAttachmentListByReportCode" parameterType="Long" resultType="FileDTO">
+        SELECT FILE_CODE,
+               FILE_NAME,
+               FILE_ORIGIN_NAME,
+               FILE_SIZE,
+               FILE_PATH,
+               REPORT_CODE
+        FROM TBL_FILE
+        WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--보고 책임자 확인-->
+    <select id="countInChargeMember" parameterType="HashMap" resultType="Integer">
+        SELECT COUNT(MEMBER_CODE)
+        FROM TBL_REPORT
+        WHERE REPORT_CODE = #{ reportCode }
+          AND MEMBER_CODE = #{ memberCode }
+    </select>
+    <!--보고 완료 상태 확인-->
+    <select id="selectReportCompletionStatus" parameterType="Long" resultType="char">
+        SELECT COMPLETION_STATUS
+        FROM TBL_REPORT
+        WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--보고 완료상태 수정-->
+    <update id="updateReportCompletionStatus" parameterType="HashMap">
+        UPDATE TBL_REPORT
+        SET COMPLETION_STATUS = #{ completionStatus }
+        WHERE REPORT_CODE = #{ reportCode }
+          AND MEMBER_CODE = #{ memberCode }
+    </update>
+    <!--보고 읽음상태 수정-->
+    <update id="updateReportReadStatus" parameterType="HashMap">
+        UPDATE TBL_REPORT
+        SET READ_STATUS = #{ readStatus }
+        WHERE REPORT_CODE = #{ reportCode }
+    </update>
+    <!--보고 유형 확인-->
+    <select id="selectReportType" parameterType="Long" resultType="String">
+        SELECT REPORT_TYPE
+        FROM TBL_REPORT
+        WHERE REPORT_CODE = #{ reportCode }
     </select>
     <!--비정기 보고 20개 조회-->
     <select id="selectCasualReportListByMemberCode" parameterType="int" resultType="ReportDTO">
@@ -102,12 +157,20 @@
         ORDER BY REPORT_CODE DESC
         LIMIT 20
     </select>
-    <!--보고 회차 정원 조회-->
-    <select id="getReportRoundCapacity" parameterType="Long" resultType="int">
-        SELECT COUNT(*)
-          FROM TBL_REPORTER
-         WHERE REPORT_CODE = #{ reportCode }
-    </select>
+    <!--보고 수정-->
+    <update id="updateReport" parameterType="ReportDTO">
+        UPDATE TBL_REPORT
+        SET REPORT_TITLE = #{ reportTitle },
+            REPORT_INFO = #{ reportInfo },
+            REPORT_CYCLE = #{ reportCycle },
+            COMPLETION_STATUS = #{ completionStatus }
+        WHERE REPORT_CODE = #{ reportCode }
+    </update>
+    <!--보고자 삭제-->
+    <delete id="deleteReporter" parameterType="Long">
+        DELETE FROM TBL_REPORTER
+        WHERE REPORT_CODE = #{ reportCode };
+    </delete>
     <!--보고 회차 등록-->
     <insert id="registerReportRound" parameterType="ReportRoundDTO">
         INSERT INTO TBL_REPORT_ROUND
@@ -115,26 +178,6 @@
         VALUES
             ( #{ reportCode }, #{ roundTitle }, #{roundBody }, #{ capacity } )
     </insert>
-    <!--보고 수정-->
-    <update id="updateReport" parameterType="ReportDTO">
-        UPDATE TBL_REPORT
-           SET REPORT_TITLE = #{ reportTitle },
-               REPORT_INFO = #{ reportInfo },
-               REPORT_CYCLE = #{ reportCycle },
-               COMPLETION_STATUS = #{ completionStatus }
-         WHERE REPORT_CODE = #{ reportCode }
-    </update>
-    <!--보고자 삭제-->
-    <delete id="deleteReporter" parameterType="Long">
-        DELETE FROM TBL_REPORTER
-         WHERE REPORT_CODE = #{ reportCode };
-    </delete>
-    <!--보고 회차 갯수 조회-->
-    <select id="getReportRoundCount" parameterType="Long" resultType="int">
-        SELECT COUNT(*)
-        FROM TBL_REPORT_ROUND
-        WHERE REPORT_CODE = #{ reportCode }
-    </select>
     <!--정기보고 회차 목록 조회-->
     <select id="selectReportRoundListByReportCode" parameterType="SelectCriteria" resultType="ReportRoundDTO">
         SELECT ROUND_CODE,
@@ -143,20 +186,29 @@
                ROUND_BODY,
                REG_DATE,
                CAPACITY
-          FROM TBL_REPORT_ROUND
-         WHERE REPORT_CODE = #{ searchCondition }
-         ORDER BY REPORT_CODE DESC
-         LIMIT #{ startRow }, #{ limit }
+        FROM TBL_REPORT_ROUND
+        WHERE REPORT_CODE = #{ searchCondition }
+        ORDER BY REPORT_CODE DESC
+            LIMIT #{ startRow }, #{ limit }
     </select>
-    <!--보고 관련자 목록 조회-->
-    <select id="selectMemberListInvolvedInReport" parameterType="Long" resultType="Integer">
-        SELECT A.MEMBER_CODE
-          FROM TBL_REPORT A
-         WHERE A.REPORT_CODE = #{ reportCode }
-         UNION ALL
-        SELECT B.MEMBER_CODE
-          FROM TBL_REPORTER B
-         WHERE B.REPORT_CODE = #{ reportCode }
+    <!--정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력-->
+    <select id="selectReportRoundSummaryListByReportCode" parameterType="Long" resultType="ReportRoundDTO">
+        SELECT ROUND_CODE,
+               REPORT_CODE,
+               ROUND_TITLE,
+               ROUND_BODY,
+               REG_DATE,
+               CAPACITY
+        FROM TBL_REPORT_ROUND
+        WHERE REPORT_CODE = #{ reportCode }
+        ORDER BY ROUND_CODE DESC
+            LIMIT 10
+    </select>
+    <!--보고 회차 갯수 조회-->
+    <select id="getReportRoundCount" parameterType="Long" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_REPORT_ROUND
+        WHERE REPORT_CODE = #{ reportCode }
     </select>
     <!--정기보고 회차 상세 조회-->
     <select id="selectReportRoundDetailByRoundCode" parameterType="Long" resultType="ReportRoundDTO">
@@ -166,60 +218,32 @@
                ROUND_BODY,
                REG_DATE,
                CAPACITY
-          FROM TBL_REPORT_ROUND
+        FROM TBL_REPORT_ROUND
+        WHERE ROUND_CODE = #{ roundCode }
+    </select>
+    <!--보고 회차 정원 조회-->
+    <select id="getReportRoundCapacity" parameterType="Long" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_REPORTER
+        WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--보고 회차 수정-->
+    <update id="updateReportRound" parameterType="ReportRoundDTO">
+        UPDATE TBL_REPORT_ROUND
+           SET ROUND_TITLE = #{ roundTitle },
+               ROUND_BODY = #{ roundBody }
          WHERE ROUND_CODE = #{ roundCode }
-    </select>
-    <!--보고 상세 조회-->
-    <select id="selectReportDetailByReportCode" parameterType="Long" resultType="ReportDTO">
-        SELECT A.REPORT_CODE,
-               A.MEMBER_CODE,
-               A.REPORT_TYPE,
-               A.REPORT_TITLE,
-               A.REPORT_INFO,
-               A.REPORT_CYCLE,
-               A.REG_DATE,
-               A.READ_STATUS,
-               A.COMPLETION_STATUS
-          FROM TBL_REPORT A
-         WHERE A.REPORT_CODE = #{ reportCode }
---            AND A.REPORT_TYPE = 'Casual'
-    </select>
-    <!--비정기보고 첨부파일 목록 조회-->
-    <select id="selectReportAttachmentListByReportCode" parameterType="Long" resultType="FileDTO">
-        SELECT FILE_CODE,
-               FILE_NAME,
-               FILE_ORIGIN_NAME,
-               FILE_SIZE,
-               FILE_PATH,
-               REPORT_CODE
-          FROM TBL_FILE
-         WHERE REPORT_CODE = #{ reportCode }
-    </select>
-    <!--보고 책임자 확인-->
-    <select id="countInChargeMember" parameterType="HashMap" resultType="Integer">
-        SELECT COUNT(MEMBER_CODE)
-          FROM TBL_REPORT
-         WHERE REPORT_CODE = #{ reportCode }
-           AND MEMBER_CODE = #{ memberCode }
-    </select>
-    <!--보고 완료상태 수정-->
-    <update id="updateReportCompletionStatus" parameterType="HashMap">
-        UPDATE TBL_REPORT
-           SET COMPLETION_STATUS = #{ completionStatus }
-         WHERE REPORT_CODE = #{ reportCode }
-           AND MEMBER_CODE = #{ memberCode }
     </update>
-    <!--보고 읽음상태 수정-->
-    <update id="updateReportReadStatus" parameterType="HashMap">
-        UPDATE TBL_REPORT
-           SET READ_STATUS = #{ readStatus }
-         WHERE REPORT_CODE = #{ reportCode }
-    </update>
-    <!--보고 유형 확인-->
-    <select id="selectReportType" parameterType="Long" resultType="String">
-        SELECT REPORT_TYPE
-          FROM TBL_REPORT
-         WHERE REPORT_CODE = #{ reportCode }
+    <!--보고 회차 삭제-->
+    <delete id="deleteReportRound" parameterType="long">
+        DELETE FROM TBL_REPORT_ROUND
+         WHERE ROUND_CODE = #{ roundCode }
+    </delete>
+    <!--보고 회차 보고한 인원수 조회-->
+    <select id="getReportedMemberCountByRoundCode" parameterType="Long" resultType="Integer">
+        SELECT COUNT(DISTINCT MEMBER_CODE)
+          FROM TBL_REPORT_DETAIL
+         WHERE ROUND_CODE = #{ roundCode }
     </select>
     <!--회차별 상세 보고 작성-->
     <insert id="registerReportDetail" parameterType="ReportDetailDTO">
@@ -228,30 +252,6 @@
         VALUES
             ( #{ roundCode }, #{ memberCode }, #{ detailBody } )
     </insert>
-    <!--보고 회차 보고한 인원수 조회-->
-    <select id="getReportedMemberCountByRoundCode" parameterType="Long" resultType="Integer">
-        SELECT COUNT(DISTINCT MEMBER_CODE)
-          FROM TBL_REPORT_DETAIL
-         WHERE ROUND_CODE = #{ roundCode }
-    </select>
-    <!--보고 완료 상태 확인-->
-    <select id="selectReportCompletionStatus" parameterType="Long" resultType="char">
-        SELECT COMPLETION_STATUS
-          FROM TBL_REPORT
-         WHERE REPORT_CODE = #{ reportCode }
-    </select>
-    <!--상세 보고 작성자 본인 확인-->
-    <select id="selectMemberCodeByDetailCode" parameterType="Long" resultType="int">
-        SELECT MEMBER_CODE
-          FROM TBL_REPORT_DETAIL
-         WHERE DETAIL_CODE = #{ detailCode }
-    </select>
-    <!--회차별 상세 보고 수정-->
-    <update id="updateReportDetail" parameterType="ReportDetailDTO">
-        UPDATE TBL_REPORT_DETAIL
-           SET DETAIL_BODY = #{ detailBody }
-         WHERE DETAIL_CODE = #{ detailCode }
-    </update>
     <!--회차별 상세 보고 목록 조회-->
     <select id="selectReportDetailListByRoundCode" parameterType="Long" resultType="ReportDetailDTO">
         SELECT DETAIL_CODE,
@@ -263,6 +263,18 @@
          WHERE ROUND_CODE = #{ roundCode }
          ORDER BY DETAIL_CODE DESC
     </select>
+    <!--상세 보고 작성자 본인 확인-->
+    <select id="selectMemberCodeByDetailCode" parameterType="Long" resultType="int">
+        SELECT MEMBER_CODE
+        FROM TBL_REPORT_DETAIL
+        WHERE DETAIL_CODE = #{ detailCode }
+    </select>
+    <!--회차별 상세 보고 수정-->
+    <update id="updateReportDetail" parameterType="ReportDetailDTO">
+        UPDATE TBL_REPORT_DETAIL
+        SET DETAIL_BODY = #{ detailBody }
+        WHERE DETAIL_CODE = #{ detailCode }
+    </update>
     <!--회차별 상세 보고 삭제-->
     <delete id="deleteReportDetail" parameterType="Long">
         DELETE FROM TBL_REPORT_DETAIL
@@ -303,3 +315,10 @@
          WHERE REPLY_CODE = #{ replyCode }
     </delete>
 </mapper>
+
+        <!--    &lt;!&ndash;보고 회차명 중복 여부&ndash;&gt;-->
+        <!--    <select id="isRoundTitleExist" parameterType="HashMap" resultType="int">-->
+        <!--        SELECT COUNT(*)-->
+        <!--          FROM TBL_REPORT_ROUND-->
+        <!--         WHERE ROUND_TITLE = #{ roundTitle }-->
+        <!--    </select>-->

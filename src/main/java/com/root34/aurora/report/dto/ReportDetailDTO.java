@@ -1,5 +1,6 @@
 package com.root34.aurora.report.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,6 @@ import java.time.LocalDateTime;
 @Data
 public class ReportDetailDTO {
 
-    private LocalDateTime datetime;
-    private int second;
     /**
      * @variable detailCode 상세 보고 코드
      */
@@ -42,5 +41,6 @@ public class ReportDetailDTO {
     /**
      * @variable regDate 상세 보고 등록일
      */
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime regDate;
 }

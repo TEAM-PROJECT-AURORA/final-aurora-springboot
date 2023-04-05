@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -135,10 +134,10 @@ public class ReportService {
             throw new DataNotFoundException("해당 상세 보고의 작성자를 찾을 수 없습니다!");
         }
 
-        boolean isAuthor = (memberCode != detailReportAuthor);
-        log.info("[ReportService] isAuthor : " + isAuthor);
+        boolean isNotAuthor = (memberCode != detailReportAuthor);
+        log.info("[ReportService] isNotAuthor : " + isNotAuthor);
 
-        if(isAuthor) {
+        if(isNotAuthor) {
             throw new NotAuthorException("해당 상세 보고의 작성자가 아닙니다!");
         }
         log.info("[ReportService] isDetailReportAuthor Passed");
@@ -393,11 +392,20 @@ public class ReportService {
         reportRoundDTO.setCapacity(capacity);
         log.info("[ReportService] capacity : " + capacity);
 
-        LocalDate currentDate = LocalDate.now();
-        String roundTitle = currentDate + " 정기 보고";
-        reportRoundDTO.setRoundTitle(roundTitle);
-        log.info("[ReportService] RoundTitle : " + roundTitle);
+//        해당 날짜를 통해 제목을 자동 생성하려했는데 폐기
+//        LocalDate currentDate = LocalDate.now();
+//        String roundTitle = currentDate + " 정기 보고";
+//        reportRoundDTO.setRoundTitle(roundTitle);
+//        log.info("[ReportService] RoundTitle : " + roundTitle);
 
+//        HashMap<String, Object> parameter = new HashMap<>();
+//        parameter.put("roundTitle", roundTitle);
+//        parameter.put("roundCode", reportRoundDTO.getRoundCode());
+//
+//        if(reportMapper.isRoundTitleExist(parameter) > 0) {
+//
+////            roundTitle
+//        }
         int result = reportMapper.registerReportRound(reportRoundDTO);
         log.info("[ReportService] result : " + (result > 0));
 
@@ -406,6 +414,55 @@ public class ReportService {
         }
         updateReportReadStatusToUnread(reportRoundDTO.getReportCode());
 
+        return result > 0;
+    }
+
+    /**
+    	* @MethodName : updateReportRound
+    	* @Date : 2023-04-05
+    	* @Writer : 김수용
+    	* @Description : 보고 회차 수정
+    */
+    public boolean updateReportRound(ReportRoundDTO reportRoundDTO) {
+
+        log.info("[ReportService] updateReportRound Start");
+        log.info("[ReportService] reportRoundDTO : " + reportRoundDTO);
+
+        String reportType = reportMapper.selectReportType(reportRoundDTO.getReportCode());
+        log.info("[ReportService] reportType : " + reportType);
+
+        if(reportType == null) {
+            throw new NullPointerException("해당 보고서의 유형을 확인할 수 없습니다!");
+        } else if(reportType.equals("Casual")) {
+            throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
+        }
+
+        int result = reportMapper.updateReportRound(reportRoundDTO);
+        log.info("[ReportService] updateReportRound result : " + (result > 0));
+
+        if(result == 0) {
+            throw new CreationFailedException("보고 회차 수정 실패!");
+        }
+        return result > 0;
+    }
+
+    /**
+    	* @MethodName : deleteReportRound
+    	* @Date : 2023-04-05
+    	* @Writer : 김수용
+    	* @Description : 보고 회차 삭제
+    */
+    public boolean deleteReportRound(long roundCode) {
+
+        log.info("[ReportService] deleteReportRound Start");
+        log.info("[ReportService] roundCode : " + roundCode);
+
+        int result = reportMapper.deleteReportRound(roundCode);
+        log.info("[ReportService] deleteReportRound result : " + (result > 0));
+
+        if(result == 0) {
+            throw new CreationFailedException("보고 회차 삭제 실패!");
+        }
         return result > 0;
     }
 

@@ -37,11 +37,15 @@ public interface ReportMapper {
 
     List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 20개 조회
 
+    int updateReport(ReportDTO reportDTO); // 보고 수정
+
     int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
 
     int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
 
-    int updateReport(ReportDTO reportDTO); // 보고 수정
+    int updateReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 수정
+
+    int deleteReportRound(long roundCode); // 보고 회차 삭제
 
     int deleteReporter(Long reportCode); // 보고자 삭제
 
@@ -91,3 +95,4 @@ public interface ReportMapper {
 
     MemberDTO selectReporterDetail(int memberCode); // 보고자 정보 조회
 }
+//    int isRoundTitleExist(HashMap<String, Object> parameter); // 보고 회차명 중복 여부
