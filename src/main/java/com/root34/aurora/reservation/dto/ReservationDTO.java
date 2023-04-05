@@ -32,6 +32,10 @@ public class ReservationDTO {
     */
     private String memberName;
     /**
+    	* @variable 소속팀 코드 
+    */
+    private String teamCode;
+    /**
     	* @variable 소속팀명
     */
     private String teamName;

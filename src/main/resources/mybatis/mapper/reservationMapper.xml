@@ -28,7 +28,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM_NAME,
+            D.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
@@ -38,6 +38,8 @@
             ON A.ASSET_CODE = B.ASSET_CODE
           JOIN TBL_MEMBER C
             ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+            ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.MEMBER_CODE = #{ memberCode }
         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
@@ -47,7 +49,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM_NAME,
+            D.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
@@ -57,6 +59,8 @@
             ON A.ASSET_CODE = B.ASSET_CODE
           JOIN TBL_MEMBER C
             ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.RESERVATION_NO = #{ reservationNo }
     </select>
     <update id="updateReservation" parameterType="reservationDTO">
@@ -81,7 +85,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM_NAME,
+            D.TEAM_NAME,
             A.DESCRIPTION,
             DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
             DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
@@ -91,6 +95,8 @@
             ON A.ASSET_CODE = B.ASSET_CODE
           JOIN TBL_MEMBER C
             ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.ASSET_CODE = #{ assetCode }
            AND A.START_TIME >= #{ startTime }
            AND A.END_TIME <= #{ endTime }]]>
@@ -101,7 +107,7 @@
             A.ASSET_CODE,
             B.ASSET_NAME,
             C.MEMBER_NAME,
-            A.TEAM_NAME,
+            D.TEAM_NAME,
             A.DESCRIPTION,
             A.START_TIME,
             A.END_TIME,
@@ -111,6 +117,8 @@
             ON A.ASSET_CODE = B.ASSET_CODE
           JOIN TBL_MEMBER C
             ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.ASSET_CODE = #{ assetCode }
         <![CDATA[
            AND (A.START_TIME >= #{ startDateTime } AND A.START_TIME <= #{ endDateTime }
@@ -121,16 +129,19 @@
     </select>
     <select id="selectMemberInfoForRegister" parameterType="_int" resultType="memberDTO">
         SELECT
-            MEMBER_NAME,
-            TEAM_NAME
-          FROM TBL_MEMBER
+            A.MEMBER_NAME,
+            A.TEAM_CODE,
+            B.TEAM_NAME
+          FROM TBL_MEMBER A
+          JOIN TBL_TEAM B
+            ON A.TEAM_CODE = B.TEAM_CODE
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
     <insert id="insertReservation" parameterType="reservationDTO">
         INSERT INTO TBL_RESERVATION
-            (ASSET_CODE, MEMBER_CODE, TEAM_NAME, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
+            (ASSET_CODE, MEMBER_CODE, TEAM_CODE, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
         VALUES
-            (#{ assetCode }, #{ memberCode }, #{ teamName }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
+            (#{ assetCode }, #{ memberCode }, #{ teamCode }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
     </insert>
     <select id="selectTotalAssets" resultType="_int">
         SELECT
