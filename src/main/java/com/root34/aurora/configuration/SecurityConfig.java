@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/recipes-recommend/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/address-book/**").permitAll()
                 .antMatchers("/api/v1/members/**").permitAll()
+                .antMatchers("/api/v1/messenger-lists/**").permitAll()
                 // 메일
                 // 로그인 추가후 수정
 //                .antMatchers("/api/v1/mail/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
