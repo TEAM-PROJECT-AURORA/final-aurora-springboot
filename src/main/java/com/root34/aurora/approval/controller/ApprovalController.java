@@ -38,12 +38,12 @@ public class ApprovalController {
     	@Writer : heojaehong
     	@Description : 최근 리스트 조회
     */
-    @GetMapping("/approvals")
-    public ResponseEntity<ResponseDTO> lastList(){
+    @GetMapping("/approvals/{memberCode}")
+    public ResponseEntity<ResponseDTO> lastList(@PathVariable int memberCode){
 
         log.info("[ApprovalController] GetMapping lastList start ");
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.lastList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.lastList(memberCode)));
     }
 
     /**
@@ -66,13 +66,13 @@ public class ApprovalController {
      @Writer : heojaehong
      @Description : 미결재 리스트 조회
      */
-    @GetMapping("/approvals/pending")
-    public ResponseEntity<ResponseDTO> pendingList(){
+    @GetMapping("/approvals/pending/{memberCode}")
+    public ResponseEntity<ResponseDTO> pendingList(@PathVariable int memberCode){
 
         ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.pendingList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.pendingList(memberCode)));
     }
 
     /**
@@ -81,13 +81,13 @@ public class ApprovalController {
      @Writer : heojaehong
      @Description : 결재완료 리스트 조회
      */
-    @GetMapping("/approvals/completed")
-    public ResponseEntity<ResponseDTO> completedList(){
+    @GetMapping("/approvals/completed/{memberCode}")
+    public ResponseEntity<ResponseDTO> completedList(@PathVariable int memberCode){
 
         ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.completedList()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.completedList(memberCode)));
     }
 
     /**
