@@ -23,11 +23,15 @@ public class ApprovalDTO {
     private String appDescript;
     /**@Variable : 결재일*/
     private Date appDate;
+    /**@Variable : 시작일*/
+//    private Date startDate;
     /**@Variable : 종료일*/
     private Date appEndDate;
     /**@Variable : 확인여부
      * @주의 : 읽지 않은 상태는 n, 읽은 상태는 y*/
     private String appOpen;
+    /**@Variable : 결재승인*/
+//    private String appAuth;
     /**@Variable : 문서DTO*/
     private DocumentDTO documentDTO;
     /**@Variable : 사원DTO*/

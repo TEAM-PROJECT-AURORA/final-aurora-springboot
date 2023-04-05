@@ -13,21 +13,29 @@
         <result property="appOpen" column="APP_OPEN"/>
         <association property="documentDTO" resultMap="documentResultMap">
             <id property="docCode" column="DOC_CODE"/>
-            <result property="docName" column="DOC_NAME"/>
         </association>
         <association property="memberDTO" resultMap="memberResultMap">
             <id property="memberCode" column="MEMBER_CODE"/>
+            <result property="memberName" column="MEMBER_NAME"/>
+            <result property="memberId" column="MEMBER_ID"/>
+            <result property="memberEmail" column="MEMBER_EMAIL"/>
+            <result property="memberRole" column="MEMBER_ROLE"/>
         </association>
     </resultMap>
 
     <resultMap id="approvalLineResultMap" type="com.root34.aurora.approval.dto.ApprovalLineDTO">
         <id property="appLineCode" column="APP_LINE_CODE"/>
         <result property="appStatus" column="APP_STATUS"/>
+        <result property="appCode" column="APP_CODE"/>
         <association property="approvalDTO" resultMap="approvalResultMap">
             <id property="appCode" column="APP_CODE"/>
         </association>
-        <association property="memberDTO" resultMap="memberResultMap">
+        <association property="memberDTO" javaType="com.root34.aurora.member.dto.MemberDTO">
             <id property="memberCode" column="MEMBER_CODE"/>
+            <result property="memberName" column="MEMBER_NAME"/>
+        </association>
+        <association property="documentDTO" resultMap="documentResultMap">
+            <id property="docCode" column="DOC_CODE"/>
         </association>
     </resultMap>
 
@@ -45,12 +53,13 @@
         <result property="memberRole" column="MEMBER_ROLE"/>
     </resultMap>
 
-    <insert id="insertApprove" parameterType="com.root34.aurora.approval.dto.ApprovalDTO">
+    <insert id="insertApprove" parameterType="com.root34.aurora.approval.dto.ApprovalDTO" useGeneratedKeys="true" keyProperty="appCode">
         INSERT INTO TBL_APPROVAL
         (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_END_DATE, APP_OPEN)
         VALUES
             (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appEndDate },
              #{ appOpen } )
+
     </insert>
 
     <insert id="setLineApproval" parameterType="list">
@@ -72,35 +81,56 @@
         where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY) and ta.MEMBER_CODE = #{ memberCode }
     </select>
 
-    <select id="pendingList" resultType="ApprovalDTO">
-        select
-            ta.APP_TITLE ,
-            tal.APP_STATUS
+    <select id="pendingList" resultMap="approvalResultMap">
+        SELECT
+            *
         from TBL_APPROVAL ta
-                 join TBL_APPROVAL_LINE tal
-                      ON   (ta.APP_CODE = tal.APP_CODE)
-        where tal.APP_STATUS = 'N' and ta.MEMBER_CODE = #{ memberCode }
+                 JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
+                 JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
+        where ta.MEMBER_CODE = #{ memberCode }
     </select>
 
     <select id="detailApprove" resultMap="approvalResultMap">
         select
-            *
+            ta.*,
+            td.DOC_CODE,
+            tm.MEMBER_CODE,
+            tm.MEMBER_NAME,
+            tm.MEMBER_ID,
+            tm.MEMBER_EMAIL
         from TBL_APPROVAL ta
-        JOIN TBL_APPROVAL_LINE tal ON tal.APP_CODE = ta.APP_CODE
-        JOIN TBL_MEMBER tm ON tm.MEMBER_CODE = tal.MEMBER_CODE
+                 JOIN TBL_APPROVAL_LINE tal ON tal.APP_CODE = ta.APP_CODE
+                 JOIN TBL_MEMBER tm ON tm.MEMBER_CODE = tal.MEMBER_CODE
+                 JOIN TBL_DOCUMENT td ON td.DOC_CODE = ta.DOC_CODE
         where ta.APP_CODE = #{ appCode }
     </select>
 
     <select id="approvalLine" resultMap="approvalLineResultMap">
         select
-            *
+            tal.*,
+            tm.MEMBER_CODE,
+            tm.MEMBER_NAME,
+            ta.APP_CODE,
+            td.DOC_CODE
         from TBL_APPROVAL_LINE tal
                  JOIN TBL_APPROVAL ta ON tal.APP_CODE = ta.APP_CODE
                  JOIN TBL_MEMBER tm ON tm.MEMBER_CODE = tal.MEMBER_CODE
+                 JOIN TBL_DOCUMENT td ON td.DOC_CODE = ta.DOC_CODE
         where tal.APP_CODE = #{ appCode }
     </select>
 
-    <select id="completedList" resultType="ApprovalDTO">
+    <select id="approvalLineList" resultMap="approvalLineResultMap">
+        select
+            tal.APP_LINE_CODE, tal.APP_STATUS, tal.APP_CODE,
+            ta.*,
+            td.*
+        from TBL_APPROVAL_LINE tal
+                 JOIN TBL_APPROVAL ta ON tal.APP_CODE = ta.APP_CODE
+                 JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
+        where tal.MEMBER_CODE = #{ memberCode } and tal.APP_STATUS = 'n';
+    </select>
+
+    <select id="completedList" resultType="com.root34.aurora.approval.dto.ApprovalLineDTO">
         select
         *
         from TBL_APPROVAL ta
@@ -121,4 +151,11 @@
         delete from TBL_APPROVAL where APP_CODE = #{ appCode };
         delete from TBL_APPROVAL_LINE where APP_CODE = #{ appCode }
     </delete>
+
+    <update id="patchLineApproval" parameterType="ApprovalLineDTO">
+        update TBL_APPROVAL_LINE
+        set
+            APP_STATUS = #{appStatus}
+        where APP_CODE = #{appCode} AND MEMBER_CODE = #{memberDTO.memberCode}
+    </update>
 </mapper>

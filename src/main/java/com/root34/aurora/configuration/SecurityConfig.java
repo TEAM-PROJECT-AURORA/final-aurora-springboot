@@ -64,6 +64,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/auth/**").permitAll()// 로그인, 회원가입 api 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permit all
                 .antMatchers("/api/v1/approvals/**").permitAll()//
+                .antMatchers("/api/v1/recipes-recommend/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/address-book/**").permitAll()
+                .antMatchers("/api/v1/members/**").permitAll()
                 // 메일
                 // 로그인 추가후 수정
 //                .antMatchers("/api/v1/mail/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
@@ -88,7 +91,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000" ));// 해당 ip만 응답
 //        configuration.setAllowedOrigins(Arrays.asList("http://15.165.122.190:3000" ));// 해당 ip만 응답
 
-        configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE"));// 해당메소드만응답하겠다
+        configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE", "PATCH"));// 해당메소드만응답하겠다
         configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Content-Type", "Access-Control-Allow-Headers", "Authorization", "X-Requested-With"));// 해당 헤더의 응답만허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -21,5 +21,9 @@ public class ApprovalLineDTO {
     private int appCode;
     /**@Variable : 사원코드*/
     private MemberDTO memberDTO;
+    /**@Variable : 결재 DTO*/
+    private ApprovalDTO approvalDTO;
+    /**@Variable : 문서 DTO*/
+    private DocumentDTO documentDTO;
 
 }
