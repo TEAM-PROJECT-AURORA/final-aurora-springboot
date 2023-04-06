@@ -96,12 +96,19 @@ public class ApprovalController {
     	@Writer : heojaehong
     	@Description : 결재 상세정보 조회
     */
-    @GetMapping("/approvals/{appCode}")
+    @GetMapping("/approvals/detail/{appCode}")
     public ResponseEntity<ResponseDTO> detailApprove(@PathVariable int appCode){
 
         log.info("[ApprovalController] PathVariable detailApprove: " + appCode);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세정보 조회 성공", approvalService.detailApprove(appCode)));
+        Object detailApproval = approvalService.detailApprove(appCode);
+        Object approvalLine = approvalService.approvalLine(appCode);
+
+        Map<String, Object> approvalInfo = new HashMap<>();
+        approvalInfo.put("detailApproval", detailApproval);
+        approvalInfo.put("approvalLine", approvalLine);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "상세정보 조회 성공", approvalInfo));
     }
 
     /**

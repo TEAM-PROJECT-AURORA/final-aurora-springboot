@@ -51,22 +51,9 @@
 
     <select id="memberDetail" resultType="MemberDTO">
         SELECT
-               MEMBER_CODE,
-               DEPT_CODE,
-               JOB_CODE,
-               TASK_CODE,
-               TEAM,
-               MEMBER_NAME,
-               PHONE,
-               MEMBER_EMAIL,
-               BIRTHDAY,
-               ADDRESS,
-               STATUS,
-               MEMBER_HIRE_DATE,
-               MEMBER_END_DATE,
-               SIGNIFICANT,
-               INTRODUCTION
-          FROM TBL_MEMBER
+               *
+          FROM TBL_MEMBER tm
+          join TBL_JOB tj on tm.JOB_CODE = tj.JOB_CODE
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
 
