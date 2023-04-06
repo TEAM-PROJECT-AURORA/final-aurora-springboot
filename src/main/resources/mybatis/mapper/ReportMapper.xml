@@ -6,14 +6,14 @@
     <!--멤버 정보 조회-->
     <select id="selectReporterDetail" parameterType="Integer" resultType="MemberDTO">
         SELECT
-            A.MEMBER_CODE,
-            B.DEPT_NAME,
-            C.JOB_NAME,
-            A.MEMBER_NAME
-        FROM TBL_MEMBER A
-                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
-                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
-        WHERE A.MEMBER_CODE = #{ memberCode }
+               A.MEMBER_CODE,
+               B.DEPT_NAME,
+               C.JOB_NAME,
+               A.MEMBER_NAME
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
     </select>
     <!--보고서 등록-->
     <insert id="registerReport" parameterType="ReportDTO" useGeneratedKeys="true" keyProperty="reportCode">

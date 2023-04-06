@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +71,7 @@ public class ReportService {
         log.info("[ReportService] involvedMemberCodeList : " + involvedMemberCodeList);
 
         if(!involvedMemberCodeList.contains(memberCode)) {
+
             throw new NotInvolvedInReportException("보고 관련자가 아닙니다. 조회할 권한이 없습니다.");
         }
         log.info("[ReportService] verifyMemberReportAccess Passed");
@@ -263,7 +265,6 @@ public class ReportService {
             if(result == 0) {
                 throw new CreationFailedException("보고서 등록 실패!");
             }
-
             Long generatedPk = reportDTO.getReportCode();
             log.info("[ReportService] generatedPk : " + generatedPk);
 
@@ -337,7 +338,7 @@ public class ReportService {
         HashMap<String, Object> response = new HashMap<>();
 
         ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
-        response.put("ReportDTO", reportDTO);
+        response.put("reportDTO", reportDTO);
 
         // 보고자 목록(책임자 제외)
         List<Integer> memberList = reportMapper.selectMemberListInvolvedInReport(reportCode);
@@ -345,7 +346,14 @@ public class ReportService {
 
         if(reportDTO.getReportType().equals("Routine")) {
 
-            response.put("memberList", memberList);
+            List<MemberDTO> memberDTOList = new ArrayList<>();
+
+            for(int reporterMemberCode : memberList) {
+
+                MemberDTO memberDTO = reportMapper.selectReporterDetail(reporterMemberCode);
+                memberDTOList.add(memberDTO);
+            }
+            response.put("memberList", memberDTOList);
         } else {
 
             response.put("fileList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
@@ -650,9 +658,23 @@ public class ReportService {
         List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
         log.info("[ReportService] reportList : " + reportList);
 
-        for(ReportDTO report : reportList) {
+        if(searchConditions.get("reportType").equals("Routine")) {
 
-            report.setMemberDTO(reportMapper.selectReporterDetail(report.getMemberCode()));
+            for(ReportDTO routineReport : reportList) {
+
+                routineReport.setMemberDTO(reportMapper.selectReporterDetail(routineReport.getMemberCode()));
+            }
+        } else {
+
+            for(ReportDTO casualReport : reportList) {
+
+                List<Integer> repoterMemberCodeList = reportMapper.selectMemberListInvolvedInReport(casualReport.getReportCode());
+                repoterMemberCodeList.removeIf(reporterMemberCode -> reporterMemberCode == searchConditions.get("memberCode"));
+
+                MemberDTO reporterDTO = reportMapper.selectReporterDetail(repoterMemberCodeList.get(0));
+
+                casualReport.setMemberDTO(reporterDTO);
+            }
         }
         log.info("[ReportService] reportList : " + reportList);
 
