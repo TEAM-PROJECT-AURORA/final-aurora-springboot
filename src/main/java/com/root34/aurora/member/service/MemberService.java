@@ -2,7 +2,7 @@ package com.root34.aurora.member.service;
 
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -74,13 +74,24 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 사원의 상세 조회를 위한 매소드
      */
-    public MemberDTO memberDetail(Integer memberCode) {
+//    public MemberDTO memberDetail(Integer memberCode) {
+//
+//        log.info("[MemberService] memberDetail Start =========================");
+//        MemberDTO memberDTO = new MemberDTO();
+//        memberDTO.setMemberCode(memberCode);
+//
+//        MemberDTO result = memberMapper.memberDetail(memberDTO);
+//
+//        log.info("[MemberService] memberDetail End =============================");
+//        return result;
+//    }
+    public MemberDTO selectMemberDetail(int memberCode) {
 
         log.info("[MemberService] memberDetail Start =========================");
-        MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberCode(memberCode);
+//       MemberDTO memberDTO = new MemberDTO();
+//        memberDTO.setMemberCode(memberCode);
 
-        MemberDTO result = memberMapper.memberDetail(memberDTO);
+        MemberDTO result = memberMapper.selectMemberDetail(memberCode);
 
         log.info("[MemberService] memberDetail End =============================");
         return result;
@@ -196,5 +207,68 @@ public class MemberService {
         log.info("[MemberService] selectMemberListAboutTask End =============================");
 
         return memberListAboutTask;
+    }
+    /**
+    	@MethodName : selectJob
+    	@Date : 2023-04-01
+    	@Writer : 정근호
+    	@Description :
+    */
+    public List<JobDTO> selectJob() {
+
+        log.info("[MemberService] selectJob Start =========================");
+        List<JobDTO> selectJob = memberMapper.selectJob();
+        log.info("[MemberService] selectJob End =============================");
+
+        return selectJob;
+
+
+    }
+
+    /**
+     @MethodName : selectDept
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<DeptDTO> selectDept() {
+
+        log.info("[MemberService] selectDept Start =========================");
+        List<DeptDTO> selectDept = memberMapper.selectDept();
+        log.info("[MemberService] selectDept End =============================");
+
+        return selectDept;
+
+    }
+
+    /**
+     @MethodName : selectTask
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<TaskDTO> selectTask() {
+
+        log.info("[MemberService] selectTask Start =========================");
+        List<TaskDTO> selectTask = memberMapper.selectTask();
+        log.info("[MemberService] selectTask End =============================");
+
+        return selectTask;
+
+    }
+    /**
+     @MethodName : selectTeam
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<TeamDTO> selectTeam() {
+
+        log.info("[MemberService] selectTask Start =========================");
+        List<TeamDTO> selectTeam = memberMapper.selectTeam();
+        log.info("[MemberService] selectTask End =============================");
+
+        return selectTeam;
+
     }
 }

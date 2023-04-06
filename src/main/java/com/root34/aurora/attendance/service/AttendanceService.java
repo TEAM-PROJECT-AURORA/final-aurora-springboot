@@ -90,7 +90,12 @@ public class AttendanceService {
 		log.info("[AttendanceService] insertOffTime End ===================");
 	}
 
-
+	/**
+	 @MethodName : selectMonthTime
+	 @Date : 2023-03-24
+	 @Writer : 정근호
+	 @Description :
+	 */
 	public Map selectMonthTime(int memberCode) {
 
 		log.info("[AttendanceService] selectMonthTime Start ===================");
@@ -102,6 +107,34 @@ public class AttendanceService {
 		return selectMonthTimeTime;
 	}
 
+	/**
+	 @MethodName : selectWorkStatus
+	 @Date : 2023-04-05
+	 @Writer : 정근호
+	 @Description :
+	 */
+	public Map selectWorkStatus(int memberCode) {
 
+		log.info("[AttendanceService] selectWorkStatus Start ===================");
+		Map selectWorkStatus = attendanceMapper.selectWorkStatus(memberCode);
+		log.info("[memberCode]   :" + memberCode );
+		log.info("[selectWorkStatus]   :" + selectWorkStatus );
+		log.info("[AttendanceService] selectWorkStatus End ===================");
+
+		return selectWorkStatus;
+
+	}
+
+	public Map selectTimeByDay(int memberCode) {
+
+		log.info("[AttendanceService] selectTimeByDay Start ===================");
+		Map selectTimeByDay = attendanceMapper.selectTimeByDay(memberCode);
+		log.info("[memberCode]   :" + memberCode );
+		log.info("[selectTimeByDay]   :" + selectTimeByDay );
+		log.info("[AttendanceService] selectTimeByDay End ===================");
+
+		return selectTimeByDay;
+
+	}
 
 }
