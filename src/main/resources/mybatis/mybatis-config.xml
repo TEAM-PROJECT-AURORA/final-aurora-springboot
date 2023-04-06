@@ -18,11 +18,15 @@
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
 		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
 		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
+		<typeAlias alias="surveyDTO" type="com.root34.aurora.survey.dto.SurveyDTO"/>
+		<typeAlias alias="questionDTO" type="com.root34.aurora.survey.dto.QuestionDTO"/>
+		<typeAlias alias="choiceDTO" type="com.root34.aurora.survey.dto.ChoiceDTO"/>
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="addressBookMapper.xml" />
 		<mapper resource="reservationMapper.xml" />
 		<mapper resource="memberMapper.xml" />
+		<mapper resource="surveyMapper.xml" />
 	</mappers>
 </configuration>

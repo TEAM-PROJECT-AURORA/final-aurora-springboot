@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.survey.dao.SurveyMapper">
+    <insert id="insertSurvey" parameterType="surveyDTO" useGeneratedKeys="true" keyProperty="surveyCode">
+        INSERT INTO TBL_SURVEY
+            (SURVEY_SUBJECT, START_DATE, END_DATE)
+        VALUES
+            (#{ surveySubject }, DATE_FORMAT(#{ startDate }, '%Y-%m-%d'), DATE_FORMAT(#{ endDate }, '%Y-%m-%d'))
+    </insert>
+    <insert id="insertQuestions" parameterType="questionDTO" useGeneratedKeys="true" keyProperty="questionNo">
+        INSERT INTO TBL_SURVEY_QUESTION
+            (SURVEY_CODE, QUESTION_BODY)
+        VALUES
+            (#{ surveyCode }, #{ questionBody })
+    </insert>
+    <insert id="insertChoices" parameterType="ChoiceDTO">
+        INSERT INTO TBL_QUESTION_CHOICE
+            (QUESTION_NO, CHOICE_BODY)
+        VALUES
+            (#{ questionNo }, #{ choiceBody })
+    </insert>
+</mapper>
