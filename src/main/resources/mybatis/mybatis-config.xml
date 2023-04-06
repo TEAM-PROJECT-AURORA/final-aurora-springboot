@@ -5,7 +5,7 @@
 <configuration>
 	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 -->
 	<settings>
-		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여무 -->
+		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여부 -->
 		<setting name="callSettersOnNulls" value="true" />
 		<!-- null parameter 허용 -->
 		<setting name="jdbcTypeForNull" value="NULL" />
@@ -22,13 +22,14 @@
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
-<!--		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />-->
+		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
+		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="ReportDetailDTO" type="com.root34.aurora.report.dto.ReportDetailDTO" />
 		<typeAlias alias="ReportRoundReplyDTO" type="com.root34.aurora.report.dto.ReportRoundReplyDTO" />
 		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
 		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
-		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="messengerDTO" type="com.root34.aurora.messenger.dto.MessengerDTO"/>
 	</typeAliases>

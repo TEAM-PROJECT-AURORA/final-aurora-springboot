@@ -72,6 +72,7 @@ public class SecurityConfig {
                 // 로그인 추가후 수정
 //                .antMatchers("/api/v1/mail/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
                 .antMatchers("/api/v1/mail/**").permitAll() // 메일 누구나 접근 가능
+                .antMatchers(("/api/v1/hrm/**")).permitAll()
                 .antMatchers("/api/v1/report/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
 //                .antMatchers("/api/v1/reports/**").permitAll() // 메일 누구나 접근 가능
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN", "MANAGER")// 나머지 api 는 전부 인증 필요

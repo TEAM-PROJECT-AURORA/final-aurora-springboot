@@ -5,14 +5,16 @@ import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.*;
 import com.root34.aurora.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  @ClassName : MemberController
@@ -74,7 +76,22 @@ public class MemberController {
     @GetMapping("/hrm/{memberCode}")
     public ResponseEntity<ResponseDTO> memberDetail(@PathVariable Integer memberCode) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", memberService.memberDetail(memberCode)));
+
+
+        List<DeptDTO> selectDept = memberService.selectDept();
+        List<JobDTO> selectJob = memberService.selectJob();
+        Map map = new HashMap();
+        if(memberCode != null) {
+            MemberDTO memberDTO = memberService.selectMemberDetail(memberCode);
+            map.put("memberDTO", memberDTO);
+        }
+
+        map.put("selectJob", selectJob);
+        map.put("selectDept", selectDept);
+        log.info("[memberService(map))]" + map);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", map));
     }
 
     /**
@@ -115,7 +132,8 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutName( search, selectCriteria));
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" , memberService.selectMemberListAboutName(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" ,responseDTOWithPaging ));
+//        memberService.selectMemberListAboutName(search, selectCriteria)
 
     }
 
@@ -150,7 +168,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutEmail( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutEmail(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutEmail(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
     }
 
     /**
@@ -176,7 +194,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutDept( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutDept(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutDept(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
 
     }
 
@@ -203,7 +221,7 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutJob( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutJob(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutJob(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     }
 
@@ -230,6 +248,34 @@ public class MemberController {
         responseDTOWithPaging.setData(memberService.selectMemberListAboutTask( search, selectCriteria));
 
         log.info("[memberService.selectMemberListAboutTask(search))]" + search);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMemberListAboutTask(search, selectCriteria)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공",responseDTOWithPaging));
     }
+
+    /**
+    	@MethodName : selectCode
+    	@Date : 2023-04-03
+    	@Writer : 정근호
+    	@Description :
+    */
+    @GetMapping("/hrm/code")
+    public ResponseEntity<ResponseDTO> selectCode() {
+
+        List<DeptDTO> selectDept = memberService.selectDept();
+        List<JobDTO> selectJob = memberService.selectJob();
+        List<TaskDTO> selectTask = memberService.selectTask();
+        List<TeamDTO> selectTeam = memberService.selectTeam();
+
+        Map map = new HashMap();
+        map.put("selectJob", selectJob);
+        map.put("selectDept", selectDept);
+        map.put("selectTask", selectTask);
+        map.put("selectTeam", selectTeam);
+        log.info("[memberService(map))]" + map);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"조회 성공", map));
+    }
+
+
 }
+
