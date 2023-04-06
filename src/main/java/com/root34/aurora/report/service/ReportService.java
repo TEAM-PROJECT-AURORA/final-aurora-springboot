@@ -280,6 +280,7 @@ public class ReportService {
             log.info("[ReportService] memberCount : " + memberCount);
 
             if(memberCount == 0) {
+
                 throw new CreationFailedException("보고자가 등록되지않았습니다!");
             }
             if(fileList != null) {
@@ -320,6 +321,43 @@ public class ReportService {
     }
 
     /**
+     * @MethodName : selectReportDetailByReportCode
+     * @Date : 2023-03-27
+     * @Writer : 김수용
+     * @Description : 보고 상세 조회
+     */
+    public HashMap<String, Object> selectReportDetailByReportCode(int memberCode, Long reportCode) {
+
+        log.info("[ReportService] selectReportDetailByReportCode Start");
+        log.info("[ReportService] memberCode : " + memberCode);
+        log.info("[ReportService] reportCode : " + reportCode);
+
+        verifyMemberReportAccess(memberCode, reportCode);
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
+        response.put("ReportDTO", reportDTO);
+
+        // 보고자 목록(책임자 제외)
+        List<Integer> memberList = reportMapper.selectMemberListInvolvedInReport(reportCode);
+        memberList.removeIf(reporterMemberCode -> reporterMemberCode == memberCode);
+
+        if(reportDTO.getReportType().equals("Routine")) {
+
+            response.put("memberList", memberList);
+        } else {
+
+            response.put("fileList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
+            response.put("reporterDetail", reportMapper.selectReporterDetail(memberList.get(0)));
+        }
+
+        log.info("[ReportService] selectReportDetailByReportCode response : " + response);
+
+        return response;
+    }
+
+    /**
     	* @MethodName : getReportSummary
     	* @Date : 2023-03-23
     	* @Writer : 김수용
@@ -338,13 +376,9 @@ public class ReportService {
         for(int i = 0; i < recentRoutineReportCodeList.size(); i++) {
 
             ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(recentRoutineReportCodeList.get(i));
-//            String reportTitle = "routineReportTitle" + (i + 1);
             response.put("routineReportDTO" + (i + 1), reportDTO);
         }
 
-//        if(recentRoutineReportCodeList.isEmpty()) {
-//            throw new DataNotFoundException("조회된 정기보고가 없습니다!");
-//        }
         HashMap<String, Object> searchConditions = new HashMap<>();
         searchConditions.put("memberCode", memberCode);
         searchConditions.put("reportType", "Routine");
@@ -362,9 +396,6 @@ public class ReportService {
         response.put("casualList", casualList);
         log.info("[ReportService] casualList : " + casualList);
 
-//        if(casualList.isEmpty()) {
-//            throw new DataNotFoundException("조회된 비정기보고가 없습니다!");
-//        }
         return response;
     }
 
@@ -717,34 +748,6 @@ public class ReportService {
         result.put("memberDTO", memberDTO);
 
         return result;
-    }
-
-    /**
-    	* @MethodName : selectCasualReportDetailByReportCode
-    	* @Date : 2023-03-27
-    	* @Writer : 김수용
-    	* @Description : 비정기보고 상세 조회
-    */
-    public HashMap<String, Object> selectCasualReportDetailByReportCode(int memberCode, Long reportCode) {
-
-        log.info("[ReportService] selectCasualReportDetailByReportCode Start");
-        log.info("[ReportService] memberCode : " + memberCode);
-        log.info("[ReportService] reportCode : " + reportCode);
-
-        verifyMemberReportAccess(memberCode, reportCode);
-
-        if(reportMapper.selectReportType(reportCode) == "Routine") {
-            throw new InvalidReportTypeException("해당 보고서는 비정기보고가 아닙니다!");
-        }
-
-        updateReportReadStatusToRead(memberCode, reportCode);
-
-        HashMap<String, Object> response = new HashMap<>();
-        response.put("ReportDTO", reportMapper.selectReportDetailByReportCode(reportCode));
-        response.put("attachmentList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
-        log.info("[ReportService] selectCasualReportDetailByReportCode response : " + response);
-
-        return response;
     }
 
     /**

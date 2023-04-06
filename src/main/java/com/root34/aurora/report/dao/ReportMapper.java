@@ -25,6 +25,8 @@ public interface ReportMapper {
 
     int registerFileWithReportCode(FileDTO fileDTO); // 보고_첨부파일 등록
 
+    List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 첨부파일 목록 조회
+
     int registerReporter(HashMap<String, Object> parameter); // 보고자 등록
 
     int getReportCount(HashMap<String, Object> searchConditions); // 조건별 보고 갯수 조회
@@ -60,8 +62,6 @@ public interface ReportMapper {
     ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
 
     ReportDTO selectReportDetailByReportCode(Long reportCode); // 보고 상세 조회
-
-    List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
 
     int updateReportCompletionStatus(HashMap<String, Object> parameter); // 보고 완료상태 수정
 

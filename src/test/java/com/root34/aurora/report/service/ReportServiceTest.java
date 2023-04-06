@@ -342,7 +342,7 @@ public class ReportServiceTest {
         long reportCode = 1L;
 
         // when
-        HashMap<String ,Object> result = reportService.selectCasualReportDetailByReportCode(memberCode, reportCode);
+        HashMap<String ,Object> result = reportService.selectReportDetailByReportCode(memberCode, reportCode);
 
         // then
         assertNotNull(result);
