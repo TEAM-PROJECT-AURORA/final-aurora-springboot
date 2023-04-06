@@ -1,8 +1,9 @@
 package com.root34.aurora.report.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
 	@ClassName : ReportRoundReplyDTO
@@ -36,7 +37,8 @@ public class ReportRoundReplyDTO {
     /**
      * @variable regDate 보고 댓글 등록일
      */
-    private Date regDate;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
+    private LocalDateTime regDate;
     /**
      * @variable deleteStatus 삭제 상태
      */
