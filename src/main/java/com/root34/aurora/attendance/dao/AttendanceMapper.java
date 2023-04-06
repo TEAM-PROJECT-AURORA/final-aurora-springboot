@@ -20,7 +20,11 @@ public interface AttendanceMapper {
 
 	void insertOffTime(LocalDateTime offTime, int memberCode);
 
+	Map selectWorkStatus(int memberCode);
+
 	Map selectTime(int memberCode);
+
+	Map selectTimeByDay(int memberCode);
 
 	Map selectMonthTime(int MemberCode);
 
