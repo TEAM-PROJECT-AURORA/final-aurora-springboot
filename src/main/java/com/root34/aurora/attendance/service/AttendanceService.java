@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -125,10 +126,10 @@ public class AttendanceService {
 
 	}
 
-	public Map selectTimeByDay(int memberCode) {
+	public Map selectTimeByDay(int memberCode, LocalDate attRegDate) {
 
 		log.info("[AttendanceService] selectTimeByDay Start ===================");
-		Map selectTimeByDay = attendanceMapper.selectTimeByDay(memberCode);
+		Map selectTimeByDay = attendanceMapper.selectTimeByDay(memberCode, attRegDate);
 		log.info("[memberCode]   :" + memberCode );
 		log.info("[selectTimeByDay]   :" + selectTimeByDay );
 		log.info("[AttendanceService] selectTimeByDay End ===================");

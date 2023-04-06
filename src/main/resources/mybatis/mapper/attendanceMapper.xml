@@ -70,7 +70,7 @@
                MEMBER_CODE,
                SUM(worked_minutes) AS total_worked_minutes,
                SUM(IF(worked_minutes > (9 * 60), worked_minutes - (9 * 60), 0)) AS extra_worked_minutes,
-               SUM(IF(worked_minutes < (9 * 60), (9 * 60) - worked_minutes, 0)) AS remaining_minutes,
+               SUM(IF(worked_minutes < (9 * 60) AND work_date < CURDATE(), (9 * 60) - worked_minutes, 0)) AS remaining_minutes,
                SUM(IF(work_week = YEARWEEK(CURDATE(), 1), worked_minutes, 0)) AS worked_minutes_this_week,
                SUM(IF(work_month = MONTH(CURDATE()) AND work_year = YEAR(CURDATE()), worked_minutes, 0)) AS worked_minutes_this_month
           FROM (
@@ -83,6 +83,7 @@
                         YEARWEEK(OFF_TIME, 1) AS work_week
                    FROM TBL_ATTENDANCE
          WHERE (YEARWEEK(OFF_TIME, 1) = YEARWEEK(CURDATE(), 1)) OR (MONTH(OFF_TIME) = MONTH(CURDATE()) AND YEAR(OFF_TIME) = YEAR(CURDATE()))
+           AND DAYOFWEEK(OFF_TIME) NOT IN (1, 7)
             ) AS daily_worked_minutes
       GROUP BY MEMBER_CODE;
         ]]>

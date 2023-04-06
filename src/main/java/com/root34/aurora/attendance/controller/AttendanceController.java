@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 /**
 	@ClassName : AttendanceController
 	@Date : 2023-03-23
@@ -109,17 +111,17 @@ public class AttendanceController {
 	}
 
 	/**
-	 @MethodName : selectWorkStatus
-	 @Date : 2023-04-05
+	 @MethodName : selectTimeByDay
+	 @Date : 2023-04-06
 	 @Writer : 정근호
 	 @Description :
 	 */
 	@GetMapping("/attendance/time-day/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectTimeByDay(@PathVariable int memberCode) {
+	public ResponseEntity<ResponseDTO> selectTimeByDay(@PathVariable int memberCode , @RequestParam LocalDate attRegDate) {
 
-		attendanceService.selectTimeByDay(memberCode);
+		attendanceService.selectTimeByDay(memberCode ,attRegDate);
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", attendanceService.selectTimeByDay(memberCode)));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", attendanceService.selectTimeByDay(memberCode, attRegDate)));
 	}
 
 

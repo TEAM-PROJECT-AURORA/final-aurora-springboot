@@ -2,6 +2,7 @@ package com.root34.aurora.attendance.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public interface AttendanceMapper {
 
 	Map selectTime(int memberCode);
 
-	Map selectTimeByDay(int memberCode);
+	Map selectTimeByDay(int memberCode , LocalDate attRegDate);
 
 	Map selectMonthTime(int MemberCode);
 
