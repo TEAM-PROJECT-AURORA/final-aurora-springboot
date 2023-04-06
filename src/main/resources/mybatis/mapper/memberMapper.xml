@@ -5,13 +5,13 @@
 <mapper namespace="com.root34.aurora.member.dao.MemberMapper">
     <insert id="insertMember" parameterType="memberDTO">
         INSERT INTO TBL_MEMBER
-            (MEMBER_CODE, DEPT_CODE, JOB_CODE, TASK_CODE, MEMBER_NAME, MEMBER_ID, MEMBER_PWD, MEMBER_EMAIL, ADDRESS,
-             GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY, TEAM,
+            (MEMBER_CODE, DEPT_CODE, JOB_CODE, TASK_CODE, TEAM_CODE, MEMBER_NAME, MEMBER_ID, MEMBER_PWD, MEMBER_EMAIL, ADDRESS,
+             GENDER, MEMBER_ROLE, MEMBER_HIRE_DATE, MEMBER_END_DATE, INTRODUCTION,SIGNIFICANT , STATUS, BIRTHDAY,
              FILE_CODE, PHONE)
         VALUES
-            ( NULL, #{ deptCode }, #{ jobCode }, #{ taskCode }, #{ memberName }, #{ memberId }, #{ memberPWD }, #{ memberEmail },
+            ( NULL, #{ deptCode }, #{ jobCode }, #{ taskCode },#{ teamCode }, #{ memberName }, #{ memberId }, #{ memberPWD }, #{ memberEmail },
              #{ address }, #{ gender }, DEFAULT, DEFAULT, #{ memberEndDate }, #{ introduction }, #{ significant }, DEFAULT,
-             #{ birthDay }, #{ team }, #{ fileCode }, #{ phone } )
+             #{ birthDay }, #{ fileCode }, #{ phone } )
 
     </insert>
 
@@ -36,38 +36,53 @@
 
     <select id="memberList" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            ADDRESS,
-            MEMBER_HIRE_DATE,
-            STATUS
-          FROM TBL_MEMBER
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            A.ADDRESS,
+            A.MEMBER_HIRE_DATE,
+            A.STATUS
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
     </select>
 
-    <select id="memberDetail" resultType="MemberDTO">
+    <select id="selectMemberDetail" parameterType="int" resultType="MemberDTO">
         SELECT
-               MEMBER_CODE,
-               DEPT_CODE,
-               JOB_CODE,
-               TASK_CODE,
-               TEAM,
-               MEMBER_NAME,
-               PHONE,
-               MEMBER_EMAIL,
-               BIRTHDAY,
-               ADDRESS,
-               STATUS,
-               MEMBER_HIRE_DATE,
-               MEMBER_END_DATE,
-               SIGNIFICANT,
-               INTRODUCTION
-          FROM TBL_MEMBER
-         WHERE MEMBER_CODE = #{ memberCode }
+               A.MEMBER_ID,
+               A.MEMBER_CODE,
+               A.DEPT_CODE,
+               B.DEPT_NAME,
+               A.JOB_CODE,
+               C.JOB_NAME,
+               A.TASK_CODE,
+               D.TASK_NAME,
+               A.TEAM_CODE,
+               E.TEAM_NAME,
+               A.MEMBER_NAME,
+               A.PHONE,
+               A.MEMBER_EMAIL,
+               DATE_FORMAT( A.BIRTHDAY, '%Y-%m-%d') AS BIRTHDAY,
+               A.ADDRESS,
+               A.STATUS,
+               A.MEMBER_HIRE_DATE,
+               A.MEMBER_END_DATE,
+               A.SIGNIFICANT,
+               A.INTRODUCTION
+          FROM TBL_MEMBER A
+                   JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                   JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                   JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
+                   JOIN TBL_TEAM E ON A.TEAM_CODE = E.TEAM_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
     </select>
 
     <select id="findByMemberId" resultType="MemberDTO">
@@ -84,7 +99,7 @@
                PHONE = #{ phone },
                JOB_CODE = #{ jobCode },
                TASK_CODE = #{ taskCode },
-               TEAM = #{ team },
+               TEAM_CODE = #{ teamCode },
                ADDRESS = #{ address },
                STATUS = #{ status },
                MEMBER_END_DATE = #{ memberEndDate },
@@ -99,102 +114,160 @@
 
     <select id="selectMemberListAboutName" resultType="MemberDTO">
         SELECT
-                MEMBER_CODE,
-                MEMBER_NAME,
-                PHONE,
-                MEMBER_EMAIL,
-                DEPT_CODE,
-                JOB_CODE,
-                TASK_CODE,
-                ADDRESS,
-                MEMBER_HIRE_DATE,
-                STATUS
+                A.MEMBER_CODE,
+                A.MEMBER_NAME,
+                A.PHONE,
+                A.MEMBER_EMAIL,
+                A.DEPT_CODE,
+                B.DEPT_NAME,
+                A.JOB_CODE,
+                C.JOB_NAME,
+                A.TASK_CODE,
+                D.TASK_NAME,
+                A.ADDRESS,
+                A.MEMBER_HIRE_DATE,
+                A.STATUS
 
-          FROM TBL_MEMBER
+          FROM TBL_MEMBER A
+                   JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                   JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                   JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-         WHERE MEMBER_NAME LIKE CONCAT ('%', #{ search } ,'%')
-           AND STATUS = '재직'
-      ORDER BY MEMBER_CODE
+        WHERE A.MEMBER_NAME LIKE CONCAT ('%', #{ search } ,'%')
+           AND A.STATUS = '재직'
+      ORDER BY A.MEMBER_CODE
     </select>
 
     <select id="selectMemberListAboutEmail" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            ADDRESS,
-            MEMBER_HIRE_DATE,
-            STATUS
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            A.ADDRESS,
+            A.MEMBER_HIRE_DATE,
+            A.STATUS
 
-        FROM TBL_MEMBER
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE MEMBER_EMAIL LIKE CONCAT ('%', #{ search } ,'%')
-          AND STATUS = '재직'
-        ORDER BY MEMBER_CODE
+        WHERE A.MEMBER_EMAIL LIKE CONCAT ('%', #{ search } ,'%')
+          AND A.STATUS = '재직'
+        ORDER BY A.MEMBER_CODE
     </select>
 
     <select id="selectMemberListAboutDept" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            ADDRESS,
-            MEMBER_HIRE_DATE,
-            STATUS
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            A.ADDRESS,
+            A.MEMBER_HIRE_DATE,
+            A.STATUS
 
-        FROM TBL_MEMBER
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE DEPT_CODE LIKE CONCAT ('%', #{ search } ,'%')
-          AND STATUS = '재직'
-        ORDER BY MEMBER_CODE
+        WHERE A.DEPT_CODE LIKE CONCAT ('%', #{ search } ,'%')
+          AND A.STATUS = '재직'
+        ORDER BY A.MEMBER_CODE
     </select>
 
     <select id="selectMemberListAboutJob" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            ADDRESS,
-            MEMBER_HIRE_DATE,
-            STATUS
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            A.ADDRESS,
+            A.MEMBER_HIRE_DATE,
+            A.STATUS
 
-        FROM TBL_MEMBER
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE JOB_CODE LIKE CONCAT ('%', #{ search } ,'%')
-          AND STATUS = '재직'
-        ORDER BY MEMBER_CODE
+        WHERE A.JOB_CODE LIKE CONCAT ('%', #{ search } ,'%')
+          AND A.STATUS = '재직'
+        ORDER BY A.MEMBER_CODE
     </select>
 
     <select id="selectMemberListAboutTask" resultType="MemberDTO">
         SELECT
-            MEMBER_CODE,
-            MEMBER_NAME,
-            PHONE,
-            MEMBER_EMAIL,
-            DEPT_CODE,
-            JOB_CODE,
-            TASK_CODE,
-            ADDRESS,
-            MEMBER_HIRE_DATE,
-            STATUS
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            A.ADDRESS,
+            A.MEMBER_HIRE_DATE,
+            A.STATUS
 
-        FROM TBL_MEMBER
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE TASK_CODE LIKE CONCAT ('%', #{ search } ,'%')
-          AND STATUS = '재직'
-        ORDER BY MEMBER_CODE
+        WHERE A.TASK_CODE LIKE CONCAT ('%', #{ search } ,'%')
+          AND A.STATUS = '재직'
+        ORDER BY A.MEMBER_CODE
+    </select>
+
+    <select id="selectJob" resultType="JobDTO">
+        SELECT
+              *
+        FROM TBL_JOB
+
+    </select>
+
+    <select id="selectDept" resultType="DeptDTO">
+        SELECT
+            *
+        FROM TBL_DEPARTMENT
+
+    </select>
+
+    <select id="selectTask" resultType="TaskDTO">
+        SELECT
+            *
+        FROM TBL_TASK
+
+    </select>
+
+    <select id="selectTeam" resultType="TeamDTO">
+        SELECT
+            *
+        FROM TBL_TEAM
+
     </select>
 
 

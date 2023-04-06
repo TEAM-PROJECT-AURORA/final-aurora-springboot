@@ -10,7 +10,8 @@
 
           FROM TBL_VACATION
          WHERE MEMBER_CODE = #{ memberCode }
-           AND VACATION_NO = #{ vacationNo }
+      ORDER BY VACATION_NO DESC
+        LIMIT 1
 
     </select>
 

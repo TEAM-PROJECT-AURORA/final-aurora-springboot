@@ -1,7 +1,7 @@
 package com.root34.aurora.member.dao;
 
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -27,7 +27,17 @@ public interface MemberMapper {
 
     List<MemberDTO> memberList(SelectCriteria selectCriteria);
 
-    MemberDTO memberDetail(MemberDTO memberCode);
+    //MemberDTO memberDetail(MemberDTO memberCode);
+
+    MemberDTO selectMemberDetail(int memberCode);
+
+    List<JobDTO> selectJob();
+
+    List<DeptDTO> selectDept();
+    List<TaskDTO> selectTask();
+
+    List<TeamDTO> selectTeam();
+
 
     int selectMemberTotal();
 
