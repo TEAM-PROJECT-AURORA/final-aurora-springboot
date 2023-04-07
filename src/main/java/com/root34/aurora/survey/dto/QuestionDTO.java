@@ -29,6 +29,8 @@ public class QuestionDTO {
         * @variable 질문 내용
      */
     String questionBody;
-
+    /**
+    	* @variable 선택지 리스트 
+    */
     List<ChoiceDTO> choices;
 }

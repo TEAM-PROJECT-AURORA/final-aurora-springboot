@@ -54,10 +54,10 @@
             A.START_DATE,
             A.END_DATE,
             IFNULL((SELECT
-                 D.REPLY_STATUS
-               FROM TBL_SURVEY_REPLY_STATE D
-              WHERE D.SURVEY_CODE = A.SURVEY_CODE
-                AND D.MEMBER_CODE = #{ searchValue }), 'N') AS REPLY_STATUS,
+                        D.REPLY_STATUS
+                      FROM TBL_SURVEY_REPLY_STATE D
+                     WHERE D.SURVEY_CODE = A.SURVEY_CODE
+                       AND D.MEMBER_CODE = #{ searchValue }), 'N') AS REPLY_STATUS,
             B.QUESTION_NO,
             B.QUESTION_BODY,
             C.CHOICE_NO,
@@ -68,7 +68,6 @@
          INNER JOIN TBL_QUESTION_CHOICE C
             ON B.QUESTION_NO = C.QUESTION_NO
          ORDER BY A.SURVEY_CODE DESC
-         LIMIT #{ startRow }, #{ limit }
     </select>
     <select id="selectReplyStatus" parameterType="map" resultType="String">
         SELECT
@@ -102,6 +101,5 @@
        WHERE A.SURVEY_SUBJECT LIKE CONCAT('%',#{ searchValue },'%')
    </if>
        ORDER BY A.SURVEY_CODE DESC
-       LIMIT #{ startRow }, #{ limit }
     </select>
 </mapper>

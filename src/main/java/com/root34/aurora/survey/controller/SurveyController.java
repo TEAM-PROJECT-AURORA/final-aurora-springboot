@@ -62,7 +62,7 @@ public class SurveyController {
         responseDtoWithPaging.setPageInfo(selectCriteria);
 
         responseDtoWithPaging.setData(surveyService.selectAllSurveysWithPaging(selectCriteria));
-
+        log.info("[SurveyController] surveyService.selectAllSurveysWithPaging(selectCriteria : " + surveyService.selectAllSurveysWithPaging(selectCriteria));
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
     }
 

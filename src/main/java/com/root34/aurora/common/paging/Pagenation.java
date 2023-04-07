@@ -27,7 +27,7 @@ public class Pagenation {
         }
 
         startRow = (pageNo - 1) * limit;
-        endRow = startRow + limit - 1;
+        endRow = startRow + limit;
 
         System.out.println("startRow : " + startRow);
         System.out.println("endRow : " + endRow);
@@ -84,8 +84,8 @@ public class Pagenation {
         }
 
         /* 조회할 시작 번호와 마지막 행 번호를 계산한다. */
-        startRow = (pageNo - 1) * limit + 1;
-        endRow = startRow + limit - 1;
+        startRow = (pageNo - 1) * limit;
+        endRow = startRow + limit;
 
         System.out.println("startRow : " + startRow);
         System.out.println("endRow : " + endRow);

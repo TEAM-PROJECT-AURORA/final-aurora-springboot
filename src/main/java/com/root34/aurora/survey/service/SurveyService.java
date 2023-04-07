@@ -1,6 +1,7 @@
 package com.root34.aurora.survey.service;
 
 import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.common.paging.SurveyPaging;
 import com.root34.aurora.survey.dao.SurveyMapper;
 import com.root34.aurora.survey.dto.ChoiceDTO;
 import com.root34.aurora.survey.dto.QuestionDTO;
@@ -57,10 +58,11 @@ public class SurveyService {
     public List<SurveyDTO> selectAllSurveysWithPaging(SelectCriteria selectCriteria) {
 
         log.info("[SurveyService] selectAllSurveysWithPaging Start ===================================");
-        List<SurveyDTO> surveyDTOS = surveyMapper.selectAllSurveysWithPaging(selectCriteria);
-
+        List<SurveyDTO> surveyDTOs = surveyMapper.selectAllSurveysWithPaging(selectCriteria);
+        log.info("[SurveyService] selectAllSurveysWithPaging Paging Start ===================================");
+        List<SurveyDTO> surveyDTOsWithPaging = SurveyPaging.applyPaging(surveyDTOs, selectCriteria);
         log.info("[SurveyService] selectAllSurveysWithPaging End ===================================");
-        return surveyDTOS;
+        return surveyDTOsWithPaging;
     }
 
     public String selectReplyStatus(Map map) {
@@ -75,9 +77,10 @@ public class SurveyService {
     public List<SurveyDTO> selectAllSurveysForManagementWithPaging(SelectCriteria selectCriteria) {
 
         log.info("[SurveyService] selectAllSurveysForManagementWithPaging Start ===================================");
-        List<SurveyDTO> surveyDTOS = surveyMapper.selectAllSurveysForManagementWithPaging(selectCriteria);
-
+        List<SurveyDTO> surveyDTOs = surveyMapper.selectAllSurveysForManagementWithPaging(selectCriteria);
+        log.info("[SurveyService] selectAllSurveysWithPaging Paging Start ===================================");
+        List<SurveyDTO> surveyDTOsWithPaging = SurveyPaging.applyPaging(surveyDTOs, selectCriteria);
         log.info("[SurveyService] selectAllSurveysForManagementWithPaging End ===================================");
-        return surveyDTOS;
+        return surveyDTOsWithPaging;
     }
 }
