@@ -71,4 +71,13 @@ public class SurveyService {
         log.info("[SurveyService] selectReplyStatus End ===================================");
         return replyStatus == null? "미답변":replyStatus;
     }
+
+    public List<SurveyDTO> selectAllSurveysForManagementWithPaging(SelectCriteria selectCriteria) {
+
+        log.info("[SurveyService] selectAllSurveysForManagementWithPaging Start ===================================");
+        List<SurveyDTO> surveyDTOS = surveyMapper.selectAllSurveysForManagementWithPaging(selectCriteria);
+
+        log.info("[SurveyService] selectAllSurveysForManagementWithPaging End ===================================");
+        return surveyDTOS;
+    }
 }

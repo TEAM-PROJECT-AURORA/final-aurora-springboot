@@ -13,13 +13,28 @@ import java.util.List;
 @Data
 public class SurveyDTO {
 
+    /**
+    	* @variable 설문 코드 
+    */
     String surveyCode;
-
+    /**
+    	* @variable 설문 주제 
+    */
     String surveySubject;
-
+    /**
+    	* @variable 시작일 
+    */
     String startDate;
-
+    /**
+    	* @variable 종료일 
+    */
     String endDate;
-
+    /**
+    	* @variable 답변 상태 
+    */
+    String replyStatus;
+    /**
+    	* @variable 문항 리스트
+    */
     List<QuestionDTO> questions;
 }

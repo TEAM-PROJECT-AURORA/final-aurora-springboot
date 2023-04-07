@@ -23,4 +23,6 @@ public interface SurveyMapper {
     List<SurveyDTO> selectAllSurveysWithPaging(SelectCriteria selectCriteria);
 
     String selectReplyStatus(Map map);
+
+    List<SurveyDTO> selectAllSurveysForManagementWithPaging(SelectCriteria selectCriteria);
 }

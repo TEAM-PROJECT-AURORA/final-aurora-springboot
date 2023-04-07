@@ -45,8 +45,8 @@ public class SurveyController {
     	* @Writer : 오승재
     	* @Description : 페이징 처리한 모든 설문 조회
     */
-    @GetMapping("survey/surveys")
-    public ResponseEntity<ResponseDTO> selectAllSurveysWithPaging(@RequestParam(name="offset", defaultValue="1") String offset) {
+    @GetMapping("survey/surveys/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectAllSurveysWithPaging(@RequestParam(name="offset", defaultValue="1") String offset, @PathVariable Integer memberCode) {
 
         log.info("[SurveyController] selectAllSurveysWithPaging : " + offset);
 
@@ -55,16 +55,17 @@ public class SurveyController {
         int buttonAmount = 5;
 
         SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
-
+        selectCriteria.setSearchValue(memberCode.toString());
         log.info("[SurveyController] selectCriteria : " + selectCriteria);
 
         ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
         responseDtoWithPaging.setPageInfo(selectCriteria);
+
         responseDtoWithPaging.setData(surveyService.selectAllSurveysWithPaging(selectCriteria));
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "검색 조회 성공", responseDtoWithPaging));
     }
-    
+
     /**
     	* @MethodName : selectReplyStatus
     	* @Date : 2023-04-07
@@ -80,5 +81,30 @@ public class SurveyController {
         map.put("memberCode", memberCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "답변 상태 조회 성공", surveyService.selectReplyStatus(map)));
+    }
+
+    @GetMapping("survey/surveys-management")
+    public ResponseEntity<ResponseDTO> selectAllSurveysForManagementWithPaging(@RequestParam(name="offset", defaultValue="1") String offset, @RequestParam(required = false) String searchCondition, @RequestParam(required = false) String searchValue) {
+
+        log.info("[SurveyController] selectAllSurveysForManagementWithPaging : " + offset);
+
+        int totalCount = surveyService.selectTotalSurveys();
+        int limit = 15;
+        int buttonAmount = 5;
+
+        SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount);
+        if(searchCondition != null) {
+            selectCriteria.setSearchCondition(searchCondition);
+        }
+        if(searchValue != null) {
+            selectCriteria.setSearchValue(searchValue);
+        }
+        log.info("[SurveyController] selectCriteria : " + selectCriteria);
+
+        ResponseDTOWithPaging responseDtoWithPaging = new ResponseDTOWithPaging();
+        responseDtoWithPaging.setPageInfo(selectCriteria);
+        responseDtoWithPaging.setData(surveyService.selectAllSurveysForManagementWithPaging(selectCriteria));
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
     }
 }
