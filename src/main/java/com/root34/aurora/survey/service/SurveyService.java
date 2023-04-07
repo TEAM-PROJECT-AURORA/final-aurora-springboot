@@ -3,9 +3,7 @@ package com.root34.aurora.survey.service;
 import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.common.paging.SurveyPaging;
 import com.root34.aurora.survey.dao.SurveyMapper;
-import com.root34.aurora.survey.dto.ChoiceDTO;
-import com.root34.aurora.survey.dto.QuestionDTO;
-import com.root34.aurora.survey.dto.SurveyDTO;
+import com.root34.aurora.survey.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,5 +80,28 @@ public class SurveyService {
         List<SurveyDTO> surveyDTOsWithPaging = SurveyPaging.applyPaging(surveyDTOs, selectCriteria);
         log.info("[SurveyService] selectAllSurveysForManagementWithPaging End ===================================");
         return surveyDTOsWithPaging;
+    }
+
+    @Transactional
+    public int insertSurveyReply(List<AnswerDTO> answerDTOList) {
+
+        log.info("[SurveyService] insertSurveyReply Start ===================================");
+
+        int result = surveyMapper.insertSurveyReply(answerDTOList);
+
+        log.info("[SurveyService] insertSurveyReply Start ===================================");
+        return result;
+    }
+
+    @Transactional
+    public String insertSurveyReplyStatus(ReplyStatusDTO replyStatusDTO) {
+
+        log.info("[SurveyService] insertSurveyReplyStatus Start ===================================");
+
+        int result = surveyMapper.insertSurveyReplyStatus(replyStatusDTO);
+
+        log.info("[SurveyService] insertSurveyReplyStatus Start ===================================");
+
+        return result > 0? "답변 추가 성공":"답변 추가 실패";
     }
 }

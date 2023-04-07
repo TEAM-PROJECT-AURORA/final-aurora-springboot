@@ -85,7 +85,8 @@
             ((SELECT
                  COUNT(D.REPLY_STATUS)
                 FROM TBL_SURVEY_REPLY_STATE D
-               WHERE D.SURVEY_CODE = A.SURVEY_CODE) / (SELECT
+               WHERE D.SURVEY_CODE = A.SURVEY_CODE
+                 AND D.REPLY_STATUS = 'Y') / (SELECT
                                                          COUNT(*)
                                                          FROM TBL_MEMBER) * 100) AS REPLY_STATUS,
             B.QUESTION_NO,
@@ -97,9 +98,12 @@
           ON A.SURVEY_CODE = B.SURVEY_CODE
        INNER JOIN TBL_QUESTION_CHOICE C
           ON B.QUESTION_NO = C.QUESTION_NO
-   <if test="searchCondition != null and searchCondition != ''">
+    <if test="searchCondition != null and searchCondition != ''">
        WHERE A.SURVEY_SUBJECT LIKE CONCAT('%',#{ searchValue },'%')
-   </if>
+    </if>
        ORDER BY A.SURVEY_CODE DESC
     </select>
+    <insert id="insertSurveyReply" parameterType="list">
+
+    </insert>
 </mapper>

@@ -1,9 +1,7 @@
 package com.root34.aurora.survey.dao;
 
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.survey.dto.ChoiceDTO;
-import com.root34.aurora.survey.dto.QuestionDTO;
-import com.root34.aurora.survey.dto.SurveyDTO;
+import com.root34.aurora.survey.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -25,4 +23,8 @@ public interface SurveyMapper {
     String selectReplyStatus(Map map);
 
     List<SurveyDTO> selectAllSurveysForManagementWithPaging(SelectCriteria selectCriteria);
+
+    int insertSurveyReply(List<AnswerDTO> answerDTOList);
+
+    int insertSurveyReplyStatus(ReplyStatusDTO replyStatusDTO);
 }
