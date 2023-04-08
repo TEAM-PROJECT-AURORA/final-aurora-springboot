@@ -62,7 +62,7 @@
          WHERE (A.MEMBER_CODE = #{ searchConditions.memberCode } OR B.MEMBER_CODE = #{ searchConditions.memberCode })
            AND A.REPORT_TYPE = #{ searchConditions.reportType }
            AND A.COMPLETION_STATUS = #{ searchConditions.completionStatus }
-         ORDER BY REPORT_CODE DESC
+         ORDER BY A.REPORT_CODE DESC
          LIMIT #{ startRow }, #{ limit }
     </select>
     <!--보고 상세 조회-->
