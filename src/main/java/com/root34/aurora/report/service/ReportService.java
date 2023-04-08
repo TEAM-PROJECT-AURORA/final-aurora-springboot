@@ -347,6 +347,9 @@ public class ReportService {
         ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
         response.put("reportDTO", reportDTO);
 
+        MemberDTO memberDTO = reportMapper.selectReporterDetail(reportDTO.getMemberCode());
+        reportDTO.setMemberDTO(memberDTO);
+
         // 보고자 목록(책임자 제외)
         List<Integer> memberList = reportMapper.selectMemberListInvolvedInReport(reportCode);
         memberList.removeIf(reporterMemberCode -> reporterMemberCode == reportDTO.getMemberCode());
@@ -357,10 +360,10 @@ public class ReportService {
 
             for(int reporterMemberCode : memberList) {
 
-                MemberDTO memberDTO = reportMapper.selectReporterDetail(reporterMemberCode);
+                MemberDTO reporterMemberDTO = reportMapper.selectReporterDetail(reporterMemberCode);
                 memberDTOList.add(memberDTO);
             }
-            response.put("memberList", memberDTOList);
+            response.put("memberList", memberDTOList); // 보고자 목록
         } else {
 
             response.put("fileList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
