@@ -16,7 +16,7 @@ public interface SurveyMapper {
 
     int insertChoices(ChoiceDTO choiceDTO);
 
-    int selectTotalSurveys();
+    int selectTotalSurveys(String searchValue);
 
     List<SurveyDTO> selectAllSurveysWithPaging(SelectCriteria selectCriteria);
 
@@ -27,4 +27,6 @@ public interface SurveyMapper {
     int insertSurveyReply(List<AnswerDTO> answerDTOList);
 
     int insertSurveyReplyStatus(ReplyStatusDTO replyStatusDTO);
+
+    int deleteSurveys(String[] surveyCodes);
 }

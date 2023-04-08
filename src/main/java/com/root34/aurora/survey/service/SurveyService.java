@@ -44,10 +44,10 @@ public class SurveyService {
         return (surveyCode > 0)? "설문 추가 성공" : "설문 추가 실패";
     }
 
-    public int selectTotalSurveys() {
+    public int selectTotalSurveys(String searchValue) {
 
         log.info("[SurveyService] selectTotalSurveys Start ===================================");
-        int totalCount = surveyMapper.selectTotalSurveys();
+        int totalCount = surveyMapper.selectTotalSurveys(searchValue);
 
         log.info("[SurveyService] selectTotalSurveys End ===================================");
         return totalCount;
@@ -103,5 +103,17 @@ public class SurveyService {
         log.info("[SurveyService] insertSurveyReplyStatus Start ===================================");
 
         return result > 0? "답변 추가 성공":"답변 추가 실패";
+    }
+
+    @Transactional
+    public String deleteSurveys(String[] surveyCodes) {
+
+        log.info("[SurveyService] deleteSurveys Start ===================================");
+
+        int result = surveyMapper.deleteSurveys(surveyCodes);
+
+        log.info("[SurveyService] deleteSurveys Start ===================================");
+
+        return result > 0? "설문 삭제 성공":"설문 삭제 실패";
     }
 }

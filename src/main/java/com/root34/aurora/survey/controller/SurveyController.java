@@ -55,7 +55,7 @@ public class SurveyController {
 
         log.info("[SurveyController] selectAllSurveysWithPaging : " + offset);
 
-        int totalCount = surveyService.selectTotalSurveys();
+        int totalCount = surveyService.selectTotalSurveys(null);
         int limit = 15;
         int buttonAmount = 5;
 
@@ -99,7 +99,7 @@ public class SurveyController {
 
         log.info("[SurveyController] selectAllSurveysForManagementWithPaging : " + offset);
 
-        int totalCount = surveyService.selectTotalSurveys();
+        int totalCount = surveyService.selectTotalSurveys(searchValue);
         int limit = 15;
         int buttonAmount = 5;
 
@@ -119,6 +119,12 @@ public class SurveyController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDtoWithPaging));
     }
     
+    /**
+    	* @MethodName : insertSurveyReply
+    	* @Date : 2023-04-09
+    	* @Writer : 오승재
+    	* @Description : 설문 답변 등록
+    */
     @PostMapping("survey/{surveyCode}")
     public ResponseEntity<ResponseDTO> insertSurveyReply(@RequestBody Map<String, Object> json, ReplyStatusDTO replyStatusDTO, @PathVariable String surveyCode) {
 
@@ -148,5 +154,16 @@ public class SurveyController {
         }
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 답변 추가 성공", resultMessage));
+    }
+
+    @DeleteMapping("survey")
+    public ResponseEntity<ResponseDTO> deleteSurveys(@RequestBody JSONObject object) {
+
+        String objectAsString = object.getAsString("surveyCodes");
+        String[] surveyCodes = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+
+        log.info("[SurveyController] deleteSurveys : " + surveyCodes);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 삭제 성공", surveyService.deleteSurveys(surveyCodes)));
     }
 }

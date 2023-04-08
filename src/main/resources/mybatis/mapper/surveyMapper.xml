@@ -42,10 +42,13 @@
         VALUES
             (#{ questionNo }, #{ choiceBody })
     </insert>
-    <select id="selectTotalSurveys" resultType="_int">
+    <select id="selectTotalSurveys" parameterType="String" resultType="_int">
         SELECT
             COUNT(*)
           FROM TBL_SURVEY
+        <if test="searchValue != null and searchValue != ''">
+         WHERE SURVEY_SUBJECT LIKE CONCAT('%',#{ searchValue },'%')
+        </if>
     </select>
     <select id="selectAllSurveysWithPaging" parameterType="selectCriteria" resultMap="surveyDTO">
         SELECT
@@ -104,6 +107,24 @@
        ORDER BY A.SURVEY_CODE DESC
     </select>
     <insert id="insertSurveyReply" parameterType="list">
-
+        INSERT INTO TBL_CHOICE_ANSWER
+            (QUESTION_NO, CHOICE_NO, ANSWER_BODY, MEMBER_CODE)
+        VALUES
+        <foreach collection="answerDTOList" item="answerDTO" index="index" separator=",">
+            (#{ answerDTO.questionNo }, #{ answerDTO.choiceNo }, #{ answerDTO.answerBody }, #{ answerDTO.memberCode })
+        </foreach>
     </insert>
+    <insert id="insertSurveyReplyStatus" parameterType="replyStatusDTO">
+        INSERT INTO TBL_SURVEY_REPLY_STATE
+            (SURVEY_CODE, MEMBER_CODE, REPLY_STATUS)
+        VALUES
+            (#{ surveyCode }, #{ memberCode }, #{ replyStatus })
+    </insert>
+    <delete id="deleteSurveys" parameterType="String">
+        DELETE FROM TBL_SURVEY
+         WHERE SURVEY_CODE IN
+        <foreach collection=" surveyCodes " item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

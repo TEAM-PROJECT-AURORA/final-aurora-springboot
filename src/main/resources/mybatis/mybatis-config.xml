@@ -21,6 +21,7 @@
 		<typeAlias alias="surveyDTO" type="com.root34.aurora.survey.dto.SurveyDTO"/>
 		<typeAlias alias="questionDTO" type="com.root34.aurora.survey.dto.QuestionDTO"/>
 		<typeAlias alias="choiceDTO" type="com.root34.aurora.survey.dto.ChoiceDTO"/>
+		<typeAlias alias="replyStatusDTO" type="com.root34.aurora.survey.dto.replyStatusDTO"/>
 	</typeAliases>
 
 	<mappers>
