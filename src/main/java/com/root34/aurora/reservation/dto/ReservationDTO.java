@@ -2,8 +2,6 @@ package com.root34.aurora.reservation.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 /**
 	@ClassName : ReservationDTO
 	@Date : 2023-03-28
@@ -34,9 +32,13 @@ public class ReservationDTO {
     */
     private String memberName;
     /**
-    	* @variable 소속팀 
+    	* @variable 소속팀 코드 
     */
-    private String team;
+    private String teamCode;
+    /**
+    	* @variable 소속팀명
+    */
+    private String teamName;
     /**
     	* @variable 자산 설명 
     */

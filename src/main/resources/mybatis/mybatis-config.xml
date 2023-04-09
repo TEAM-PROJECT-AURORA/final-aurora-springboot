@@ -32,6 +32,10 @@
 		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="messengerDTO" type="com.root34.aurora.messenger.dto.MessengerDTO"/>
+		<typeAlias alias="surveyDTO" type="com.root34.aurora.survey.dto.SurveyDTO"/>
+		<typeAlias alias="questionDTO" type="com.root34.aurora.survey.dto.QuestionDTO"/>
+		<typeAlias alias="choiceDTO" type="com.root34.aurora.survey.dto.ChoiceDTO"/>
+		<typeAlias alias="replyStatusDTO" type="com.root34.aurora.survey.dto.replyStatusDTO"/>
 	</typeAliases>
 
 	<mappers>
@@ -39,6 +43,7 @@
 		<mapper resource="addressBookMapper.xml" />
 		<mapper resource="reservationMapper.xml" />
 		<mapper resource="memberMapper.xml" />
+		<mapper resource="surveyMapper.xml" />
 		<mapper resource="Approval.xml"/>
 		<mapper resource="MailMapper.xml" />
 		<mapper resource="ReportMapper.xml" />
