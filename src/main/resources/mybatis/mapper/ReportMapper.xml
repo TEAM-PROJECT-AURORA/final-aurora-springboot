@@ -130,8 +130,8 @@
         UPDATE TBL_REPORT
            SET COMPLETION_STATUS = #{ completionStatus }
          WHERE REPORT_CODE = #{ reportCode }
-           AND MEMBER_CODE = #{ memberCode }
     </update>
+<!--           AND MEMBER_CODE = #{ memberCode }-->
     <!--보고 읽음상태 수정-->
     <update id="updateReportReadStatus" parameterType="HashMap">
         UPDATE TBL_REPORT
@@ -173,9 +173,13 @@
          WHERE REPORT_CODE = #{ reportCode }
     </update>
     <!--파일 삭제-->
-    <delete id="deleteFiles" parameterType="long">
+<!--    <delete id="deleteFiles" parameterType="long">-->
+<!--        DELETE FROM TBL_FILE-->
+<!--         WHERE REPORT_CODE = #{ reportCode }-->
+<!--    </delete>-->
+    <delete id="deleteFile" parameterType="Integer">
         DELETE FROM TBL_FILE
-         WHERE REPORT_CODE = #{ reportCode }
+        WHERE FILE_CODE = #{ fileCode }
     </delete>
     <!--보고자 삭제-->
     <delete id="deleteReporter" parameterType="Long">

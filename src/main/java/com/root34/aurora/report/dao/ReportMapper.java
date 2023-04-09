@@ -41,7 +41,7 @@ public interface ReportMapper {
 
     int updateReport(ReportDTO reportDTO); // 보고 수정
 
-    int deleteFiles(long reportCode); // 파일 DB에서 삭제
+    int deleteFile(Integer fileCode); // 파일 DB에서 삭제
 
     int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
 

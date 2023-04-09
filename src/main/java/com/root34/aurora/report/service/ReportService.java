@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
 	@ClassName : ReportService
@@ -241,7 +242,7 @@ public class ReportService {
             }
         }
         HashMap<String, Object> parameter = new HashMap<>();
-        parameter.put("memberCode", memberCode);
+//        parameter.put("memberCode", memberCode);
         parameter.put("reportCode", reportCode);
         parameter.put("completionStatus", 'Y');
         log.info("[ReportService] parameter : " + parameter);
@@ -432,12 +433,13 @@ public class ReportService {
      * @Writer : 김수용
      * @Description : 보고 수정
      */
-    public boolean updateReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList) throws IOException {
+    public boolean updateReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList, List<Integer> preservedFileCodeList) throws IOException {
 
         log.info("[ReportService] updateReport Start");
         log.info("[ReportService] ReportDTO : " + reportDTO);
         log.info("[ReportService] memberList : " + memberList);
         log.info("[ReportService] fileList : " + fileList);
+        log.info("[ReportService] preservedFileCodeList : " + preservedFileCodeList);
 
         if(reportDTO.getReportType().equals("Routine")) {
 
@@ -475,7 +477,20 @@ public class ReportService {
 
         if(reportDTO.getReportType().equals("Casual")) {
 
-            int fileDeleteResult = reportMapper.deleteFiles(reportDTO.getReportCode());
+            List<FileDTO> currentFileList = reportMapper.selectReportAttachmentListByReportCode(reportDTO.getReportCode());
+            log.info("[ReportService] currentFileList : " + currentFileList);
+
+            List<Integer> deleteFileCodes = currentFileList.stream()
+                    .filter(file -> !preservedFileCodeList.contains(file.getFileCode()))
+                    .map(FileDTO::getFileCode)
+                    .collect(Collectors.toList());
+
+            int fileDeleteResult = 0;
+
+            for(int fileCode : deleteFileCodes) {
+
+                fileDeleteResult += reportMapper.deleteFile(fileCode);
+            }
             log.info("[ReportService] fileDeleteResult : " + fileDeleteResult);
 
             if (fileList != null) {
