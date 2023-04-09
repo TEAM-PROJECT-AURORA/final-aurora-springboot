@@ -29,4 +29,12 @@ public interface SurveyMapper {
     int insertSurveyReplyStatus(ReplyStatusDTO replyStatusDTO);
 
     int deleteSurveys(String[] surveyCodes);
+
+    SurveyDTO selectSurveyForUpdate(String surveyCode);
+
+    int updateSurvey(SurveyDTO surveyDTO);
+
+    int updateQuestions(QuestionDTO questionDTO);
+
+    int updateChoices(ChoiceDTO choiceDTO);
 }

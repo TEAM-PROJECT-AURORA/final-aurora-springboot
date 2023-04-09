@@ -156,6 +156,12 @@ public class SurveyController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 답변 추가 성공", resultMessage));
     }
 
+    /**
+    	* @MethodName : deleteSurveys
+    	* @Date : 2023-04-09
+    	* @Writer : 오승재
+    	* @Description : 설문 삭제
+    */
     @DeleteMapping("survey")
     public ResponseEntity<ResponseDTO> deleteSurveys(@RequestBody JSONObject object) {
 
@@ -165,5 +171,33 @@ public class SurveyController {
         log.info("[SurveyController] deleteSurveys : " + surveyCodes);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 삭제 성공", surveyService.deleteSurveys(surveyCodes)));
+    }
+
+    /**
+    	* @MethodName : selectSurveyForUpdate
+    	* @Date : 2023-04-09
+    	* @Writer : 오승재
+    	* @Description : 수정을 위한 설문 조회
+    */
+    @GetMapping("survey/{surveyCode}")
+    public ResponseEntity<ResponseDTO> selectSurveyForUpdate(@PathVariable String surveyCode) {
+
+        log.info("[SurveyController] selectSurveyForUpdate : " + surveyCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 조회 성공", surveyService.selectSurveyForUpdate(surveyCode)));
+    }
+
+    /**
+    	* @MethodName : updateSurvey
+    	* @Date : 2023-04-09
+    	* @Writer : 오승재
+    	* @Description : 설문 수정
+    */
+    @PutMapping("survey")
+    public ResponseEntity<ResponseDTO> updateSurvey(@RequestBody SurveyDTO surveyDTO) {
+
+        log.info("[SurveyController] updateSurvey : " + surveyDTO);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 수정 성공", surveyService.updateSurvey(surveyDTO)));
     }
 }

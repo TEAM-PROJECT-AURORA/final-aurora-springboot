@@ -7,6 +7,7 @@ import com.root34.aurora.survey.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,11 @@ public class SurveyService {
     @Transactional
     public String insertSurvey(SurveyDTO surveyDTO) {
 
+        int surveyCode = 0;
         log.info("[SurveyService] insertSurvey Start ===================================");
-        int surveyCode = surveyMapper.insertSurvey(surveyDTO);
+        if(surveyDTO.getSurveyCode() == null || "".equals(surveyDTO.getSurveyCode())) {
+            surveyCode = surveyMapper.insertSurvey(surveyDTO);
+        }
 
         List<QuestionDTO> questionDTOS = surveyDTO.getQuestions();
         for(int i = 0; i < questionDTOS.size(); i++) {
@@ -115,5 +119,49 @@ public class SurveyService {
         log.info("[SurveyService] deleteSurveys Start ===================================");
 
         return result > 0? "설문 삭제 성공":"설문 삭제 실패";
+    }
+
+    public SurveyDTO selectSurveyForUpdate(String surveyCode) {
+
+        log.info("[SurveyService] selectSurveyForUpdate Start ===================================");
+
+        SurveyDTO surveyDTO = surveyMapper.selectSurveyForUpdate(surveyCode);
+
+        log.info("[SurveyService] selectSurveyForUpdate Start ===================================");
+
+        return surveyDTO;
+    }
+
+    @Transactional
+    public String updateSurvey(SurveyDTO surveyDTO) {
+
+        log.info("[SurveyService] updateSurvey Start ===================================");
+        int surveyCode = surveyMapper.updateSurvey(surveyDTO);
+
+        List<QuestionDTO> questionDTOS = surveyDTO.getQuestions();
+        log.info("[SurveyService] surveyCode" + surveyDTO.getSurveyCode());
+        for(int i = 0; i < questionDTOS.size(); i++) {
+
+                log.info("[SurveyService] surveyCode 있던질문" + surveyDTO.getSurveyCode());
+                int questionNo = surveyMapper.updateQuestions(questionDTOS.get(i));
+            List<ChoiceDTO> choiceDTOS = questionDTOS.get(i).getChoices();
+            for(int j = 0; j < choiceDTOS.size(); j++) {
+                log.info("[SurveyService] questionNo" + choiceDTOS.get(j).getQuestionNo());
+
+                if(choiceDTOS.get(j).getQuestionNo() == null || "".equals(choiceDTOS.get(j).getQuestionNo())) {
+                    log.info("[SurveyService] questionNo 새 선택지" + questionDTOS.get(i).getQuestionNo());
+                    choiceDTOS.get(j).setQuestionNo(questionDTOS.get(i).getQuestionNo());
+                    int result = surveyMapper.insertChoices(choiceDTOS.get(j));
+                } else {
+                    log.info("[SurveyService] questionNo 있던선택지" + questionDTOS.get(i).getQuestionNo());
+                    int result = surveyMapper.updateChoices(choiceDTOS.get(j));
+                }
+
+            }
+        }
+
+        log.info("[SurveyService] updateSurvey End ===================================");
+
+        return (surveyCode > 0)? "설문 수정 성공" : "설문 수정 실패";
     }
 }

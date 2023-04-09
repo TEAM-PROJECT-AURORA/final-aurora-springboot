@@ -16,25 +16,25 @@ public class SurveyDTO {
     /**
     	* @variable 설문 코드 
     */
-    String surveyCode;
+    private String surveyCode;
     /**
     	* @variable 설문 주제 
     */
-    String surveySubject;
+    private String surveySubject;
     /**
     	* @variable 시작일 
     */
-    String startDate;
+    private String startDate;
     /**
     	* @variable 종료일 
     */
-    String endDate;
+    private String endDate;
     /**
     	* @variable 답변 상태 
     */
-    String replyStatus;
+    private String replyStatus;
     /**
     	* @variable 문항 리스트
     */
-    List<QuestionDTO> questions;
+    private List<QuestionDTO> questions;
 }
