@@ -3,6 +3,8 @@ package com.root34.aurora.messenger.dto;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  @FileName : MessengerDTO
  @Date : 2:01 PM
@@ -20,7 +22,7 @@ public class MessengerDTO {
     /**@Variable :  방이름*/
     private String mesName;
     /**@Variable :  맴버코드*/
-    private int memberCode;
+    private Integer memberCode;
     /**@Variable :  멤버 DTO*/
     private MemberDTO memberDTO;
 

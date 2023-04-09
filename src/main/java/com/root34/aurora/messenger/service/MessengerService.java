@@ -1,13 +1,18 @@
 package com.root34.aurora.messenger.service;
 
+import com.root34.aurora.exception.CreationFailedException;
 import com.root34.aurora.messenger.dao.MessengerMapper;
 import com.root34.aurora.messenger.dto.MessengerDTO;
+import com.root34.aurora.messenger.dto.MessengerRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  @FileName : MessengerService
  @Date : 4:59 PM
@@ -45,5 +50,36 @@ public class MessengerService {
         }
     }
 
+    /**
+     @MethodName : messengerRegister
+     @Date : 4:59 PM
+     @Writer : heojaehong
+     @Description : 채팅방 생성 하는 메서드
+     */
+    public int messengerRegister(MessengerRequestDTO messengerRequestDTO) {
 
+        int result = 0;
+        try{
+            //배열을 처리
+            for(Integer memberCode : messengerRequestDTO.getMemberCode()) {
+                MessengerDTO addMessengerDTO = new MessengerDTO();
+                addMessengerDTO.setRoomNum(messengerRequestDTO.getRoomNum());
+                addMessengerDTO.setMemberCode(memberCode);
+                addMessengerDTO.setMesName(messengerRequestDTO.getMesName());
+
+                int arrayResult = messengerMapper.messengerRegister(addMessengerDTO);
+
+                if(arrayResult == 0){
+                    throw new Exception("생성 실패!");
+                }
+
+                result += arrayResult;
+            }
+
+            return result;
+        } catch (Exception e) {
+            log.error("[MessengerService] 메신저 방 생성에 실패 했습니다. : ", e);
+            throw new CreationFailedException("생성 실패", e);
+        }
+    }
 }

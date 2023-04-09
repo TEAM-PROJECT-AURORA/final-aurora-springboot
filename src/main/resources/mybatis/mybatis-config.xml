@@ -31,7 +31,11 @@
 		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
 		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
+		<typeAlias alias="MessageDTO" type="com.root34.aurora.messenger.dto.MessageDTO"/>
 		<typeAlias alias="messengerDTO" type="com.root34.aurora.messenger.dto.MessengerDTO"/>
+		<typeAlias alias="MessengerMemberDTO" type="com.root34.aurora.messenger.dto.MessengerMemberDTO"/>
+		<typeAlias alias="MessengerRequestDTO" type="com.root34.aurora.messenger.dto.MessengerRequestDTO"/>
+
 	</typeAliases>
 
 	<mappers>
