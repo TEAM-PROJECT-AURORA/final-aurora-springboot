@@ -27,9 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
 	@ClassName : ReportService
@@ -70,6 +72,7 @@ public class ReportService {
         log.info("[ReportService] involvedMemberCodeList : " + involvedMemberCodeList);
 
         if(!involvedMemberCodeList.contains(memberCode)) {
+
             throw new NotInvolvedInReportException("보고 관련자가 아닙니다. 조회할 권한이 없습니다.");
         }
         log.info("[ReportService] verifyMemberReportAccess Passed");
@@ -220,7 +223,7 @@ public class ReportService {
     	* @MethodName : updateReportCompletionStatusToComplete
     	* @Date : 2023-03-27
     	* @Writer : 김수용
-    	* @Description : 보고 완료상태 수정 - 완료
+    	* @Description : 보고 삭제(완료상태 수정 - 완료)
     */
     public boolean updateReportCompletionStatusToComplete(int memberCode, Long reportCode) {
 
@@ -228,11 +231,18 @@ public class ReportService {
         log.info("[ReportService] memberCode : " + memberCode);
         log.info("[ReportService] reportCode : " + reportCode);
 
-        if(!countInChargeMember(memberCode, reportCode)) {
-            throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다.");
+        String reportType = reportMapper.selectReportType(reportCode);
+        log.info("[ReportService] reportType : " + reportType);
+
+        if(reportType.equals("Routine")) {
+
+            if(!countInChargeMember(memberCode, reportCode)) {
+
+                throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다.");
+            }
         }
         HashMap<String, Object> parameter = new HashMap<>();
-        parameter.put("memberCode", memberCode);
+//        parameter.put("memberCode", memberCode);
         parameter.put("reportCode", reportCode);
         parameter.put("completionStatus", 'Y');
         log.info("[ReportService] parameter : " + parameter);
@@ -263,7 +273,6 @@ public class ReportService {
             if(result == 0) {
                 throw new CreationFailedException("보고서 등록 실패!");
             }
-
             Long generatedPk = reportDTO.getReportCode();
             log.info("[ReportService] generatedPk : " + generatedPk);
 
@@ -303,7 +312,7 @@ public class ReportService {
 
                         double fileSizeInBytes = (double) file.getSize();
 
-                        String fileSizeString = fileSizeInBytes < 1024?
+                        String fileSizeString = fileSizeInBytes < (1024 * 1024)?
                                 String.format("%.2f KB", fileSizeInBytes / 1024) :
                                 String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
                         log.info("[ReportService] fileSizeString : " + fileSizeString);
@@ -337,21 +346,30 @@ public class ReportService {
         HashMap<String, Object> response = new HashMap<>();
 
         ReportDTO reportDTO = reportMapper.selectReportDetailByReportCode(reportCode);
-        response.put("ReportDTO", reportDTO);
+        response.put("reportDTO", reportDTO);
+
+        MemberDTO memberDTO = reportMapper.selectReporterDetail(reportDTO.getMemberCode());
+        reportDTO.setMemberDTO(memberDTO);
 
         // 보고자 목록(책임자 제외)
         List<Integer> memberList = reportMapper.selectMemberListInvolvedInReport(reportCode);
-        memberList.removeIf(reporterMemberCode -> reporterMemberCode == memberCode);
+        memberList.removeIf(reporterMemberCode -> reporterMemberCode == reportDTO.getMemberCode());
 
         if(reportDTO.getReportType().equals("Routine")) {
 
-            response.put("memberList", memberList);
+            List<MemberDTO> memberDTOList = new ArrayList<>();
+
+            for(int reporterMemberCode : memberList) {
+
+                MemberDTO reporterMemberDTO = reportMapper.selectReporterDetail(reporterMemberCode);
+                memberDTOList.add(memberDTO);
+            }
+            response.put("memberList", memberDTOList); // 보고자 목록
         } else {
 
             response.put("fileList", reportMapper.selectReportAttachmentListByReportCode(reportCode));
             response.put("reporterDetail", reportMapper.selectReporterDetail(memberList.get(0)));
         }
-
         log.info("[ReportService] selectReportDetailByReportCode response : " + response);
 
         return response;
@@ -393,10 +411,123 @@ public class ReportService {
             log.info("[ReportService] " + resultName + " : " + reportRoundList);
         }
         List<ReportDTO> casualList = reportMapper.selectCasualReportListByMemberCode(memberCode);
+
+        for(ReportDTO reportDTO : casualList) {
+
+            // 보고자 목록(책임자 제외)
+            List<Integer> memberList = reportMapper.selectMemberListInvolvedInReport(reportDTO.getReportCode());
+            memberList.removeIf(reporterMemberCode -> reporterMemberCode == reportDTO.getMemberCode());
+
+            MemberDTO memberDTO = reportMapper.selectReporterDetail(memberList.get(0));
+            reportDTO.setMemberDTO(memberDTO);
+        }
         response.put("casualList", casualList);
         log.info("[ReportService] casualList : " + casualList);
 
         return response;
+    }
+
+    /**
+     * @MethodName : updateReport
+     * @Date : 2023-03-23
+     * @Writer : 김수용
+     * @Description : 보고 수정
+     */
+    public boolean updateReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList, List<Integer> preservedFileCodeList) throws IOException {
+
+        log.info("[ReportService] updateReport Start");
+        log.info("[ReportService] ReportDTO : " + reportDTO);
+        log.info("[ReportService] memberList : " + memberList);
+        log.info("[ReportService] fileList : " + fileList);
+        log.info("[ReportService] preservedFileCodeList : " + preservedFileCodeList);
+
+        if(reportDTO.getReportType().equals("Routine")) {
+
+            if(!countInChargeMember(reportDTO.getMemberCode(), reportDTO.getReportCode())) {
+
+                throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다!");
+            }
+        }
+        int updateResult = reportMapper.updateReport(reportDTO);
+        log.info("[ReportService] updateResult : " + updateResult);
+
+        if(updateResult == 0) {
+            throw new UpdateFailedException("보고 수정 실패!");
+        }
+        int deleteResult = reportMapper.deleteReporter(reportDTO.getReportCode());
+        log.info("[ReportService] deleteReporter Result : " + deleteResult);
+
+        int memberCount = 0;
+
+        for (Integer listItem : memberList) {
+            HashMap<String, Object> parameter = new HashMap<>();
+            parameter.put("reportCode", reportDTO.getReportCode());
+            parameter.put("listItem", listItem);
+
+            reportMapper.registerReporter(parameter);
+
+            memberCount++;
+        }
+        log.info("[ReportService] memberList count : " + memberCount);
+
+        if(deleteResult == 0 || memberCount == 0 ||  memberCount != memberList.size()) {
+            throw new UpdateFailedException("보고자 수정 실패!");
+        }
+        log.info("[ReportService] reportDTO.getReportType() == \"Casual\" : " + reportDTO.getReportType().equals("Casual"));
+
+        if(reportDTO.getReportType().equals("Casual")) {
+
+            List<FileDTO> currentFileList = reportMapper.selectReportAttachmentListByReportCode(reportDTO.getReportCode());
+            log.info("[ReportService] currentFileList : " + currentFileList);
+
+            List<Integer> deleteFileCodes = currentFileList.stream()
+                    .filter(file -> !preservedFileCodeList.contains(file.getFileCode()))
+                    .map(FileDTO::getFileCode)
+                    .collect(Collectors.toList());
+
+            int fileDeleteResult = 0;
+
+            for(int fileCode : deleteFileCodes) {
+
+                fileDeleteResult += reportMapper.deleteFile(fileCode);
+            }
+            log.info("[ReportService] fileDeleteResult : " + fileDeleteResult);
+
+            if (fileList != null) {
+
+                int fileCount = 0;
+
+                for (MultipartFile file : fileList) {
+
+                    String fileName = UUID.randomUUID().toString().replace("-", "");
+                    String replaceFileName = null;
+
+                    log.info("[ReportService] FILE_DIR : " + FILE_DIR);
+                    log.info("[ReportService] fileName : " + fileName);
+                    replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
+                    log.info("[ReportService] replaceFileName : " + replaceFileName);
+
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFileOriginName(file.getOriginalFilename());
+                    fileDTO.setFileName(replaceFileName);
+                    fileDTO.setFilePath(FILE_DIR + replaceFileName);
+                    fileDTO.setReportCode(reportDTO.getReportCode());
+
+                    double fileSizeInBytes = (double) file.getSize();
+
+                    String fileSizeString = fileSizeInBytes < (1024 * 1024) ?
+                            String.format("%.2f KB", fileSizeInBytes / 1024) :
+                            String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
+                    log.info("[ReportService] fileSizeString : " + fileSizeString);
+                    fileDTO.setFileSize(fileSizeString);
+                    log.info("[ReportService] fileDTO : " + fileDTO);
+
+                    fileCount += reportMapper.registerFileWithReportCode(fileDTO);
+                    log.info("[ReportService] fileCount : " + fileCount);
+                }
+            }
+        }
+        return updateResult > 0 && deleteResult > 0 && memberCount > 0;
     }
 
     /**
@@ -423,20 +554,6 @@ public class ReportService {
         reportRoundDTO.setCapacity(capacity);
         log.info("[ReportService] capacity : " + capacity);
 
-//        해당 날짜를 통해 제목을 자동 생성하려했는데 폐기
-//        LocalDate currentDate = LocalDate.now();
-//        String roundTitle = currentDate + " 정기 보고";
-//        reportRoundDTO.setRoundTitle(roundTitle);
-//        log.info("[ReportService] RoundTitle : " + roundTitle);
-
-//        HashMap<String, Object> parameter = new HashMap<>();
-//        parameter.put("roundTitle", roundTitle);
-//        parameter.put("roundCode", reportRoundDTO.getRoundCode());
-//
-//        if(reportMapper.isRoundTitleExist(parameter) > 0) {
-//
-////            roundTitle
-//        }
         int result = reportMapper.registerReportRound(reportRoundDTO);
         log.info("[ReportService] result : " + (result > 0));
 
@@ -498,135 +615,6 @@ public class ReportService {
     }
 
     /**
-     * @MethodName : updateReport
-     * @Date : 2023-03-23
-     * @Writer : 김수용
-     * @Description : 보고 수정
-     */
-    public boolean updateReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList) throws IOException {
-
-        log.info("[ReportService] updateReport Start");
-        log.info("[ReportService] ReportDTO : " + reportDTO);
-        log.info("[ReportService] memberList : " + memberList);
-        log.info("[ReportService] fileList : " + fileList);
-
-        if(!countInChargeMember(reportDTO.getMemberCode(), reportDTO.getReportCode())) {
-            throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다!");
-        }
-
-        int updateResult = reportMapper.updateReport(reportDTO);
-        log.info("[ReportService] updateResult : " + updateResult);
-
-        if(updateResult == 0) {
-            throw new UpdateFailedException("보고 수정 실패!");
-        }
-        int deleteResult = reportMapper.deleteReporter(reportDTO.getReportCode());
-        log.info("[ReportService] deleteReporter Result : " + deleteResult);
-
-        int memberCount = 0;
-
-        for (Integer listItem : memberList) {
-            HashMap<String, Object> parameter = new HashMap<>();
-            parameter.put("reportCode", reportDTO.getReportCode());
-            parameter.put("listItem", listItem);
-
-            reportMapper.registerReporter(parameter);
-
-            memberCount++;
-        }
-        log.info("[ReportService] memberList count : " + memberCount);
-
-        if(deleteResult == 0 || memberCount == 0 ||  memberCount != memberList.size()) {
-            throw new UpdateFailedException("보고자 수정 실패!");
-        }
-
-        log.info("[ReportService] reportDTO.getReportType() == \"Casual\" : " + reportDTO.getReportType().equals("Casual"));
-
-        if(reportDTO.getReportType().equals("Casual")) {
-
-            int fileDeleteResult = reportMapper.deleteFiles(reportDTO.getReportCode());
-            log.info("[ReportService] fileDeleteResult : " + fileDeleteResult);
-
-            if (fileList != null) {
-
-                int fileCount = 0;
-
-                for (MultipartFile file : fileList) {
-
-                    String fileName = UUID.randomUUID().toString().replace("-", "");
-                    String replaceFileName = null;
-
-                    log.info("[ReportService] FILE_DIR : " + FILE_DIR);
-                    log.info("[ReportService] fileName : " + fileName);
-                    replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
-                    log.info("[ReportService] replaceFileName : " + replaceFileName);
-
-                    FileDTO fileDTO = new FileDTO();
-                    fileDTO.setFileOriginName(file.getOriginalFilename());
-                    fileDTO.setFileName(replaceFileName);
-                    fileDTO.setFilePath(FILE_DIR + replaceFileName);
-                    fileDTO.setReportCode(reportDTO.getReportCode());
-
-                    double fileSizeInBytes = (double) file.getSize();
-
-                    String fileSizeString = fileSizeInBytes < 1024 ?
-                            String.format("%.2f KB", fileSizeInBytes / 1024) :
-                            String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
-                    log.info("[ReportService] fileSizeString : " + fileSizeString);
-                    fileDTO.setFileSize(fileSizeString);
-                    log.info("[ReportService] fileDTO : " + fileDTO);
-
-                    fileCount += reportMapper.registerFileWithReportCode(fileDTO);
-                    log.info("[ReportService] fileCount : " + fileCount);
-                }
-            }
-        }
-        return updateResult > 0 && deleteResult > 0 && memberCount > 0;
-    }
-//    /**
-//    	* @MethodName : updateReport
-//    	* @Date : 2023-03-23
-//    	* @Writer : 김수용
-//    	* @Description : 보고 수정
-//    */
-//    public boolean updateReport(int memberCode, ReportDTO reportDTO, List<Integer> memberList) {
-//
-//        log.info("[ReportService] updateReport Start");
-//        log.info("[ReportService] ReportDTO : " + reportDTO);
-//        log.info("[ReportService] memberList : " + memberList);
-//
-//        if(!countInChargeMember(memberCode, reportDTO.getReportCode())) {
-//            throw new NotReportSupervisorException("보고 책임자가 아닙니다. 수정할 권한이 없습니다!");
-//        }
-//
-//        int updateResult = reportMapper.updateReport(reportDTO);
-//        log.info("[ReportService] updateResult : " + updateResult);
-//
-//        Long reportCode = reportDTO.getReportCode();
-//
-//        int deleteResult = reportMapper.deleteReporter(reportCode);
-//        log.info("[ReportService] deleteResult : " + deleteResult);
-//
-//        int count = 0;
-//
-//        for (Integer listItem : memberList) {
-//            HashMap<String, Object> parameter = new HashMap<>();
-//            parameter.put("reportCode", reportCode);
-//            parameter.put("listItem", listItem);
-//
-//            reportMapper.registerReporter(parameter);
-//
-//            count++;
-//        }
-//        log.info("[ReportService] memberList count : " + count);
-//
-//        if(deleteResult == 0 || count == 0) {
-//            throw new UpdateFailedException("보고 수정 실패!");
-//        }
-//        return updateResult > 0 && deleteResult > 0 && count > 0;
-//    }
-
-    /**
     	* @MethodName : selectReportListByConditions
     	* @Date : 2023-03-24
     	* @Writer : 김수용
@@ -650,9 +638,23 @@ public class ReportService {
         List<ReportDTO> reportList = reportMapper.selectReportListWithPaging(selectCriteria);
         log.info("[ReportService] reportList : " + reportList);
 
-        for(ReportDTO report : reportList) {
+        if(searchConditions.get("reportType").equals("Routine")) {
 
-            report.setMemberDTO(reportMapper.selectReporterDetail(report.getMemberCode()));
+            for(ReportDTO routineReport : reportList) {
+
+                routineReport.setMemberDTO(reportMapper.selectReporterDetail(routineReport.getMemberCode()));
+            }
+        } else {
+
+            for(ReportDTO casualReport : reportList) {
+
+                List<Integer> repoterMemberCodeList = reportMapper.selectMemberListInvolvedInReport(casualReport.getReportCode());
+                repoterMemberCodeList.removeIf(reporterMemberCode -> reporterMemberCode == searchConditions.get("memberCode"));
+
+                MemberDTO reporterDTO = reportMapper.selectReporterDetail(repoterMemberCodeList.get(0));
+
+                casualReport.setMemberDTO(reporterDTO);
+            }
         }
         log.info("[ReportService] reportList : " + reportList);
 

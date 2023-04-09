@@ -56,8 +56,8 @@ public class ReportController {
 //            log.info("[ReportController] memberCode : " + memberCode);
 //            reportDTO.setMemberCode(memberCode);
 
-            log.info("[ReportController] memberList : " + memberList);
             log.info("[ReportController] reportDTO : " + reportDTO);
+            log.info("[ReportController] memberList : " + memberList);
             log.info("[ReportController] fileList : " + fileList);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고서 작성 성공",
@@ -224,7 +224,8 @@ public class ReportController {
     public ResponseEntity<ResponseDTO> updateReport(HttpServletRequest request,
                                                       @RequestPart("reportDTO") ReportDTO reportDTO,
                                                       @RequestPart("memberList") List<Integer> memberList,
-                                                      @RequestPart(name = "fileList", required = false)List<MultipartFile> fileList) {
+                                                      @RequestPart(name = "fileList", required = false)List<MultipartFile> fileList,
+                                                      @RequestPart(name = "preservedFileCodeList", required = false)List<Integer> preservedFileCodeList) {
 
         try {
             log.info("[ReportController] updateReport Start");
@@ -240,7 +241,7 @@ public class ReportController {
             log.info("[ReportController] fileList : " + fileList);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "보고 수정 성공",
-                    reportService.updateReport(reportDTO, memberList, fileList)));
+                    reportService.updateReport(reportDTO, memberList, fileList, preservedFileCodeList)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

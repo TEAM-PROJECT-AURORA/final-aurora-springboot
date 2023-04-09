@@ -38,7 +38,7 @@
 
     <!-- root레벨 설정 -->
 <!--    <root level="DEBUG">-->
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="console" />
 <!--        <appender-ref ref="stash" />-->
         <appender-ref ref="ROLLING" />
