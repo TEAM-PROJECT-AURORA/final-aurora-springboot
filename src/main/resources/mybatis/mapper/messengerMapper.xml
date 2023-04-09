@@ -9,4 +9,9 @@
         from TBL_MESSENGER
         where MEMBER_CODE = #{memberCode}
     </select>
+
+    <insert id="messengerRegister" parameterType="messengerDTO">
+        insert into TBL_MESSENGER
+        values ( #{roomNum},#{memberCode}, #{mesName})
+    </insert>
 </mapper>

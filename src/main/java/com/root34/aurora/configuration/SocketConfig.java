@@ -23,6 +23,7 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
         /* stomp 접속 주소 url => /ws-stomp
         *  클라이언트가 /ws-stomp 경로를 사용해서 웹소켓 서버에 연결할 수 있고, 웹소켓을 지원하지 않는 브라우저에 대한 대체 옵션을 제공*/
         registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
+                .setAllowedOrigins("http://localhost:3000")
                 .withSockJS(); // SockJS 지원을 활성화
     }
 
