@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -104,9 +105,6 @@ public class MemberDTO implements UserDetails {
      * @variable status 재직상태
      **/
     private String status;
-    private Date birthDay;
-    private String teamCode;
-    private String teamName;
     /**
      * @variable birthDay 생년월일
      **/
@@ -115,7 +113,6 @@ public class MemberDTO implements UserDetails {
      * @variable teamCode 소속팀코드
      **/
     private String teamCode;
-    private String teamName;
     /**
      * @variable fileCode 사진파일코드
      **/
