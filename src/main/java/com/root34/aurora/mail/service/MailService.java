@@ -35,19 +35,7 @@ import java.util.Properties;
  */
 @Slf4j
 @Service
-//@Component
 public class MailService {
-
-//    @Value("${mail.imap.host}")
-//    private String host;
-//    @Value("${mail.imap.port}")
-//    private String port;
-//    @Value("${spring.mail.username}")
-//    private String username;
-//    @Value("${spring.mail.password}")
-//    private String password;
-//    @Value("${mail.imap.ssl.enable}")
-//    private String sslEnable;
 
     @Autowired
     private final ImapProperties imapProperties;
@@ -60,19 +48,9 @@ public class MailService {
     @Autowired
     public MailService(JavaMailSender javaMailSender, ImapProperties imapProperties, MailMapper mailMapper) {
 
-//        Properties properties = new Properties();
-////        properties.put("mail.imap.host", host);
-////        properties.put("mail.imap.port", port);
-////        properties.put("mail.imap.ssl.enable", sslEnable);
-//        properties.put("mail.store.protocol", "imap");
-//        properties.put("mail.imap.starttls.enable", "true");
-//        emailSession = Session.getInstance(properties, null);
-
         this.imapProperties = imapProperties;
         this.javaMailSender = javaMailSender;
         this.mailMapper = mailMapper;
-
-//        initEmailSession();
     }
 
     /**
@@ -115,11 +93,9 @@ public class MailService {
      * @Writer : 김수용
      * @Description : 읽지 않은 메일 조회
      */
-//    public List<MailDTO> readUnseenMails() {
     public void readUnseenMails() {
 
         log.info("[MailService] sendEmail Start");
-//        List<MailDTO> projectMails = new ArrayList<>();
 
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
@@ -132,7 +108,6 @@ public class MailService {
             Session session = Session.getDefaultInstance(properties, null);
             Store store = session.getStore("imaps");
             store.connect(imapProperties.getUsername(), imapProperties.getPassword());
-
 
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_WRITE);
@@ -149,7 +124,6 @@ public class MailService {
                 Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
 
                 boolean match = false;
-
                 for (Address address : fromAddresses) {
 
                     if (address.toString().contains("@project-aurora.co.kr")) {
@@ -188,7 +162,6 @@ public class MailService {
                         senderName = parts[0];
                         senderEmail = parts[1].substring(0, parts[1].length() - 1);
                     }
-
                     // 메일 내용 변환
                     String content = getTextFromMessage(message);
 
@@ -197,7 +170,6 @@ public class MailService {
                     mailDTO.setSenderEmail(senderEmail);
                     mailDTO.setRecipient(toAddresses[0].toString());
                     mailDTO.setMailTitle(message.getSubject());
-//                    mailDTO.setMailBody(message.getContent().toString());
                     mailDTO.setMailBody(content);
                     log.info("[MailService] mailDTO : " + mailDTO);
 
@@ -216,17 +188,21 @@ public class MailService {
     }
 
     /**
-    	* @MethodName : selectMailListByConditons
+    	* @MethodName : selectMailListByConditions
     	* @Date : 2023-04-10
     	* @Writer : 김수용
     	* @Description : 조건별 메일 목록 조회
     */
-    public ResponseDTOWithPaging selectMailListByConditions(int offset, HashMap<String, Object> searchConditions) {
+    public ResponseDTOWithPaging selectMailListByConditions(int memberCode, int offset, HashMap<String, Object> searchConditions) {
 
         log.info("[MailService] selectMailListByConditions Start");
         log.info("[MailService] offset : " + offset);
         log.info("[MailService] searchConditions : " + searchConditions);
-        // 블랙리스트를 검색조건에 추가하는 로직 필요
+
+        List<String> blackList = mailMapper.selectBlackListByMemberCode(memberCode);
+        log.info("[MailService] blackList : " + blackList);
+        searchConditions.put("blackList", blackList);
+
         int totalCount = mailMapper.getMailCount(searchConditions);
         log.info("[MailService] totalCount : " + totalCount);
         int limit = 10;

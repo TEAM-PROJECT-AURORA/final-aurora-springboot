@@ -61,10 +61,10 @@
         <if test="deleteStatus != null and deleteStatus != ''">
             AND DELETE_STATUS = #{deleteStatus}
         </if>
-        <if test="blacklist != null and blacklist.size() > 0">
+        <if test="blackList != null and blackList.size() > 0">
             AND SENDER_EMAIL NOT IN
-            <foreach item="email" index="index" collection="blacklist" open="(" separator="," close=")">
-                #{ memberEmail }
+            <foreach item="email" index="index" collection="blackList" open="(" separator="," close=")">
+                #{ email }
             </foreach>
         </if>
     </select>
@@ -73,7 +73,7 @@
         SELECT *
           FROM TBL_MAIL
          WHERE 1 = 1
-        <if test="searchConditions.tagCode != null">
+        <if test="searchConditions.tagCode != 0">
             AND TAG_CODE = #{ searchConditions.tagCode }
         </if>
         <if test="searchConditions.mailTitle != null">
@@ -106,10 +106,10 @@
         <if test="searchConditions.deleteStatus != null and searchConditions.deleteStatus != ''">
             AND DELETE_STATUS = #{ searchConditions.deleteStatus }
         </if>
-        <if test="searchConditions.blacklist != null and searchConditions.blacklist.size() > 0">
-            AND RECIPIENT NOT IN
-            <foreach item="email" index="index" collection="blacklist" open="(" separator="," close=")">
-                #{ searchConditions.memberEmail }
+        <if test="searchConditions.blackList != null and searchConditions.blackList.size() > 0">
+            AND SENDER_EMAIL NOT IN
+            <foreach item="email" index="index" collection="searchConditions.blackList" open="(" separator="," close=")">
+                #{ email }
             </foreach>
         </if>
          ORDER BY SHIP_DATE DESC

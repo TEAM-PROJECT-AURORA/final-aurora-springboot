@@ -90,13 +90,15 @@ public class MailController {
 
         try {
             log.info("[MailController] selectMailListByConditions Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[MailController] memberCode : " + memberCode);
             log.info("[MailController] searchCriteria : " + searchCriteria);
             log.info("[MailController] offset : " + offset);
 
             HashMap<String, Object> searchConditions = mailService.convertSearchCriteriaToMap(searchCriteria);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 목록 조회 성공",
-                    mailService.selectMailListByConditions(offset, searchConditions)));
+                    mailService.selectMailListByConditions(memberCode, offset, searchConditions)));
         } catch (Exception e) {
             log.info("[MailController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
