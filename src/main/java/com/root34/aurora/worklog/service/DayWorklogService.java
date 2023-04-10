@@ -35,7 +35,7 @@ public class DayWorklogService {
         return dayWorklogList;
     }
 
-    public Object selectDayWorklog(int dayWorklogCode) {
+    public DayWorklogDTO selectDayWorklog(int dayWorklogCode) {
 
         log.info("[DayWorklogService] selectDayWorklog Start ====================");
         DayWorklogDTO dayWorklogDTO = dayWorklogMapper.selectDayWorklog(dayWorklogCode);
@@ -81,5 +81,11 @@ public class DayWorklogService {
         log.info("[DayWorklogService] result > 0 성공 : " + result);
 
         return (result > 0) ? "일일 업무일지 삭제 성공" : "일일 업무일지 삭제 실패";
+    }
+
+    public DayWorklogDTO  selectMemberInfo(int memberCode) {
+        DayWorklogDTO  result = dayWorklogMapper.selectMemberInfo(memberCode);
+        log.info("[selectMemberInfo] result > 0 성공 : " + result);
+        return result;
     }
 }

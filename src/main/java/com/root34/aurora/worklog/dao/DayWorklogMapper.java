@@ -20,4 +20,6 @@ public interface DayWorklogMapper {
     int updateDayWorklog(DayWorklogDTO dayWorklogDTO);
 
     int deleteDayWorklog(int dayWorklogCode);
+
+    DayWorklogDTO selectMemberInfo(int memberCode);
 }

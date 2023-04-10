@@ -25,7 +25,8 @@ public class DayWorklogController {
 
     //일일 업무일지 전체조회
     @GetMapping("/worklogs/days/{memberCode}")
-    public ResponseEntity<ResponseDTO> selectDayWorklogListWithPaging(@RequestParam(name="offset", defaultValue="1") String offset, @PathVariable int memberCode) {
+    public ResponseEntity<ResponseDTO> selectDayWorklogListWithPaging(@RequestParam(name="offset", defaultValue="1") String offset,
+                                                                      @PathVariable int memberCode) {
 
         log.info("[DayWorklogController] selectDayWorklogListWithPaging : " + offset);
         int totalCount = dayWorklogService.selectDayWorklogTotal(memberCode); // selectDayWorklogTotal() ()안에 멤버코드를 줘서 그 멤버만 볼수 있게 해준다?
@@ -46,23 +47,36 @@ public class DayWorklogController {
     @GetMapping("/worklogs/days/detail/{dayWorklogCode}")
     public ResponseEntity<ResponseDTO> selectDayWorklogDetail(@PathVariable int dayWorklogCode) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 상세 조회 성공", dayWorklogService.selectDayWorklog(dayWorklogCode)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 상세 조회 성공",
+                dayWorklogService.selectDayWorklog(dayWorklogCode)));
     }
+
+    @GetMapping("/worklogs/days/member/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectMemberInfo(@PathVariable int memberCode) {
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "멤버조회 조회 성공",
+                dayWorklogService.selectMemberInfo(memberCode)));
+    }
+
+
 
     @PostMapping(value = "/worklogs/days")
     public ResponseEntity<ResponseDTO> insertDayWorklog(@RequestBody DayWorklogDTO dayWorklogDTO) {
 
         log.info("[DayWorklogController] PostMapping dayWorklogDTO : " + dayWorklogDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 등록 성공", dayWorklogService.insertDayWorklog(dayWorklogDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 등록 성공",
+                dayWorklogService.insertDayWorklog(dayWorklogDTO)));
     }
+
 
     @PutMapping(value = "/worklogs/days")
     public ResponseEntity<ResponseDTO> updateDayWorklog(@RequestBody DayWorklogDTO dayWorklogDTO) {
 
         log.info("[DayWorklogController] PutMapping dayWorklogDTO : " + dayWorklogDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 업데이트 성공", dayWorklogService.updateDayWorklog(dayWorklogDTO)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 업데이트 성공",
+                dayWorklogService.updateDayWorklog(dayWorklogDTO)));
     }
 
     @DeleteMapping(value = "/worklogs/days/{dayWorklogCode}")
@@ -70,6 +84,7 @@ public class DayWorklogController {
 
         log.info("[DayWorklogController] DeleteMapping dayWorklogCode : " + dayWorklogCode);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 삭제 성공", dayWorklogService.deleteDayWorklog(dayWorklogCode)));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "일일 업무일지 삭제 성공",
+                dayWorklogService.deleteDayWorklog(dayWorklogCode)));
     }
 }
