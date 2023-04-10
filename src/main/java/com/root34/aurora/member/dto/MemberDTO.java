@@ -1,81 +1,65 @@
 package com.root34.aurora.member.dto;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
+import java.util.Date;
 
+/**
+ @ClassName : MemberDTO
+ @Date : 23.03.19.
+ @Writer : 정근호
+ @Description : 사원 변수 선언
+ */
+@Data
 public class MemberDTO implements UserDetails {
-    private Long memberCode;
-    private String memberId;
-    private String memberPassword;
+
+    /**
+     * @param memberCode     사원코드
+     * @param deptCode       부서코드
+     * @param jobCode        직윝코드
+     * @param taskCode       직무코드
+     * @param memberName     이름
+     * @param memberId       아이디
+     * @param memberPWD      비밀번호
+     * @param memberEmail    이메일
+     * @param address        주소
+     * @param gender         성별
+     * @param memberRole     권한
+     * @param memberHireDate 입사일
+     * @param memberEndDate  퇴사일
+     * @param introduction   자기소개
+     * @param significant    특이사항
+     * @param status         재직상태
+     * @param birthDay       생년월일
+     * @param team           소속팀
+     * @param fileCode       사진파일코드
+     * @param phone          핸드폰
+     */
+    private int memberCode;
+    private String deptCode;
+    private String jobCode;
+    private String taskCode;
     private String memberName;
+    private String memberId;
+    private String memberPWD;
     private String memberEmail;
+    private String address;
+    private String gender;
     private String memberRole;
+    private String memberHireDate;
+    private String memberEndDate;
+    private String introduction;
+    private String significant;
+    private String status;
+    private Date birthDay;
+    private String teamCode;
+    private String teamName;
+    private String fileCode;
+    private String phone;
 
-    public MemberDTO() {
-    }
-
-    public MemberDTO(Long memberCode, String memberId, String memberPassword, String memberName, String memberEmail, String memberRole, Collection<? extends GrantedAuthority> authorities) {
-        this.memberCode = memberCode;
-        this.memberId = memberId;
-        this.memberPassword = memberPassword;
-        this.memberName = memberName;
-        this.memberEmail = memberEmail;
-        this.memberRole = memberRole;
-        this.authorities = authorities;
-    }
-
-    public Long getMemberCode() {
-        return memberCode;
-    }
-
-    public void setMemberCode(Long memberCode) {
-        this.memberCode = memberCode;
-    }
-
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
-    }
-
-    public String getMemberPassword() {
-        return memberPassword;
-    }
-
-    public void setMemberPassword(String memberPassword) {
-        this.memberPassword = memberPassword;
-    }
-
-    public String getMemberName() {
-        return memberName;
-    }
-
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
-    }
-
-    public String getMemberEmail() {
-        return memberEmail;
-    }
-
-    public void setMemberEmail(String memberEmail) {
-        this.memberEmail = memberEmail;
-    }
-
-    public String getMemberRole() {
-        return memberRole;
-    }
-
-    public void setMemberRole(String memberRole) {
-        this.memberRole = memberRole;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
 
 
 
@@ -89,7 +73,7 @@ public class MemberDTO implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.memberPassword;
+        return this.memberPWD;
     }
 
     @Override
@@ -117,16 +101,5 @@ public class MemberDTO implements UserDetails {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "MemberDto{" +
-                "memberCode=" + memberCode +
-                ", memberId='" + memberId + '\'' +
-                ", memberPassword='" + memberPassword + '\'' +
-                ", memberName='" + memberName + '\'' +
-                ", memberEmail='" + memberEmail + '\'' +
-                ", memberRole='" + memberRole + '\'' +
-                ", authorities=" + authorities +
-                '}';
-    }
+
 }

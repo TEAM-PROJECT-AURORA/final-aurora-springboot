@@ -15,4 +15,17 @@ public class DayWorklogDTO {
     private String morningDayNote;
     private String afternoonDayNote;
     private String daySpecialNote;
+
+    private String memberName;
+    private String deptCode;
+    private String deptName;
+    private String jobCode;
+    private String jobName;
+    private String taskCode;
+    private String memberEmail;
+    private String introduction;
+    private String birthday;
+    private String team;
+    private String phone;
+
 }

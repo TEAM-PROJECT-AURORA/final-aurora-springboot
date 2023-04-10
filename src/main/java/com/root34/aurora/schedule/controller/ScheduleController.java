@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -17,16 +21,16 @@ public class ScheduleController {
 
     public ScheduleController(ScheduleService scheduleService) { this.scheduleService = scheduleService; }
 
-    @GetMapping("/schedules/calendar/month")
-    public ResponseEntity<ResponseDTO> selectScheduleCalendarAboutMonth() {
+    @GetMapping("/schedules/calendar/my/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectScheduleCalendarAboutMe(@PathVariable int memberCode ) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutMonth()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutMe(memberCode)));
     }
 
-    @GetMapping("/schedules/calendar/week")
-    public ResponseEntity<ResponseDTO> selectScheduleCalendarAboutWeek() {
+    @GetMapping("/schedules/calendar/team/{teamCode}")
+    public ResponseEntity<ResponseDTO> selectScheduleCalendarAboutTeam(@PathVariable String teamCode) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutWeek()));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutTeam(teamCode)));
     }
 
     @GetMapping("/schedules/calendar/day")
@@ -35,10 +39,17 @@ public class ScheduleController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", scheduleService.selectScheduleCalendarAboutDay()));
     }
 
-    @GetMapping("/schedules/calendar/{scheduleCode}")
-    public ResponseEntity<ResponseDTO> selectScheduleDetail(@PathVariable int scheduleCode) {
+    @GetMapping("/schedules/calendar/{scheduleCode}/date")
+    public ResponseEntity<ResponseDTO> selectScheduleDetail(@RequestParam Date scheduleStartDay, @RequestParam Date scheduleEndDay, @PathVariable int scheduleCode) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"일정 상세정보 조회 성공", scheduleService.selectSchedule(scheduleCode)));
+        log.info("[ScheduleController] selectScheduleDetail scheduleCode" + scheduleCode);
+
+        Map map = new HashMap<>();
+        map.put("scheduleCode", scheduleCode);
+        map.put("scheduleStartDay", scheduleStartDay);
+        map.put("scheduleEndDay", scheduleEndDay);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"일정 상세정보 조회 성공", scheduleService.selectSchedule(map)));
     }
 
     @PostMapping(value = "/schedules/calendar")

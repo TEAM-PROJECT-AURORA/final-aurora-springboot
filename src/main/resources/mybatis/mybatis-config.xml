@@ -15,9 +15,18 @@
 		<typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
+		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
+		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
+		<typeAlias alias="dayWorklogDTO" type="com.root34.aurora.worklog.dao.DayWorklogMapper"/>
+<!--	내부분 넣어야하는듯	-->
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="addressBookMapper.xml" />
+		<mapper resource="reservationMapper.xml" />
+		<mapper resource="memberMapper.xml" />
+		<mapper resource="dayWorklogMapper.xml" />
+		<mapper resource="scheduleMapper.xml" />
+		<!--	내부분 넣어야하는듯	-->
 	</mappers>
 </configuration>
