@@ -55,10 +55,10 @@
 
     <insert id="insertApprove" parameterType="com.root34.aurora.approval.dto.ApprovalDTO" useGeneratedKeys="true" keyProperty="appCode">
         INSERT INTO TBL_APPROVAL
-        (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_END_DATE, APP_OPEN)
+        (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT,APP_START_DATE, APP_END_DATE, APP_STATUS, APP_OPEN)
         VALUES
-            (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appEndDate },
-             #{ appOpen } )
+            (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appStartDate },
+             #{ appEndDate }, #{ appStatus }, #{ appOpen } )
 
     </insert>
 

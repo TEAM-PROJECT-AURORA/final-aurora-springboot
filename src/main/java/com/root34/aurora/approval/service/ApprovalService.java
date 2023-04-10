@@ -172,6 +172,7 @@ public class ApprovalService {
 
         try {
             log.info("[ApprovalService] approve 실행");
+            log.info("[ApprovalService] approvalDTO 확인 : {}", approvalDTO);
             int result = approvalMapper.insertApprove(approvalDTO);
             if(result == 0){
                 throw new Exception("제출 실패!");
