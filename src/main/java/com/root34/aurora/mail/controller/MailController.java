@@ -2,16 +2,20 @@ package com.root34.aurora.mail.controller;
 
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.mail.dto.MailDTO;
+import com.root34.aurora.mail.dto.TagDTO;
 import com.root34.aurora.mail.service.MailService;
+import com.root34.aurora.report.dto.MailSearchCriteria;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 //@Api(tags = {"mails"}) // Swagger
+@Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class MailController {
@@ -23,22 +27,242 @@ public class MailController {
     }
 
     /**
-     * @MethodName :
-     * @Date :
-     * @Writer :
-     * @Method Description :
-     */
-//    @ApiOperation(value = "메일 보내기") // Swagger
+    	* @MethodName : sendMail
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 메일 전송
+    */
     @Transactional
-    @PostMapping(value ="/mail")
-    public ResponseEntity<ResponseDTO> sendMail(@RequestBody MailDTO mailDTO) {
+    @PostMapping(value ="/mails")
+    public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request, @RequestBody MailDTO mailDTO) {
 
-        if(mailService.sendEmail(mailDTO)) {
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", true));
+        try {
+            log.info("[MailController] sendMail Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            mailDTO.setMemberCode(memberCode);
+            log.info("[MailController] mailDTO : " + mailDTO);
 
-        } else {
-//            return ResponseEntity.internalServerError().body(ResponseDTO.status(HttpStatus.InternalServerError));
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 실패!", false));
+            boolean result = mailService.sendMail(mailDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", result));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
     }
+
+    /**
+    	* @MethodName : readUnseenMails
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 메일 목록 갱신
+    */
+    @Transactional
+    @GetMapping(value = "/mails/unseen")
+    public ResponseEntity<ResponseDTO> readUnseenMails() {
+
+        try {
+            log.info("[MailController] readUnseenMails Start");
+
+            mailService.readUnseenMails();
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 목록 갱신 성공!", true));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : selectMailListByConditions
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 조건별 메일 목록 조회
+    */
+    @GetMapping(value = "mails")
+    public ResponseEntity<ResponseDTO> selectMailListByConditions(HttpServletRequest request,
+                                                                  @ModelAttribute MailSearchCriteria searchCriteria,
+                                                                  @RequestParam int offset) {
+
+        try {
+            log.info("[MailController] selectMailListByConditions Start");
+            log.info("[MailController] searchCriteria : " + searchCriteria);
+            log.info("[MailController] offset : " + offset);
+
+            HashMap<String, Object> searchConditions = mailService.convertSearchCriteriaToMap(searchCriteria);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 목록 조회 성공",
+                    mailService.selectMailListByConditions(offset, searchConditions)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : updateImportantStatus
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 메일 중요 상태 수정
+    */
+    @Transactional
+    @PutMapping("/mails/{mailCode}/important-status/{importantStatus}")
+    public ResponseEntity<ResponseDTO> updateImportantStatus(@PathVariable long mailCode,
+                                                             @PathVariable char importantStatus) {
+
+        try {
+            log.info("[MailController] updateImportantStatus Start");
+            log.info("[MailController] mailCode : " + mailCode);
+            log.info("[MailController] importantStatus : " + importantStatus);
+
+            MailDTO mailDTO = new MailDTO();
+            mailDTO.setMailCode(mailCode);
+            mailDTO.setImportantStatus(importantStatus);
+            log.info("[MailController] mailDTO : " + mailDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 중요 상태 수정 성공",
+                    mailService.updateImportantStatus(mailDTO)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : updateDeleteStatus
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 메일 삭제 상태 수정 
+    */
+    @Transactional
+    @DeleteMapping("/mails/{mailCode}/delete-status/{deleteStatus}")
+    public ResponseEntity<ResponseDTO> updateDeleteStatus(@PathVariable long mailCode,
+                                                             @PathVariable char deleteStatus) {
+
+        try {
+            log.info("[MailController] updateDeleteStatus Start");
+            log.info("[MailController] mailCode : " + mailCode);
+            log.info("[MailController] deleteStatus : " + deleteStatus);
+
+            MailDTO mailDTO = new MailDTO();
+            mailDTO.setMailCode(mailCode);
+            mailDTO.setDeleteStatus(deleteStatus);
+            log.info("[MailController] mailDTO : " + mailDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 삭제 상태 수정 성공",
+                    mailService.updateDeleteStatus(mailDTO)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : registerTag
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 태그 생성
+    */
+    @Transactional
+    @PostMapping(value = "/mails/tags")
+    public ResponseEntity<ResponseDTO> registerTag(HttpServletRequest request, @RequestBody TagDTO tagDTO) {
+
+        try {
+            log.info("[MailController] registerTag Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            tagDTO.setMemberCode(memberCode);
+            log.info("[MailController] tagDTO : " + tagDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "태그 생성 성공",
+                    mailService.registerTag(tagDTO)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : selectTagListByMemberCode
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 태그 목록 조회
+    */
+    @GetMapping(value = "/mails/tags")
+    public ResponseEntity<ResponseDTO> selectTagListByMemberCode(HttpServletRequest request) {
+
+        try {
+            log.info("[MailController] selectTagListByMemberCode Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "태그 목록 조회 성공",
+                    mailService.selectTagListByMemberCode(memberCode)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : updateTag
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 태그 수정
+    */
+    @Transactional
+    @PutMapping(value = "/mails/tags")
+    public ResponseEntity<ResponseDTO> updateTag(HttpServletRequest request, @RequestBody TagDTO tagDTO) {
+
+        try {
+            log.info("[MailController] updateTag Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
+            tagDTO.setMemberCode(memberCode);
+            log.info("[ReportController] tagDTO : " + tagDTO);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "태그 수정 성공",
+                    mailService.updateTag(tagDTO)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : deleteTag
+    	* @Date : 2023-04-10
+    	* @Writer : 김수용
+    	* @Description : 태그 삭제
+    */
+    @Transactional
+    @DeleteMapping(value = "/mails/tags/{tagCode}")
+    public ResponseEntity<ResponseDTO> deleteTag(@PathVariable long tagCode) {
+
+        try {
+            log.info("[MailController] deleteTag Start");
+            log.info("[ReportController] tagCode : " + tagCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "태그 삭제 성공",
+                    mailService.deleteTag(tagCode)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+//    public boolean registerBlockList(HashMap<String, Object> parameters) {
+//    public ResponseEntity<ResponseDTO> registerBlockList(HashMap<String, Object> parameters) {
+//
+//
+//    }
 }

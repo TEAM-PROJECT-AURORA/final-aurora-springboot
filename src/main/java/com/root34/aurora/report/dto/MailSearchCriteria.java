@@ -1,23 +1,20 @@
-package com.root34.aurora.mail.dto;
+package com.root34.aurora.report.dto;
 
-import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
- @ClassName : MailDTO
- @Date : 23.03.20.
- @Writer : 김수용
- @Description : 메일 정보를 담을 DTO
- */
+	@ClassName : MailSearchCriteria
+	@Date : 2023-04-10
+	@Writer : 김수용
+	@Description : 메일 검색 조건
+*/
 @Data
-public class MailDTO {
+public class MailSearchCriteria {
 
-    /**
-     * @variable mailCode 메일 코드
-     */
-    private long mailCode;
     /**
      * @variable tagCode 태그 코드
      */
@@ -39,17 +36,19 @@ public class MailDTO {
      */
     private String senderEmail;
     /**
-     * @variable recipient 수신인
+     * @variable recipients 수신자
      */
-    private String recipient;
+    private String recipients;
     /**
-     * @variable shipDate 발송일
+     * @variable startDate 검색 시작일
      */
-    private Date shipDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
     /**
-     * @variable readStatus 읽음 상태
+     * @variable endDate 검색 종료일
      */
-    private char readStatus;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
     /**
      * @variable importantStatus 중요 상태
      */
@@ -59,11 +58,7 @@ public class MailDTO {
      */
     private char deleteStatus;
     /**
-     * @variable memberCode 멤버 코드
+     * @variable blacklist 블랙리스트
      */
-    private int memberCode;
-    /**
-     * @variable memberDTO 멤버 DTO
-     */
-    private MemberDTO memberDTO;
+    private List<Integer> blacklist;
 }

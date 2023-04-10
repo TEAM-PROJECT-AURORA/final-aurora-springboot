@@ -10,13 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 //@Slf4j
@@ -34,6 +32,9 @@ public class MailServiceTest {
     private final JavaMailSender javaMailSender;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     public MailServiceTest(/*JavaMailSender javaMailSender, */MailConfig mailConfig) {
 
 //        this.mailConfig = mailConfig;
@@ -47,40 +48,101 @@ public class MailServiceTest {
     }
 
     @Test
-    void 메일_보내기_테스트() throws IOException {
+    void 메일_전송_서비스_테스트() throws IOException, MessagingException {
 
         // given
         MailDTO mailDTO = new MailDTO();
-        mailDTO.setRecipient("ssssong125@gmail.com");
-//        mailDTO.setRecipient("admin@project-aurora.co.kr");
+        mailDTO.setSenderName("테스트 이름");
+//        mailDTO.setSender("admin@project-aurora.co.kr");
+        mailDTO.setSenderEmail("admin@project-aurora.co.kr");
+//        mailDTO.setSender("ssssong125@project-aurora.co.kr");
+
+//        mailDTO.setRecipient("admin@gmail.com");
 //        mailDTO.setRecipient("jgh337337@gmail.com");
 //        mailDTO.setRecipient("os133517@gmail.com");
-        mailDTO.setMailTitle("Test Title");
-        mailDTO.setMailBody("Test Body");
+//        mailDTO.setRecipient("admin@project-aurora.co.kr");
+        mailDTO.setRecipient("test02@project-aurora.co.kr");
+//        mailDTO.setRecipient("ssssong125@gmail.com");
+        mailDTO.setMailTitle("Test");
+        mailDTO.setMailBody("Test Body aaa");
 //        MockMultipartFile file = new MockMultipartFile("file", "testAuroraImage.jpg", "image/jpg",
 //                                                        new FileInputStream("C:\\auroraFiles\\testAuroraImage.jpg"));
 
-        MimeMessage message = javaMailSender.createMimeMessage();
+        // when
+        boolean result = mailService.sendMail(mailDTO);
 
-        try {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+        // then
+        assertEquals(true, result);
+    }
 
-            messageHelper.setTo(mailDTO.getRecipient());
-            messageHelper.setSubject(mailDTO.getMailTitle());
-            messageHelper.setText(mailDTO.getMailBody());
-//            messageHelper.setFrom("admin@project-aurora.co.kr");
-//            messageHelper.setFrom("ssssong125@gmail.com");
-//            messageHelper.setFrom("ssssong125@project-aurora.co.kr");
+    @Test
+    void 메일_조회_서비스_테스트() {
 
-//            messageHelper.addAttachment("testAuroraImage.jpg", new File("testAuroraImage.jpg"));
-//            messageHelper.addAttachment("testAuroraImage.jpg", new File("C:\\auroraFiles\\testAuroraImage.jpg"));
-            messageHelper.addAttachment("testAuroraImage.jpg", new File("C:\\auroraFiles\\testAuroraImage.jpg"));
+        // given
 
-            javaMailSender.send(message);
+        // when
+        mailService.readUnseenMails();
 
-            log.info("javaMailSender : " + javaMailSender);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        // then
     }
 }
+
+//            Store store = emailSession.getStore("imap");
+//            log.info("[MailService] emailSession properties : " + emailSession.getProperties());
+//
+//            store.connect(imapProperties.getHost(), imapProperties.getUsername(), imapProperties.getPassword());
+////            store.connect(host, username, password); // imap host
+//
+//            Folder inbox = store.getFolder("INBOX");
+//            inbox.open(Folder.READ_ONLY);
+//
+//            Message[] messages = inbox.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+//
+//            for (Message message : messages) {
+//
+//                Address[] senders = message.getFrom();
+//                Address[] recipients = message.getAllRecipients();
+//
+//                boolean containsDomain = false;
+//
+//                for (Address sender : senders) {
+//
+//                    if (sender.toString().contains(domain)) {
+//
+//                        containsDomain = true;
+//                        break;
+//                    }
+//                }
+//                if (!containsDomain) {
+//
+//                    for (Address recipient : recipients) {
+//
+//                        if (recipient.toString().contains(domain)) {
+//
+//                            containsDomain = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//                if (containsDomain) {
+//
+//                    MailDTO mail = new MailDTO();
+//                    mail.setMailTitle(message.getSubject());
+//                    mail.setMailBody(getTextFromMessage(message));
+//                    mail.setSender(senders[0].toString());
+//                    mail.setRecipient(Arrays.toString(recipients));
+//                    projectMails.add(mail);
+//                }
+//            }
+//            inbox.close(false);
+//
+//            store.close();
+//        } catch (NoSuchProviderException e) {
+//            e.printStackTrace();
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return projectMails;
+//    }
