@@ -38,9 +38,9 @@ public interface MailMapper {
 
     int deleteTag(long tagCode); // 태그 삭제
 
-    int registerBlockList(HashMap<String, Object> parameters); // 블랙리스트 등록
+    int registerBlackList(HashMap<String, Object> parameters); // 블랙리스트 등록
 
-    List<String> selectBlockListByMemberCode(int memberCode); // 블랙리스트 조회
+    List<String> selectBlackListByMemberCode(int memberCode); // 블랙리스트 조회
 
-    int deleteBlockedSenderEmail(String blockedSender); // 블랙리스트에서 삭제
+    int deleteBlockedSenderEmail(HashMap<String, Object> parameters); // 블랙리스트에서 삭제
 }

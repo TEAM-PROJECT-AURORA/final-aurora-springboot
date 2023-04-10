@@ -160,18 +160,18 @@
         INSERT INTO TBL_BLACK_LIST
             ( MEMBER_CODE, BLOCKED_SENDER )
         VALUES
-            ( #{ memberCode}, #{ blockedSender } )
+            ( #{ memberCode}, #{ email } )
     </insert>
     <!--블랙리스트 조회-->
-    <select id="selectBlockListByMemberCode" parameterType="Integer">
-        SELECT MEMBER_CODE,
-               BLOCKED_SENDER
-          FROM TBL_BLOCK_LIST
+    <select id="selectBlackListByMemberCode" parameterType="Integer" resultType="String">
+        SELECT BLOCKED_SENDER
+          FROM TBL_BLACK_LIST
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
     <!--블랙리스트에서 삭제-->
-    <delete id="deleteBlockedSenderEmail" parameterType="String">
+    <delete id="deleteBlockedSenderEmail" parameterType="HashMap">
         DELETE FROM TBL_BLACK_LIST
          WHERE BLOCKED_SENDER = #{ blockedSender }
+           AND MEMBER_CODE = #{ memberCode }
     </delete>
 </mapper>

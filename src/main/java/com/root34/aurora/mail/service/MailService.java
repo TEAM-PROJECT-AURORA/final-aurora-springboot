@@ -133,6 +133,7 @@ public class MailService {
             Store store = session.getStore("imaps");
             store.connect(imapProperties.getUsername(), imapProperties.getPassword());
 
+
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_WRITE);
 
@@ -353,15 +354,72 @@ public class MailService {
     	* @Writer : 김수용
     	* @Description : 블랙리스트 등록
     */
-    public boolean registerBlockList(HashMap<String, Object> parameters) {
+    public boolean registerBlackList(int memberCode, List<String> emails) {
 
         log.info("[MailService] registerBlockList Start");
-        log.info("[MailService] parameters : " + parameters);
+        log.info("[MailService] memberCode : " + memberCode);
+        log.info("[MailService] emails : " + emails);
 
-        int result = mailMapper.registerBlockList(parameters);
+        int blackListCount = 0;
 
-        return result > 0;
+        for(String email : emails) {
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("memberCode", memberCode);
+            parameters.put("email", email);
+            log.info("[MailService] parameters : " + parameters);
+
+            blackListCount += mailMapper.registerBlackList(parameters);
+        }
+        log.info("[MailService] blackListCount : " + blackListCount);
+        return blackListCount > 0;
     }
+
+    /**
+     * @MethodName : selectBlackListByMemberCode
+     * @Date : 2023-04-10
+     * @Writer : 김수용
+     * @Description : 블랙리스트 조회
+     */
+    public List<String> selectBlackListByMemberCode(int memberCode) {
+
+        log.info("[MailService] selectBlockListByMemberCode Start");
+        log.info("[MailService] memberCode : " + memberCode);
+
+        List<String> blackList = mailMapper.selectBlackListByMemberCode(memberCode);
+        log.info("[MailService] blackList : " + blackList);
+
+        return blackList;
+    }
+
+    /**
+     * @MethodName : deleteBlockedSenderEmail
+     * @Date : 2023-04-10
+     * @Writer : 김수용
+     * @Description : 블랙리스트에서 삭제
+     */
+    public boolean deleteBlockedSenderEmail(int memberCode, List<String> emails) {
+
+        log.info("[MailService] deleteBlockedSenderEmail Start");
+        log.info("[MailService] memberCode : " + memberCode);
+        log.info("[MailService] emails : " + emails);
+
+        int deletedBlackListCount = 0;
+
+        for(String blockedSender : emails) {
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("memberCode", memberCode);
+            parameters.put("blockedSender", blockedSender);
+            log.info("[MailService] parameters : " + parameters);
+
+            deletedBlackListCount += mailMapper.deleteBlockedSenderEmail(parameters);
+        }
+        log.info("[MailService] deletedBlackListCount : " + deletedBlackListCount);
+
+        return deletedBlackListCount > 0;
+    }
+
     /**
     	* @MethodName : getTextFromMessage
     	* @Date : 2023-04-10
