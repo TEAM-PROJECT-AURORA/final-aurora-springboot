@@ -107,20 +107,30 @@
     </if>
        ORDER BY A.SURVEY_CODE DESC
     </select>
-    <insert id="insertSurveyReply" parameterType="list">
+    <insert id="insertSurveyReply" parameterType="answerDTO">
         INSERT INTO TBL_CHOICE_ANSWER
             (QUESTION_NO, CHOICE_NO, ANSWER_BODY, MEMBER_CODE)
         VALUES
-        <foreach collection="answerDTOList" item="answerDTO" index="index" separator=",">
-            (#{ answerDTO.questionNo }, #{ answerDTO.choiceNo }, #{ answerDTO.answerBody }, #{ answerDTO.memberCode })
-        </foreach>
+            (#{ questionNo }, #{ choiceNo }, #{ answerBody }, #{ memberCode })
     </insert>
+    <update id="updateSurveyReply" parameterType="answerDTO">
+        UPDATE TBL_CHOICE_ANSWER
+           SET CHOICE_NO = #{ choiceNo },
+               ANSWER_BODY = #{ answerBody }
+         WHERE CHOICE_ANSWER_NO = #{ answerNo }
+    </update>
     <insert id="insertSurveyReplyStatus" parameterType="replyStatusDTO">
         INSERT INTO TBL_SURVEY_REPLY_STATE
             (SURVEY_CODE, MEMBER_CODE, REPLY_STATUS)
         VALUES
             (#{ surveyCode }, #{ memberCode }, #{ replyStatus })
     </insert>
+    <update id="updateSurveyReplyStatus" parameterType="replyStatusDTO">
+        UPDATE TBL_SURVEY_REPLY_STATE
+           SET REPLY_STATUS = #{ replyStatus }
+         WHERE SURVEY_CODE = #{ surveyCode }
+           AND MEMBER_CODE = #{ memberCode }
+    </update>
     <delete id="deleteSurveys" parameterType="String">
         DELETE FROM TBL_SURVEY
          WHERE SURVEY_CODE IN
@@ -164,22 +174,25 @@
         </set>
          WHERE SURVEY_CODE = #{ surveyCode }
     </update>
-    <update id="updateQuestions" parameterType="questionDTO">
-        UPDATE TBL_SURVEY_QUESTION
-        <set>
-            <if test="questionBody != null and questionBody != ''">
-                QUESTION_BODY = #{ questionBody }
-            </if>
-        </set>
-        WHERE QUESTION_NO = #{ questionNo }
-    </update>
-    <update id="updateChoices" parameterType="ChoiceDTO">
-        UPDATE TBL_QUESTION_CHOICE
-        <set>
-            <if test="choiceBody != null and choiceBody != ''">
-                CHOICE_BODY = #{ choiceBody }
-            </if>
-        </set>
-        WHERE CHOICE_NO = #{ choiceNo }
-    </update>
+    <delete id="deleteQuestions" parameterType="String">
+        DELETE FROM TBL_SURVEY_QUESTION
+         WHERE QUESTION_NO IN
+        <foreach collection=" questionNos " item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectSurveyReplyDetail" parameterType="map" resultType="answerDTO">
+        SELECT
+            A.CHOICE_ANSWER_NO AS ANSWER_NO,
+            A.QUESTION_NO,
+            A.CHOICE_NO,
+            A.ANSWER_BODY,
+            A.MEMBER_CODE,
+            B.SURVEY_CODE
+          FROM TBL_CHOICE_ANSWER A
+          JOIN TBL_SURVEY_QUESTION B
+            ON A.QUESTION_NO = B.QUESTION_NO
+         WHERE A.MEMBER_CODE = #{ memberCode }
+           AND B.SURVEY_CODE = #{ surveyCode }
+    </select>
 </mapper>
