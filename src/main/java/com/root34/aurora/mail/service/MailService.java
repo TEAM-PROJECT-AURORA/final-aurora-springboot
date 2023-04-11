@@ -265,15 +265,25 @@ public class MailService {
     	* @Writer : 김수용
     	* @Description : 메일 삭제 상태 수정
     */
-    public boolean updateDeleteStatus(MailDTO mailDTO) {
+    public boolean updateDeleteStatus(List<Long> mailCodeList, char deleteStatus) {
 
         log.info("[MailService] updateDeleteStatus Start");
-        log.info("[MailService] mailDTO : " + mailDTO);
+        log.info("[MailService] mailCodeList : " + mailCodeList);
+        log.info("[MailService] deleteStatus : " + deleteStatus);
 
-        int result = mailMapper.updateDeleteStatus(mailDTO);
-        log.info("[MailService] updateDeleteStatus result : " + result);
+        int deleteCount = 0;
 
-        return result > 0;
+        for(long mailCode : mailCodeList) {
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("mailCode", mailCode);
+            parameters.put("deleteStatus", deleteStatus);
+
+            deleteCount += mailMapper.updateDeleteStatus(parameters);
+        }
+        log.info("[MailService] updateDeleteStatus deleteCount : " + deleteCount);
+
+        return deleteCount > 0;
     }
 
     /**
@@ -474,7 +484,7 @@ public class MailService {
         searchConditions.put("endDate", searchCriteria.getEndDate());
         searchConditions.put("importantStatus", searchCriteria.getImportantStatus());
         searchConditions.put("deleteStatus", searchCriteria.getDeleteStatus());
-        searchConditions.put("blacklist", searchCriteria.getBlacklist());
+//        searchConditions.put("blacklist", searchCriteria.getBlacklist());
         log.info("[MailController] searchConditions : " + searchConditions);
 
         return searchConditions;

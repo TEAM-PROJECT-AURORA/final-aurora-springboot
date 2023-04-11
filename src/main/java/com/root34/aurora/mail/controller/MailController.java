@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 
 //@Api(tags = {"mails"}) // Swagger
 @Slf4j
@@ -143,22 +144,23 @@ public class MailController {
     	* @Description : 메일 삭제 상태 수정 
     */
     @Transactional
-    @DeleteMapping("/mails/{mailCode}/delete-status/{deleteStatus}")
-    public ResponseEntity<ResponseDTO> updateDeleteStatus(@PathVariable long mailCode,
+    @DeleteMapping("/mails/delete-status/{deleteStatus}")
+//    public ResponseEntity<ResponseDTO> updateDeleteStatus(@PathVariable long mailCode,
+    public ResponseEntity<ResponseDTO> updateDeleteStatus(@RequestBody List<Long> mailCodeList,
                                                              @PathVariable char deleteStatus) {
 
         try {
             log.info("[MailController] updateDeleteStatus Start");
-            log.info("[MailController] mailCode : " + mailCode);
+            log.info("[MailController] mailCodeList : " + mailCodeList);
             log.info("[MailController] deleteStatus : " + deleteStatus);
 
-            MailDTO mailDTO = new MailDTO();
-            mailDTO.setMailCode(mailCode);
-            mailDTO.setDeleteStatus(deleteStatus);
-            log.info("[MailController] mailDTO : " + mailDTO);
+//            MailDTO mailDTO = new MailDTO();
+//            mailDTO.setMailCode(mailCode);
+//            mailDTO.setDeleteStatus(deleteStatus);
+//            log.info("[MailController] mailDTO : " + mailDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 삭제 상태 수정 성공",
-                    mailService.updateDeleteStatus(mailDTO)));
+                    mailService.updateDeleteStatus(mailCodeList, deleteStatus)));
         } catch (Exception e) {
             log.info("[MailController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -53,6 +53,7 @@ public class TokenProvider {
         claims.put(AUTHORITIES_KEY, roles);// 권한 담기
         claims.put("memberCode", member.getMemberCode());
         claims.put("team", member.getTeamCode());
+        claims.put("memberEmail", member.getMemberEmail());
 
         long now = (new Date()).getTime();// 만료시간 때문에 현재 시간을 구하는 듯
 

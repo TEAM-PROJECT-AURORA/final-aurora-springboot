@@ -122,7 +122,7 @@
          WHERE MAIL_CODE = #{ mailCode }
     </update>
     <!--메일 삭제 상태 수정-->
-    <update id="updateDeleteStatus" parameterType="MailDTO">
+    <update id="updateDeleteStatus" parameterType="HashMap">
         UPDATE TBL_MAIL
            SET DELETE_STATUS = #{ deleteStatus }
          WHERE MAIL_CODE = #{ mailCode }
@@ -148,7 +148,7 @@
         UPDATE TBL_TAG
            SET TAG_NAME = #{ tagName },
                TAG_COLOR = #{ tagColor }
-         WHERE MEMBER_CODE = #{ memberCode }
+         WHERE TAG_CODE = #{ tagCode }
     </update>
     <!--태그 삭제-->
     <delete id="deleteTag" parameterType="Long">

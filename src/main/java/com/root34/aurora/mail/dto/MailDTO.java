@@ -1,9 +1,10 @@
 package com.root34.aurora.mail.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  @ClassName : MailDTO
@@ -45,7 +46,8 @@ public class MailDTO {
     /**
      * @variable shipDate 발송일
      */
-    private Date shipDate;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
+    private LocalDateTime shipDate;
     /**
      * @variable readStatus 읽음 상태
      */

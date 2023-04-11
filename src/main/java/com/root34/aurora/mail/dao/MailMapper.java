@@ -28,7 +28,7 @@ public interface MailMapper {
 
     int updateImportantStatus(MailDTO mailDTO); // 메일 중요 상태 수정 
 
-    int updateDeleteStatus(MailDTO mailDTO); // 메일 삭제 상태 수정
+    int updateDeleteStatus(HashMap<String, Object> parameters); // 메일 삭제 상태 수정
 
     int registerTag(TagDTO tagDTO); // 태그 생성
 
