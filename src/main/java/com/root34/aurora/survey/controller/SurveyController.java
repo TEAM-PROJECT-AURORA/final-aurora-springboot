@@ -141,6 +141,7 @@ public class SurveyController {
             answerDTO.setQuestionNo((String) answer.get("questionNo"));
             answerDTO.setChoiceNo((String) answer.get("choiceNo"));
             answerDTO.setAnswerBody((String) answer.get("answerBody"));
+            answerDTO.setAnswerNo((String) answer.get("answerNo"));
             answerDTO.setMemberCode(replyStatusDTO.getMemberCode());
             answerDTOList.add(answerDTO);
         }
@@ -165,6 +166,7 @@ public class SurveyController {
     @DeleteMapping("survey")
     public ResponseEntity<ResponseDTO> deleteSurveys(@RequestBody JSONObject object) {
 
+        log.info("[SurveyController] deleteSurveys : " + object);
         String objectAsString = object.getAsString("surveyCodes");
         String[] surveyCodes = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
 
@@ -199,5 +201,40 @@ public class SurveyController {
         log.info("[SurveyController] updateSurvey : " + surveyDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "설문 수정 성공", surveyService.updateSurvey(surveyDTO)));
+    }
+
+    /**
+    	* @MethodName : deleteQuestions
+    	* @Date : 2023-04-10
+    	* @Writer : 오승재
+    	* @Description : 질문 삭제
+    */
+    @DeleteMapping("survey/questions")
+    public ResponseEntity<ResponseDTO> deleteQuestions(@RequestBody JSONObject object) {
+
+        String objectAsString = object.getAsString("questionNos");
+        String[] questionNos = objectAsString.substring(1, objectAsString.length() - 1).split(", ");
+
+        log.info("[SurveyController] updateSurvey : " + questionNos);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "질문 삭제 성공", surveyService.deleteQuestions(questionNos)));
+    }
+
+    /**
+    	* @MethodName : selectSurveyReplyDetail
+    	* @Date : 2023-04-10
+    	* @Writer : 오승재
+    	* @Description : 자기 답변 조회
+    */
+    @GetMapping("survey/member/{memberCode}")
+    public ResponseEntity<ResponseDTO> selectSurveyReplyDetail(@PathVariable Integer memberCode, @RequestParam String surveyCode) {
+
+        log.info("[SurveyController] selectSurveyReplyDetail : " + memberCode + surveyCode);
+
+        Map map = new HashMap();
+        map.put("memberCode", memberCode);
+        map.put("surveyCode", surveyCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "답변 조회 성공", surveyService.selectSurveyReplyDetail(map)));
     }
 }
