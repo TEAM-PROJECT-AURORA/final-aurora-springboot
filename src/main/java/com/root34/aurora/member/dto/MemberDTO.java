@@ -140,6 +140,8 @@ public class MemberDTO implements UserDetails {
 
 
 
+
+
     // 이하 코드는 security 를 위한 용도
     private Collection<? extends GrantedAuthority> authorities;
 

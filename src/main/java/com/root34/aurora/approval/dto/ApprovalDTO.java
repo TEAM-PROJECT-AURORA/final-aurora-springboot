@@ -27,7 +27,7 @@ public class ApprovalDTO {
     private Date appStartDate;
     /**@Variable : 종료일*/
     private Date appEndDate;
-    private char appStatus;
+    private String appStatus;
     /**@Variable : 확인여부
      * @주의 : 읽지 않은 상태는 n, 읽은 상태는 y*/
     private String appOpen;

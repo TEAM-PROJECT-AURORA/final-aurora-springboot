@@ -64,7 +64,7 @@ public class ApprovalController {
      @MethodName : pendingList
      @Date : 12:09 AM
      @Writer : heojaehong
-     @Description : 미결재 리스트 조회
+     @Description : 진행중 리스트 조회
      */
     @GetMapping("/approvals/pending/{memberCode}")
     public ResponseEntity<ResponseDTO> pendingList(@PathVariable int memberCode){
