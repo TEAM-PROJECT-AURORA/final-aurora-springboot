@@ -1,14 +1,23 @@
 package com.root34.aurora.attendance.controller;
 
+import com.root34.aurora.attendance.dto.AttendanceDTO;
 import com.root34.aurora.attendance.service.AttendanceService;
 import com.root34.aurora.common.ResponseDTO;
+import com.root34.aurora.common.paging.Pagenation;
+import com.root34.aurora.common.paging.ResponseDTOWithPaging;
+import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
 	@ClassName : AttendanceController
@@ -23,6 +32,7 @@ import java.time.LocalDate;
 public class AttendanceController {
 
 	private final AttendanceService attendanceService;
+	private final MemberService memberService;
 
 
 	/**
@@ -32,9 +42,9 @@ public class AttendanceController {
 		@Description :
 	*/
 	@GetMapping("/attendance/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectAttendance(@PathVariable int memberCode) {
+	public ResponseEntity<ResponseDTO> selectAttendance(@PathVariable int memberCode, @RequestParam(name = "selectedDate", required = false) String selectedDate) {
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.getAttendance(memberCode)));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.getAttendance(memberCode, selectedDate)));
 
 	}
 
@@ -49,7 +59,7 @@ public class AttendanceController {
 
 		attendanceService.insertWorkTime(memberCode);
 
-		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.getAttendance(memberCode)));
+		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.selectWorkStatus(memberCode)));
 	}
 
 	/**
@@ -63,7 +73,23 @@ public class AttendanceController {
 
 		attendanceService.insertOffTime(memberCode);
 
-		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.getAttendance(memberCode)));
+		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료",  attendanceService.selectWorkStatus(memberCode)));
+
+	}
+
+	/**
+	 @MethodName : insertOrUpdateAttendance
+	 @Date : 2023-04-09
+	 @Writer : 정근호
+	 @Description :
+	 */
+	@PutMapping("/attendance/modify/{memberCode}")
+	public ResponseEntity<ResponseDTO> insertOrUpdateAttendance(@PathVariable int memberCode, @RequestBody AttendanceDTO attendanceDTO,
+																@RequestParam(name = "selectedDate", required = false) String selectedDate) {
+
+		attendanceService.insertOrUpdateAttendance(memberCode, attendanceDTO,selectedDate );
+
+		return ResponseEntity.ok(new ResponseDTO(HttpStatus.CREATED, "입력완료", attendanceService.getAttendance(memberCode, selectedDate)));
 
 	}
 
@@ -74,11 +100,11 @@ public class AttendanceController {
 		@Description :
 	*/
 	@GetMapping("/attendance/time/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectTime(@PathVariable int memberCode) {
+	public ResponseEntity<ResponseDTO> selectTime(@PathVariable int memberCode, @RequestParam(name = "selectTime", required = false) String selectTime) {
 
-		attendanceService.selectTime(memberCode);
+//		attendanceService.selectTime(memberCode, selectTime);
 
-		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.selectTime(memberCode)));
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.selectTime(memberCode, selectTime)));
 
 	}
 
@@ -89,9 +115,10 @@ public class AttendanceController {
 		@Description : 월별 평균근무 시간 근무일수 총 근무시간
 	*/
 	@GetMapping("/attendance/month-time/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectMonthTime(@PathVariable int memberCode) {
+	public ResponseEntity<ResponseDTO> selectMonthTime(@PathVariable int memberCode ) {
 
 		attendanceService.selectMonthTime(memberCode);
+
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료", attendanceService.selectMonthTime(memberCode)));
 	}
@@ -117,13 +144,51 @@ public class AttendanceController {
 	 @Description :
 	 */
 	@GetMapping("/attendance/time-day/{memberCode}")
-	public ResponseEntity<ResponseDTO> selectTimeByDay(@PathVariable int memberCode , @RequestParam LocalDate attRegDate) {
+	public ResponseEntity<ResponseDTO> selectTimeByDay(@PathVariable int memberCode ,
+													   @RequestParam("attRegDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate attRegDate) {
 
 		attendanceService.selectTimeByDay(memberCode ,attRegDate);
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", attendanceService.selectTimeByDay(memberCode, attRegDate)));
 	}
 
+	/**
+	 @MethodName : attendanceList
+	 @Date : 2023-04-10
+	 @Writer : 정근호
+	 @Description :
+	 */
+	@GetMapping("/attendance/list")
+	public ResponseEntity<ResponseDTO> attendanceList(@RequestParam(name="offset", defaultValue = "1") String offset,
+													  @RequestParam(name = "selectedDate", required = false)  String selectedDate) {
+
+
+		int totalCount = memberService.selectMemberTotal();
+		int limit = 20;
+		int buttonAmount = 5;
+		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+
+		log.info("[AttendanceController] selectCriteria : " + selectCriteria);
+		ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+		responseDTOWithPaging.setPageInfo(selectCriteria);
+		Object attendanceList = attendanceService.attendanceList(selectCriteria,selectedDate);
+		List<AttendanceDTO> getAttendanceList = attendanceService.getAttendanceList(selectedDate);
+
+		Map map = new HashMap();
+		map.put("getAttendanceList", getAttendanceList);
+		map.put("attendanceList", attendanceList);
+
+		responseDTOWithPaging.setData(map);
+
+
+
+
+
+
+
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", responseDTOWithPaging));
+	}
 
 
 

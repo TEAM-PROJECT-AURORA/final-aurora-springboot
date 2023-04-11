@@ -59,7 +59,7 @@ public class MemberService {
      * @Writer : 정근호
      * @Description :사원 전체 조회를 위한 매소드
      */
-    public Object memberList(SelectCriteria selectCriteria){
+    public Object memberList(SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListWithPaging Start =========================");
         List<MemberDTO> memberList = memberMapper.memberList(selectCriteria);

@@ -13,7 +13,7 @@
 
 	<typeAliases>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
-		<typeAlias alias="attendanceDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
 		<typeAlias alias="ApprovalDTO" type="com.root34.aurora.approval.dto.ApprovalDTO"/>
 		<typeAlias alias="ApprovalLineDTO" type="com.root34.aurora.approval.dto.ApprovalLineDTO"/>
 		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
@@ -24,7 +24,6 @@
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
 		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
-		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="ReportDetailDTO" type="com.root34.aurora.report.dto.ReportDetailDTO" />
 		<typeAlias alias="ReportRoundReplyDTO" type="com.root34.aurora.report.dto.ReportRoundReplyDTO" />

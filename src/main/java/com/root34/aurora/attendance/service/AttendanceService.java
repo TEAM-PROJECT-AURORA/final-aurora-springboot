@@ -1,13 +1,16 @@
 package com.root34.aurora.attendance.service;
 
 import com.root34.aurora.attendance.dao.AttendanceMapper;
+import com.root34.aurora.attendance.dto.AttendanceDTO;
+import com.root34.aurora.common.paging.SelectCriteria;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,13 +32,13 @@ public class AttendanceService {
 		@Writer : 정근호
 		@Description :
 	*/
-	public Map getAttendance(int memberCode) {
+	public Map getAttendance(int memberCode, String selectedDate) {
 
 
 
 		log.info("[AttendanceService] getAttendance Start ===================");
 		log.info("[memberCode]   :" + memberCode );
-		Map count = attendanceMapper.getAttendance(memberCode);
+		Map count = attendanceMapper.getAttendance(memberCode, selectedDate);
 		log.info("[count]   :" + count );
 		log.info("[AttendanceService] getAttendance End ===================");
 
@@ -50,15 +53,15 @@ public class AttendanceService {
 	 @Description :
 	 */
 
-	public Map selectTime(int memberCode) {
+	public Map selectTime(int memberCode , String selectTime) {
 
 		log.info("[AttendanceService] selectTime Start ===================");
-		Map selectTime = attendanceMapper.selectTime(memberCode);
+		Map selectTimes = attendanceMapper.selectTime(memberCode, selectTime);
 		log.info("[memberCode]   :" + memberCode );
-		log.info("[selectTime]   :" + selectTime );
+		log.info("[selectTimes]   :" + selectTimes );
 		log.info("[AttendanceService] selectTime End ===================");
 
-		return selectTime;
+		return selectTimes;
 
 
 	}
@@ -89,6 +92,20 @@ public class AttendanceService {
 		LocalDateTime offTime = LocalDateTime.now();
 		attendanceMapper.insertOffTime(offTime, memberCode);
 		log.info("[AttendanceService] insertOffTime End ===================");
+	}
+
+	/**
+	 @MethodName : insertOrUpdateAttendance
+	 @Date : 2023-04-09
+	 @Writer : 정근호
+	 @Description :
+	 */
+	public void insertOrUpdateAttendance(int memberCode, AttendanceDTO attendanceDTO, String selectedDate) {
+
+		log.info("[AttendanceService] insertOrUpdateAttendance Start ===================");
+
+		attendanceMapper.insertOrUpdateAttendance(memberCode,attendanceDTO, selectedDate);
+		log.info("[AttendanceService] insertOrUpdateAttendance End ===================");
 	}
 
 	/**
@@ -125,6 +142,12 @@ public class AttendanceService {
 		return selectWorkStatus;
 
 	}
+	/**
+	 @MethodName : selectTimeByDay
+	 @Date : 2023-04-05
+	 @Writer : 정근호
+	 @Description :
+	 */
 
 	public Map selectTimeByDay(int memberCode, LocalDate attRegDate) {
 
@@ -135,6 +158,32 @@ public class AttendanceService {
 		log.info("[AttendanceService] selectTimeByDay End ===================");
 
 		return selectTimeByDay;
+
+	}
+
+	/**
+	 @MethodName : attendanceList
+	 @Date : 2023-04-10
+	 @Writer : 정근호
+	 @Description :
+	 */
+
+	public Object attendanceList(SelectCriteria selectCriteria,  String selectedDate) {
+
+		log.info("[AttendanceService] attendanceList Start =========================");
+		List<AttendanceDTO> attendanceList = attendanceMapper.attendanceList(selectCriteria, selectedDate);
+
+		log.info("[MemberService] selectMemberListWithPaging End =============================");
+
+		return attendanceList;
+	}
+
+	public List<AttendanceDTO> getAttendanceList(@RequestParam(name="selectedDate") String selectedDate) {
+
+		log.info("[AttendanceService] getAttendanceList Start =========================");
+
+		log.info("[MemberService] getAttendanceList End =============================");
+		return attendanceMapper.getAttendanceList(selectedDate);
 
 	}
 

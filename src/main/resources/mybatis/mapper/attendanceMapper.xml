@@ -12,6 +12,22 @@
             SUM(CASE WHEN ABSENCE = 'Y' THEN 1 ELSE 0 END) AS ABSENCE
           FROM TBL_ATTENDANCE
          WHERE MEMBER_CODE = #{ memberCode }
+         AND YEAR(ATT_REG_DATE) = YEAR(#{ selectedDate })
+         AND MONTH(ATT_REG_DATE) = MONTH(#{ selectedDate })
+    </select>
+
+    <select id="getAttendanceList" resultType="hashMap">
+       SELECT
+            MEMBER_CODE,
+            SUM(CASE WHEN TARDY = 'Y' THEN 1 ELSE 0 END) AS TARDY,
+            SUM(CASE WHEN EARLY_OFF = 'Y' THEN 1 ELSE 0 END) AS EARLY_OFF,
+            SUM(CASE WHEN TRUANCY = 'Y' THEN 1 ELSE 0 END) AS TRUANCY,
+            SUM(CASE WHEN ABSENCE = 'Y' THEN 1 ELSE 0 END) AS ABSENCE
+         FROM TBL_ATTENDANCE
+        WHERE YEAR(ATT_REG_DATE) = YEAR(#{ selectedDate })
+          AND MONTH(ATT_REG_DATE) = MONTH(#{ selectedDate })
+     GROUP BY MEMBER_CODE
+
     </select>
 
     <select id="selectWorkStatus" resultType="hashmap">
@@ -33,10 +49,26 @@
 
           FROM TBL_ATTENDANCE
          WHERE MEMBER_CODE = #{ memberCode }
-           AND ATT_REF_DATE = #{ attRegDate }
+           AND ATT_REG_DATE = #{ attRegDate }
     </select>
 
+    <insert id="insertOrUpdateAttendance" parameterType="attendanceDTO">
+        INSERT INTO TBL_ATTENDANCE (MEMBER_CODE,TARDY,EARLY_OFF,TRUANCY,ABSENCE,ATT_REG_DATE)
+        VALUES (
+                   #{ attendanceDTO.memberCode },
+                   #{ attendanceDTO.tardy},
+                   #{ attendanceDTO.earlyOff},
+                   #{ attendanceDTO.truancy},
+                   #{ attendanceDTO.absence},
+                   #{selectedDate}
+               )
+            ON DUPLICATE KEY UPDATE
+                                     TARDY = IF(ATT_REG_DATE = #{ selectedDate, jdbcType=DATE }, #{attendanceDTO.tardy},TARDY),
+                                     EARLY_OFF = IF(ATT_REG_DATE = #{ selectedDate, jdbcType=DATE }, #{ attendanceDTO.earlyOff },EARLY_OFF),
+                                     TRUANCY = IF(ATT_REG_DATE = #{ selectedDate, jdbcType=DATE }, #{ attendanceDTO.truancy },TRUANCY),
+                                     ABSENCE = IF(ATT_REG_DATE = #{ selectedDate, jdbcType=DATE }, #{ attendanceDTO.absence },ABSENCE)
 
+    </insert>
 
 
     <insert id="insertWorkTime" parameterType="attendanceDTO">
@@ -70,9 +102,9 @@
                MEMBER_CODE,
                SUM(worked_minutes) AS total_worked_minutes,
                SUM(IF(worked_minutes > (9 * 60), worked_minutes - (9 * 60), 0)) AS extra_worked_minutes,
-               SUM(IF(worked_minutes < (9 * 60) AND work_date < CURDATE(), (9 * 60) - worked_minutes, 0)) AS remaining_minutes,
-               SUM(IF(work_week = YEARWEEK(CURDATE(), 1), worked_minutes, 0)) AS worked_minutes_this_week,
-               SUM(IF(work_month = MONTH(CURDATE()) AND work_year = YEAR(CURDATE()), worked_minutes, 0)) AS worked_minutes_this_month
+               (45 * 60) - SUM(IF(work_week = YEARWEEK(#{ selectTime }, 1), worked_minutes, 0)) AS remaining_minutes, /*총근무시간을 45시간으로 설정*/
+               SUM(IF(work_week = YEARWEEK(#{ selectTime }, 1), worked_minutes, 0)) AS worked_minutes_this_week,
+               SUM(IF(work_month = MONTH(#{ selectTime }) AND work_year = YEAR(#{ selectTime }), worked_minutes, 0)) AS worked_minutes_this_month
           FROM (
                  SELECT
                         MEMBER_CODE,
@@ -82,12 +114,13 @@
                         YEAR(OFF_TIME) AS work_year,
                         YEARWEEK(OFF_TIME, 1) AS work_week
                    FROM TBL_ATTENDANCE
-         WHERE (YEARWEEK(OFF_TIME, 1) = YEARWEEK(CURDATE(), 1)) OR (MONTH(OFF_TIME) = MONTH(CURDATE()) AND YEAR(OFF_TIME) = YEAR(CURDATE()))
+         WHERE (YEARWEEK(OFF_TIME, 1) = YEARWEEK(#{ selectTime }, 1)) OR (MONTH(OFF_TIME) = MONTH(#{ selectTime }) AND YEAR(OFF_TIME) = YEAR(#{ selectTime }))
            AND DAYOFWEEK(OFF_TIME) NOT IN (1, 7)
             ) AS daily_worked_minutes
       GROUP BY MEMBER_CODE;
         ]]>
 </select>
+
 
     <select id="selectMonthTime" resultType="hashmap">
         SELECT
@@ -109,7 +142,36 @@
 
 
     </select>
+    <select id="attendanceList" resultType="AttendanceDTO">
+        SELECT
+            A.MEMBER_CODE,
+            A.MEMBER_NAME,
+            A.PHONE,
+            A.MEMBER_EMAIL,
+            A.DEPT_CODE,
+            B.DEPT_NAME,
+            A.JOB_CODE,
+            C.JOB_NAME,
+            A.TASK_CODE,
+            D.TASK_NAME,
+            F.WORK_STATUS,
+            F.WORK_TIME,
+            F.OFF_TIME,
+            F.ATT_REG_DATE,
+            IFNULL(F.TARDY, 'N') AS TARDY,
+            IFNULL(F.EARLY_OFF, 'N') AS EARLY_OFF,
+            IFNULL(F.TRUANCY, 'N') AS TRUANCY,
+            IFNULL(F.ABSENCE, 'N') AS ABSENCE
 
+
+        FROM TBL_MEMBER A
+                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
+        LEFT OUTER JOIN TBL_ATTENDANCE F ON A.MEMBER_CODE = F.MEMBER_CODE
+        WHERE F.ATT_REG_DATE = #{ selectedDate }
+
+    </select>
 
 
 
