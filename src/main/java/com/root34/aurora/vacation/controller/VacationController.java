@@ -51,4 +51,13 @@ public class VacationController {
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정", vacationService.selectVacation(memberCode)));
 	}
+
+	@GetMapping("/vacation/detail/{memberCode}")
+	public ResponseEntity<ResponseDTO> selectVacationDetail(@PathVariable int memberCode) {
+
+		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료", vacationService.selectVacationDetail(memberCode)));
+
+
+	}
+
 }

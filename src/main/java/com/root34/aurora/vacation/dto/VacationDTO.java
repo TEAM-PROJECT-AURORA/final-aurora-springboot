@@ -43,6 +43,8 @@ public class VacationDTO {
      **/
     private double remainVacation;
 
+    private String appStatus;
+
 
 
 
