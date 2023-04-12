@@ -117,6 +117,7 @@
          WHERE (YEARWEEK(OFF_TIME, 1) = YEARWEEK(#{ selectTime }, 1)) OR (MONTH(OFF_TIME) = MONTH(#{ selectTime }) AND YEAR(OFF_TIME) = YEAR(#{ selectTime }))
            AND DAYOFWEEK(OFF_TIME) NOT IN (1, 7)
             ) AS daily_worked_minutes
+        WHERE MEMBER_CODE = #{ memberCode }
       GROUP BY MEMBER_CODE;
         ]]>
 </select>
