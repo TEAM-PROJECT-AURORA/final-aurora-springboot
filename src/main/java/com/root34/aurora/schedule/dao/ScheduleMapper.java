@@ -4,7 +4,6 @@ import com.root34.aurora.schedule.dto.ScheduleDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface ScheduleMapper {
@@ -15,7 +14,7 @@ public interface ScheduleMapper {
 
     List<ScheduleDTO> selectScheduleCalendarAboutDay();
 
-    List<ScheduleDTO> selectSchedule(Map map);
+    ScheduleDTO selectSchedule(int scheduleCode);
 
     int insertSchedule(ScheduleDTO scheduleDTO);
 

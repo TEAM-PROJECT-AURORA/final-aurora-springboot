@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -44,13 +43,14 @@ public class ScheduleService {
         return selectScheduleCalendarAboutDay;
     }
 
-    public List<ScheduleDTO> selectSchedule(Map map) {
+    public ScheduleDTO selectSchedule(int scheduelCode) {
 
         log.info("[ScheduleService] selectSchedule Start ====================");
-        List<ScheduleDTO> schedules = scheduleMapper.selectSchedule(map);
+//        List<ScheduleDTO> schedules = scheduleMapper.selectSchedule(scheduelCode);
+        ScheduleDTO scheduleDTO = scheduleMapper.selectSchedule(scheduelCode);
         log.info("[ScheduleService] selectSchedule End ====================");
 
-        return schedules;
+        return scheduleDTO;
     }
 
     @Transactional
