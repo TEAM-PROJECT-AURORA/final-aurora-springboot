@@ -18,6 +18,8 @@
 		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
 		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
 		<typeAlias alias="dayWorklogDTO" type="com.root34.aurora.worklog.dao.DayWorklogMapper"/>
+		<typeAlias alias="weekWorklogDTO" type="com.root34.aurora.worklog.dao.WeekWorklogMapper"/>
+		<typeAlias alias="scheduleDTO" type="com.root34.aurora.schedule.dao.ScheduleMapper"/>
 <!--	내부분 넣어야하는듯	-->
 	</typeAliases>
 
@@ -26,6 +28,7 @@
 		<mapper resource="reservationMapper.xml" />
 		<mapper resource="memberMapper.xml" />
 		<mapper resource="dayWorklogMapper.xml" />
+		<mapper resource="weekWorklogMapper.xml" />
 		<mapper resource="scheduleMapper.xml" />
 		<!--	내부분 넣어야하는듯	-->
 	</mappers>
