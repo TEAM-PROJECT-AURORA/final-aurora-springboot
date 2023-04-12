@@ -6,22 +6,24 @@
 
     <select id="selectVacation" resultType="hashmap">
         SELECT
-               REMAIN_VACATION
+            REMAIN_VACATION
 
-          FROM TBL_VACATION
-         WHERE MEMBER_CODE = #{ memberCode }
-      ORDER BY VACATION_NO DESC
-        LIMIT 1
+        FROM TBL_VACATION
+        WHERE MEMBER_CODE = #{ memberCode }
+        ORDER BY VACATION_NO DESC
+            LIMIT 1
 
     </select>
 
     <select id="selectUsedVacation" resultType="hashmap">
         SELECT
-
-            IF(IS_HALF_DAY, 0.5, DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) + 1) AS usedDay
+            SUM(IF(IS_HALF_DAY, 0.5, DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) -
+                                     (FLOOR((DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) + WEEKDAY(VACATION_START_DATE) + 1) / 7) * 2) -
+                                     (CASE WHEN WEEKDAY(VACATION_START_DATE) = 6 THEN 1 ELSE 0 END) -
+                                     (CASE WHEN WEEKDAY(VACATION_END_DATE) = 5 THEN 1 ELSE 0 END) + 1)) AS usedDay
         FROM TBL_USED_VACATION A
-        JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
-       WHERE B.MEMBER_CODE = #{ memberCode }
+                 JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
+        WHERE B.MEMBER_CODE = #{ memberCode }
 
     </select>
 
@@ -41,6 +43,25 @@
 
 
     </update>
+
+    <select id="selectVacationDetail" resultType="vacationDTO">
+        SELECT
+            A.VACATION_START_DATE,
+            A.VACATION_END_DATE,
+            A.VACATION_NO,
+            A.IS_HALF_DAY,
+            B.APP_STATUS
+        FROM TBL_USED_VACATION A
+                 JOIN TBL_APPROVAL B ON A.MEMBER_CODE = B.MEMBER_CODE AND B.DOC_CODE = 8
+        WHERE A.MEMBER_CODE = #{ memberCode }
+          AND B.APP_DATE = (
+            SELECT MAX(C.APP_DATE)
+            FROM TBL_APPROVAL C
+            WHERE C.MEMBER_CODE = A.MEMBER_CODE AND C.DOC_CODE = 8 AND B.APP_DATE = C.APP_DATE
+        )
+        ORDER BY A.VACATION_START_DATE DESC
+            LIMIT 5
+    </select>
 
 
 
