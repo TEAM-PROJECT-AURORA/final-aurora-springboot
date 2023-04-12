@@ -33,11 +33,15 @@ public interface MailMapper {
 
     MailDTO selectMailDetailByMailCode(HashMap<String, Object> parameters); // 메일 상세 조회
 
+    List<FileDTO> selectAttachmentListByMailCode(long mailCode); // 메일 첨부파일 목록 조회
+
     int updateImportantStatus(MailDTO mailDTO); // 메일 중요 상태 수정 
 
     int updateDeleteStatus(HashMap<String, Object> parameters); // 메일 삭제 상태 수정
 
     int updateMailTag(MailDTO mailDTO); // 메일 태그 변경
+
+    int deleteMail(long mailCode); // 메일 완전 삭제
 
     int registerTag(TagDTO tagDTO); // 태그 생성
 

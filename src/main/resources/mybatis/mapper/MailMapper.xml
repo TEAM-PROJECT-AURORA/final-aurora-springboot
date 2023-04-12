@@ -90,49 +90,56 @@
     </select>
     <!--조건별 메일 목록 조회-->
     <select id="selectMailListByConditions" parameterType="SelectCriteria" resultType="MailDTO">
-        SELECT *
-          FROM TBL_MAIL
+        SELECT A.*,
+               CASE
+               WHEN EXISTS (SELECT 1
+                              FROM TBL_FILE B
+                             WHERE B.MAIL_CODE = A.MAIL_CODE)
+               THEN 1
+               ELSE 0
+                END AS hasAttachments
+          FROM TBL_MAIL A
          WHERE 1 = 1
         <if test="searchConditions.tagCode != 0">
-            AND TAG_CODE = #{ searchConditions.tagCode }
+            AND A.TAG_CODE = #{ searchConditions.tagCode }
         </if>
         <if test="searchConditions.mailTitle != null">
-            AND MAIL_TITLE LIKE CONCAT('%', #{ searchConditions.mailTitle }, '%')
+            AND A.MAIL_TITLE LIKE CONCAT('%', #{ searchConditions.mailTitle }, '%')
         </if>
         <if test="searchConditions.mailBody != null">
-            AND MAIL_BODY LIKE CONCAT('%', #{ searchConditions.mailBody }, '%')
+            AND A.MAIL_BODY LIKE CONCAT('%', #{ searchConditions.mailBody }, '%')
         </if>
         <if test="searchConditions.senderName != null">
-            AND SENDER_NAME LIKE CONCAT('%', #{ searchConditions.senderName }, '%')
+            AND A.SENDER_NAME LIKE CONCAT('%', #{ searchConditions.senderName }, '%')
         </if>
         <if test="searchConditions.senderEmail != null">
-            AND SENDER_EMAIL LIKE CONCAT('%', #{ searchConditions.senderEmail }, '%')
+            AND A.SENDER_EMAIL LIKE CONCAT('%', #{ searchConditions.senderEmail }, '%')
         </if>
         <if test="searchConditions.recipients != null">
-            AND RECIPIENT LIKE CONCAT('%', #{ searchConditions.recipients }, '%')
+            AND A.RECIPIENT LIKE CONCAT('%', #{ searchConditions.recipients }, '%')
         </if>
         <if test="searchConditions.startDate != null and searchConditions.endDate == null">
-            AND SHIP_DATE &gt;= #{ searchConditions.startDate }
+            AND A.SHIP_DATE &gt;= #{ searchConditions.startDate }
         </if>
         <if test="searchConditions.startDate == null and searchConditions.endDate != null">
-            AND SHIP_DATE &lt;= #{ searchConditions.endDate }
+            AND A.SHIP_DATE &lt;= #{ searchConditions.endDate }
         </if>
         <if test="searchConditions.startDate != null and searchConditions.endDate != null">
-            AND SHIP_DATE BETWEEN #{ searchConditions.startDate } AND #{ searchConditions.endDate }
+            AND A.SHIP_DATE BETWEEN #{ searchConditions.startDate } AND #{ searchConditions.endDate }
         </if>
         <if test="searchConditions.importantStatus != null and searchConditions.importantStatus != ''">
-            AND IMPORTANT_STATUS = #{ searchConditions.importantStatus }
+            AND A.IMPORTANT_STATUS = #{ searchConditions.importantStatus }
         </if>
         <if test="searchConditions.deleteStatus != null and searchConditions.deleteStatus != ''">
-            AND DELETE_STATUS = #{ searchConditions.deleteStatus }
+            AND A.DELETE_STATUS = #{ searchConditions.deleteStatus }
         </if>
         <if test="searchConditions.blackList != null and searchConditions.blackList.size() > 0">
-            AND SENDER_EMAIL NOT IN
+            AND A.SENDER_EMAIL NOT IN
             <foreach item="email" index="index" collection="searchConditions.blackList" open="(" separator="," close=")">
                 #{ email }
             </foreach>
         </if>
-         ORDER BY SHIP_DATE DESC
+         ORDER BY A.SHIP_DATE DESC
          LIMIT #{ startRow }, #{ limit }
     </select>
     <!--메일 상세 조회-->
@@ -152,6 +159,17 @@
          WHERE MAIL_CODE = #{ mailCode }
            AND (RECIPIENT = #{ memberEmail } OR SENDER_EMAIL = #{ memberEmail })
     </select>
+    <!--메일 첨부파일 목록 조회-->
+    <select id="selectAttachmentListByMailCode" parameterType="Long" resultType="FileDTO">
+        SELECT FILE_CODE,
+               FILE_NAME,
+               FILE_ORIGIN_NAME,
+               FILE_SIZE,
+               FILE_PATH,
+               MAIL_CODE
+          FROM TBL_FILE
+         WHERE MAIL_CODE = #{ mailCode }
+    </select>
     <!--메일 중요 상태 수정-->
     <update id="updateImportantStatus" parameterType="MailDTO">
         UPDATE TBL_MAIL
@@ -170,6 +188,11 @@
            SET TAG_CODE = #{ tagCode }
          WHERE MAIL_CODE = #{ mailCode }
     </update>
+    <!--메일 완전 삭제-->
+    <delete id="deleteMail" parameterType="Long">
+        DELETE FROM TBL_MAIL
+         WHERE MAIL_CODE = #{ mailCode }
+    </delete>
     <!--태그 생성-->
     <insert id="registerTag" parameterType="TagDTO">
         INSERT INTO TBL_TAG

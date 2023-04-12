@@ -64,39 +64,6 @@ public class MailService {
      * @Writer : 김수용
      * @Description : 메일 전송
      */
-//    public boolean sendMail(MailDTO mailDTO) throws UnsupportedEncodingException, MessagingException {
-//
-//        log.info("[MailService] sendEmail Start");
-//        MemberDTO memberDTO = mailMapper.selectMemberDetailByMemberCode(mailDTO.getMemberCode());
-//        mailDTO.setMemberDTO(memberDTO);
-//        mailDTO.setSenderName(memberDTO.getMemberName());
-//        mailDTO.setSenderEmail(memberDTO.getMemberEmail());
-//        log.info("[MailService] mailDTO : " + mailDTO);
-//
-//        MimeMessage message = javaMailSender.createMimeMessage();
-//        log.info("[MailService] message : " + message);
-//
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//        helper.setFrom(new InternetAddress(memberDTO.getMemberEmail(), mailDTO.getSenderName())); // 발신자 이메일, 발신자 명
-//        helper.setTo(mailDTO.getRecipient());
-//        helper.setSubject(mailDTO.getMailTitle());
-//        helper.setText(mailDTO.getMailBody());
-//
-//        // 참조 목록 추가
-//        if (mailDTO.getCc() != null && !mailDTO.getCc().isEmpty()) {
-//
-//            helper.setCc(mailDTO.getCc().split(","));
-//        }
-//        log.info("[MailService] helper : " + helper);
-//
-//        javaMailSender.send(message); // void 문제 발생시 런타임 에러 발생
-//        log.info("[MailService] sent");
-//
-//        int result = mailMapper.saveMail(mailDTO);
-//        log.info("[MailService] saveMail result : " + result);
-//
-//        return result > 0;
-//    }
     public boolean sendMail(MailDTO mailDTO, List<MultipartFile> fileList) throws IOException, MessagingException {
 
         log.info("[MailService] sendEmail Start");
@@ -119,9 +86,16 @@ public class MailService {
         helper.setText(mailDTO.getMailBody());
 
         // 참조 목록 추가
+//        if (mailDTO.getCc() != null && !mailDTO.getCc().isEmpty()) {
+//
+//            helper.setCc(mailDTO.getCc().split(","));
+//        }
+//        log.info("[MailService] helper : " + helper);
+
+        // 숨은 참조 목록 추가
         if (mailDTO.getCc() != null && !mailDTO.getCc().isEmpty()) {
 
-            helper.setCc(mailDTO.getCc().split(","));
+            helper.setBcc(mailDTO.getCc().split(","));
         }
         log.info("[MailService] helper : " + helper);
 
@@ -310,7 +284,6 @@ public class MailService {
         log.info("[MailService] selectCriteria : " + selectCriteria);
 
         List<MailDTO> mailList = mailMapper.selectMailListByConditions(selectCriteria);
-        // 여유되면 이메일로 멤버 상세정보 구해서 넣는 로직 추가
 
         for(MailDTO mailDTO : mailList) {
 
@@ -358,6 +331,7 @@ public class MailService {
         if (senderMember != null) {
             mailDTO.setMemberDTO(senderMember);
         }
+        mailDTO.setFileList(mailMapper.selectAttachmentListByMailCode(mailCode));
         log.info("[MailService] mailDTO : " + mailDTO);
 
         return mailDTO;
@@ -376,22 +350,6 @@ public class MailService {
 
         int result = mailMapper.updateImportantStatus(mailDTO);
         log.info("[MailService] updateImportantStatus result : " + result);
-
-        return result > 0;
-    }
-
-    /**
-    	* @MethodName : registerTag
-    	* @Date : 2023-04-10
-    	* @Writer : 김수용
-    	* @Description : 태그 생성
-    */
-    public boolean registerTag(TagDTO tagDTO) {
-
-        log.info("[MailService] registerTag Start");
-        log.info("[MailService] tagDTO : " + tagDTO);
-
-        int result = mailMapper.registerTag(tagDTO);
 
         return result > 0;
     }
@@ -447,6 +405,45 @@ public class MailService {
     }
 
     /**
+     * @MethodName : deleteMail
+     * @Date : 2023-04-12
+     * @Writer : 김수용
+     * @Description : 메일 완전 삭제
+     */
+    public boolean deleteMail(List<Long> mailCodeList) {
+
+        log.info("[MailService] deleteMail Start");
+        log.info("[MailService] mailCodeList : " + mailCodeList);
+
+        int deleteResult = 0;
+
+        for(long mailCode : mailCodeList) {
+
+            deleteResult += mailMapper.deleteMail(mailCode);
+        }
+        log.info("[MailService] deleteResult : " + deleteResult);
+
+        return deleteResult > 0;
+    }
+
+    /**
+     * @MethodName : registerTag
+     * @Date : 2023-04-10
+     * @Writer : 김수용
+     * @Description : 태그 생성
+     */
+    public boolean registerTag(TagDTO tagDTO) {
+
+        log.info("[MailService] registerTag Start");
+        log.info("[MailService] tagDTO : " + tagDTO);
+
+        int result = mailMapper.registerTag(tagDTO);
+        log.info("[MailService] registerTag result : " + result);
+
+        return result > 0;
+    }
+
+    /**
     	* @MethodName : selectTagListByMemberCode
     	* @Date : 2023-04-10
     	* @Writer : 김수용
@@ -458,6 +455,7 @@ public class MailService {
         log.info("[MailService] memberCode : " + memberCode);
 
         List<TagDTO> tagList = mailMapper.selectTagListByMemberCode(memberCode);
+        log.info("[MailService] tagList : " + tagList);
 
         return tagList;
     }
@@ -474,6 +472,7 @@ public class MailService {
         log.info("[MailService] tagDTO : " + tagDTO);
 
         int result = mailMapper.updateTag(tagDTO);
+        log.info("[MailService] updateTag result : " + result);
 
         return result > 0;
     }
@@ -490,6 +489,7 @@ public class MailService {
         log.info("[MailService] tagCode : " + tagCode);
 
         int result = mailMapper.deleteTag(tagCode);
+        log.info("[MailService] deleteTag result : " + result);
 
         return result > 0;
     }
@@ -518,6 +518,7 @@ public class MailService {
             blackListCount += mailMapper.registerBlackList(parameters);
         }
         log.info("[MailService] blackListCount : " + blackListCount);
+
         return blackListCount > 0;
     }
 
@@ -576,6 +577,7 @@ public class MailService {
 
         log.info("[MailService] getTextFromMessage Start");
         log.info("[MailService] message : " + message);
+
         String result = "";
 
         if (message.isMimeType("text/plain")) {
@@ -587,6 +589,7 @@ public class MailService {
             result = getTextFromMimeMultipart(mimeMultipart);
         }
         log.info("[MailService] result : " + result);
+
         return result;
     }
 
@@ -621,6 +624,7 @@ public class MailService {
             }
         }
         log.info("[MailService] result : " + result.toString());
+
         return result.toString();
     }
 
@@ -647,14 +651,17 @@ public class MailService {
                 if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getContentType().toLowerCase().startsWith("image/")) {
 
                     String fileName = bodyPart.getFileName();
-                    String uuidFileName = UUID.randomUUID().toString().replace("-", "");
+                    String fileExtension = getFileExtension(fileName);
+                    String uuidFileName = UUID.randomUUID().toString().replace("-", "") + fileExtension;
 
                     InputStream inputStream = bodyPart.getInputStream();
                     File outputFile = new File(outputDirectory + File.separator + uuidFileName);
                     FileOutputStream outputStream = new FileOutputStream(outputFile);
 
                     byte[] buffer = new byte[4096];
+
                     int bytesRead;
+
                     while ((bytesRead = inputStream.read(buffer)) != -1) {
 
                         outputStream.write(buffer, 0, bytesRead);
@@ -665,8 +672,11 @@ public class MailService {
                     FileDTO fileDTO = new FileDTO();
                     fileDTO.setFileName(uuidFileName);
                     fileDTO.setFileOriginName(fileName);
-                    fileDTO.setFilePath(outputFile.getAbsolutePath());
+                    String relativeFilePath = "/" + outputFile.getAbsolutePath().substring(outputFile.getAbsolutePath().indexOf("auroraFiles"));
+                    relativeFilePath = relativeFilePath.replace("\\", "/");
+                    fileDTO.setFilePath(relativeFilePath);
                     fileDTO.setMailCode(mailCode);
+
 
                     double fileSizeInBytes = (double) outputFile.length();
                     String fileSizeString = fileSizeInBytes < (1024 * 1024) ?
@@ -680,6 +690,23 @@ public class MailService {
             }
         }
         return fileList;
+    }
+
+    /**
+     * @MethodName : getFileExtension
+     * @Date : 2023-04-13
+     * @Writer : 김수용
+     * @Description : 파일 확장자 가져오기
+     */
+    private String getFileExtension(String fileName) {
+
+        int index = fileName.lastIndexOf(".");
+
+        if (index == -1) {
+
+            return "";
+        }
+        return fileName.substring(index);
     }
 
     /**
@@ -710,102 +737,3 @@ public class MailService {
         return searchConditions;
     }
 }
-//    private JavaMailSender mailSender() {
-//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//
-//        mailSender.setHost("smtp.gmail.com");
-//        mailSender.setPort(587);
-//        mailSender.setUsername("your_gmail_username");
-//        mailSender.setPassword("your_gmail_password");
-//
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.transport.protocol", "smtp");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.debug", "true");
-//
-//        return mailSender;
-//    }
-
-//    private JavaMailSenderImpl createJavaMailSender(MailAccountDTO senderAccount) {
-//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//
-//        mailSender.setHost("smtp.gmail.com");
-//        mailSender.setPort(587);
-//        mailSender.setUsername(senderAccount.getUsername());
-//        mailSender.setPassword(senderAccount.getPassword());
-//
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.transport.protocol", "smtp");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.debug", "true");
-//
-//        return mailSender;
-//    }
-
-//    private MailAccountDTO getSenderAccountByEmail(String email) {
-//
-//        return mailSenderAccounts.stream()
-//                .filter(account -> account.getUsername().equalsIgnoreCase(email))
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalArgumentException("No matching mail account found for email: " + email));
-//    }
-
-//    private final MailConfig mailConfig;
-//    private final JavaMailSender javaMailSender;
-
-//    @Autowired
-//    public MailService(MailConfig mailConfig, JavaMailSender javaMailSender) {
-//
-//        this.mailConfig = mailConfig;
-//        this.javaMailSender = javaMailSender;
-//    }
-
-// 이메일 보내는 메서드
-//    public void sendEmail(String to, String subject, String text) {
-//    public boolean sendEmail(MailDTO mailDTO) {
-//
-//        MimeMessage message = javaMailSender.createMimeMessage();
-//
-//        try {
-//            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // 안 하면 수신이메일 인코딩 문제 발생
-//
-//            helper.setTo(mailDTO.getRecipient());
-//            helper.setSubject(mailDTO.getMailTitle());
-//            helper.setText(mailDTO.getMailBody(), true);
-////            helper.addAttachment("my_photo.png", new ClassPathResource("my_photo.png"));
-//            javaMailSender.send(message);
-//
-//        } catch (MessagingException e) {
-//            // 예외 처리
-//            return false;
-//        }
-//
-//        return true;
-//    }
-///**
-// * @MethodName : initEmailSession
-// * @Date : 2023-04-10
-// * @Writer : 김수용
-// * @Description : email session 초기화
-// */
-//    private void initEmailSession() {
-//
-//        log.info("[MailService] initEmailSession Start");
-//
-//        Properties properties = new Properties();
-//        properties.put("mail.store.protocol", "imap");
-//        properties.put("mail.imap.starttls.enable", "true");
-//        properties.put("mail.imap.host", imapProperties.getHost());
-//        properties.put("mail.imap.port", imapProperties.getPort());
-//        properties.put("mail.imap.ssl.enable", imapProperties.getSsl().isEnable());
-//        properties.put("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-//        properties.put("mail.imap.socketFactory.fallback", "false");
-////        properties.put("mail.imap.connectiontimeout", "10000"); // 10초로 연결 시간 초과 설정 추가
-////        properties.put("mail.imap.timeout", "10000"); // 10초로 읽기 시간 초과 설정 추가
-//        log.info("[ReportService] properties : " + properties);
-//
-//        emailSession = Session.getInstance(properties);
-//        log.info("[ReportService] emailSession : " + emailSession);
-//    }

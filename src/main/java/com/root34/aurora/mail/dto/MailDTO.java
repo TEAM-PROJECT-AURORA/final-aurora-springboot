@@ -1,10 +1,12 @@
 package com.root34.aurora.mail.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.member.dto.MemberDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  @ClassName : MailDTO
@@ -76,4 +78,12 @@ public class MailDTO {
      * @variable tagDTO 태그 DTO
      */
     private TagDTO tagDTO;
+    /**
+     * @variable hasAttachments 첨부파일 존재 여부
+     */
+    private boolean hasAttachments;
+    /**
+     * @variable fileList 파일리스트
+     */
+    private List<FileDTO> fileList;
 }

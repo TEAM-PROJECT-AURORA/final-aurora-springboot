@@ -235,6 +235,29 @@ public class MailController {
     }
 
     /**
+     * @MethodName : deleteMail
+     * @Date : 2023-04-12
+     * @Writer : 김수용
+     * @Description : 메일 완전 삭제
+     */
+    @Transactional
+    @DeleteMapping(value = "/mails")
+    public ResponseEntity<ResponseDTO> deleteMail(@RequestBody List<Long> mailCodeList) {
+
+        try {
+            log.info("[MailController] deleteMail Start");
+            log.info("[MailController] mailCodeList : " + mailCodeList);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 완전 삭제 성공",
+                    mailService.deleteMail(mailCodeList)));
+        } catch (Exception e) {
+            log.info("[MailController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
     	* @MethodName : registerTag
     	* @Date : 2023-04-10
     	* @Writer : 김수용
