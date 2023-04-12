@@ -30,8 +30,7 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 메시지를 구독 url => 메시지를 받을 때
-        /* 접두사 /sub를 사용하여 간단한 브로커를 활성화하여 메시지 브로커를 설정
-        *  즉, 클라이언트는 /sub 접두사가 있는 토픽을 구독하여 메시지를 수신할 수있음*/
+        /*  즉, 클라이언트는 /Topic 접두사가 있는 토픽을 구독하여 메시지를 수신할 수있음*/
         registry.enableSimpleBroker("/topic");
 
         // 메시지를 발행 url => 메시지를 보낼 때
