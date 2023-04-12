@@ -138,6 +138,8 @@
                             MONTH(OFF_TIME) = MONTH(CURDATE())
                             AND YEAR(OFF_TIME) = YEAR(CURDATE())
                      )AS daily_worked_miutes
+           WHERE MEMBER_CODE = #{memberCode}
+
         GROUP BY MEMBER_CODE;
 
 
@@ -169,7 +171,7 @@
                  JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
                  JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
         LEFT OUTER JOIN TBL_ATTENDANCE F ON A.MEMBER_CODE = F.MEMBER_CODE
-        WHERE F.ATT_REG_DATE = #{ selectedDate }
+                                         AND F.ATT_REG_DATE = #{ selectedDate }
 
     </select>
 

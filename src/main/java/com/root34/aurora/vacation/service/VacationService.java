@@ -1,10 +1,12 @@
 package com.root34.aurora.vacation.service;
 
 import com.root34.aurora.vacation.dao.VacationMapper;
+import com.root34.aurora.vacation.dto.VacationDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,5 +53,14 @@ public class VacationService {
         log.info("[VacationService] updateRemainVacation End ==============================");
     }
 
+    public List<VacationDTO> selectVacationDetail(int memberCode) {
+
+        log.info("[VacationService] selectVacationDetail Start ===================");
+        log.info("[memberCode]   :" + memberCode);
+        List<VacationDTO> selectVacationDetail = vacationMapper.selectVacationDetail(memberCode);
+        log.info("[VacationService] updateRemainVacation End ==============================");
+
+        return selectVacationDetail;
+    }
 
 }
