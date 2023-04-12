@@ -23,7 +23,7 @@ public interface ReportMapper {
 
     int registerReport(ReportDTO reportDTO); // 보고서 작성
 
-    int registerFileWithReportCode(FileDTO fileDTO); // 보고_첨부파일 등록
+    int registerFileWithReportCode(FileDTO fileDTO); // 보고 첨부파일 등록
 
     List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 첨부파일 목록 조회
 

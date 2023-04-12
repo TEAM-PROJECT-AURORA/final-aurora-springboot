@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.mail.dao.MailMapper">
-    <!--멤버 정보 조회-->
-    <select id="selectMemberDetail" parameterType="Integer" resultType="MemberDTO">
+    <!--멤버 정보 조회(멤버 코드)-->
+    <select id="selectMemberDetailByMemberCode" parameterType="Integer" resultType="MemberDTO">
         SELECT
                 A.MEMBER_CODE,
                 B.DEPT_NAME,
@@ -16,12 +16,32 @@
            JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
           WHERE A.MEMBER_CODE = #{ memberCode }
     </select>
+    <!--멤버 정보 조회(이메일)-->
+    <select id="selectMemberDetailByEmail" parameterType="String" resultType="MemberDTO">
+        SELECT
+               A.MEMBER_CODE,
+               B.DEPT_NAME,
+               C.JOB_NAME,
+               A.MEMBER_NAME,
+               A.MEMBER_EMAIL
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.MEMBER_EMAIL = #{ memberEmail }
+    </select>
     <!--메일 저장(발송)-->
-    <insert id="saveMail" parameterType="MailDTO">
+    <insert id="saveMail" parameterType="MailDTO" useGeneratedKeys="true" keyProperty="mailCode">
         INSERT INTO TBL_MAIL
             ( MAIL_TITLE, MAIL_BODY, SENDER_NAME, SENDER_EMAIL, RECIPIENT )
         VALUES
             ( #{ mailTitle }, #{ mailBody }, #{ senderName }, #{ senderEmail }, #{ recipient } )
+    </insert>
+    <!--메일 첨부파일 등록-->
+    <insert id="registerFileWithMailCode" parameterType="FileDTO">
+        INSERT INTO TBL_FILE
+            ( FILE_NAME, FILE_ORIGIN_NAME, FILE_SIZE, FILE_PATH, MAIL_CODE )
+        VALUES
+            ( #{ fileName }, #{fileOriginName}, #{ fileSize }, #{ filePath }, #{ mailCode } )
     </insert>
     <!--조건별 메일 갯수 조회-->
     <select id="getMailCount" parameterType="HashMap" resultType="int">
@@ -115,6 +135,23 @@
          ORDER BY SHIP_DATE DESC
          LIMIT #{ startRow }, #{ limit }
     </select>
+    <!--메일 상세 조회-->
+    <select id="selectMailDetailByMailCode" parameterType="HashMap" resultType="MailDTO">
+        SELECT MAIL_CODE,
+               TAG_CODE,
+               MAIL_TITLE,
+               MAIL_BODY,
+               SENDER_NAME,
+               SENDER_EMAIL,
+               RECIPIENT,
+               SHIP_DATE,
+               READ_STATUS,
+               IMPORTANT_STATUS,
+               DELETE_STATUS
+          FROM TBL_MAIL
+         WHERE MAIL_CODE = #{ mailCode }
+           AND (RECIPIENT = #{ memberEmail } OR SENDER_EMAIL = #{ memberEmail })
+    </select>
     <!--메일 중요 상태 수정-->
     <update id="updateImportantStatus" parameterType="MailDTO">
         UPDATE TBL_MAIL
@@ -125,6 +162,12 @@
     <update id="updateDeleteStatus" parameterType="HashMap">
         UPDATE TBL_MAIL
            SET DELETE_STATUS = #{ deleteStatus }
+         WHERE MAIL_CODE = #{ mailCode }
+    </update>
+    <!--메일 태그 변경-->
+    <update id="updateMailTag" parameterType="MailDTO">
+        UPDATE TBL_MAIL
+           SET TAG_CODE = #{ tagCode }
          WHERE MAIL_CODE = #{ mailCode }
     </update>
     <!--태그 생성-->
@@ -143,6 +186,15 @@
           FROM TBL_TAG
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
+    <!--태그 상세 조회-->
+    <select id="selectTagDetailByTagCode" parameterType="Long" resultType="TagDTO">
+        SELECT TAG_CODE,
+               MEMBER_CODE,
+               TAG_NAME,
+               TAG_COLOR
+          FROM TBL_TAG
+         WHERE TAG_CODE = #{ tagCode }
+    </select>
     <!--태그 수정-->
     <update id="updateTag" parameterType="TagDTO">
         UPDATE TBL_TAG
@@ -157,7 +209,7 @@
     </delete>
     <!--블랙리스트 등록-->
     <insert id="registerBlackList" parameterType="HashMap">
-        INSERT INTO TBL_BLACK_LIST
+        INSERT IGNORE INTO TBL_BLACK_LIST
             ( MEMBER_CODE, BLOCKED_SENDER )
         VALUES
             ( #{ memberCode}, #{ email } )

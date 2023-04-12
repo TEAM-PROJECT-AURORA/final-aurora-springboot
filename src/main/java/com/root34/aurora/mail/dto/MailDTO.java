@@ -44,6 +44,10 @@ public class MailDTO {
      */
     private String recipient;
     /**
+     * @variable cc 참조
+     */
+    private String cc;
+    /**
      * @variable shipDate 발송일
      */
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
@@ -68,4 +72,8 @@ public class MailDTO {
      * @variable memberDTO 멤버 DTO
      */
     private MemberDTO memberDTO;
+    /**
+     * @variable tagDTO 태그 DTO
+     */
+    private TagDTO tagDTO;
 }

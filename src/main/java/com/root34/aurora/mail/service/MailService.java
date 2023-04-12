@@ -1,5 +1,6 @@
 package com.root34.aurora.mail.service;
 
+import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
 import com.root34.aurora.common.paging.SelectCriteria;
@@ -9,23 +10,24 @@ import com.root34.aurora.mail.dto.MailDTO;
 import com.root34.aurora.mail.dto.TagDTO;
 import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.report.dto.MailSearchCriteria;
+import com.root34.aurora.util.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.search.FlagTerm;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 /**
  @ClassName : MailService
@@ -36,6 +38,9 @@ import java.util.Properties;
 @Slf4j
 @Service
 public class MailService {
+
+    @Value("${file.file-dir}")
+    private String FILE_DIR;
 
     @Autowired
     private final ImapProperties imapProperties;
@@ -59,14 +64,50 @@ public class MailService {
      * @Writer : 김수용
      * @Description : 메일 전송
      */
-    public boolean sendMail(MailDTO mailDTO) throws UnsupportedEncodingException, MessagingException {
+//    public boolean sendMail(MailDTO mailDTO) throws UnsupportedEncodingException, MessagingException {
+//
+//        log.info("[MailService] sendEmail Start");
+//        MemberDTO memberDTO = mailMapper.selectMemberDetailByMemberCode(mailDTO.getMemberCode());
+//        mailDTO.setMemberDTO(memberDTO);
+//        mailDTO.setSenderName(memberDTO.getMemberName());
+//        mailDTO.setSenderEmail(memberDTO.getMemberEmail());
+//        log.info("[MailService] mailDTO : " + mailDTO);
+//
+//        MimeMessage message = javaMailSender.createMimeMessage();
+//        log.info("[MailService] message : " + message);
+//
+//        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+//        helper.setFrom(new InternetAddress(memberDTO.getMemberEmail(), mailDTO.getSenderName())); // 발신자 이메일, 발신자 명
+//        helper.setTo(mailDTO.getRecipient());
+//        helper.setSubject(mailDTO.getMailTitle());
+//        helper.setText(mailDTO.getMailBody());
+//
+//        // 참조 목록 추가
+//        if (mailDTO.getCc() != null && !mailDTO.getCc().isEmpty()) {
+//
+//            helper.setCc(mailDTO.getCc().split(","));
+//        }
+//        log.info("[MailService] helper : " + helper);
+//
+//        javaMailSender.send(message); // void 문제 발생시 런타임 에러 발생
+//        log.info("[MailService] sent");
+//
+//        int result = mailMapper.saveMail(mailDTO);
+//        log.info("[MailService] saveMail result : " + result);
+//
+//        return result > 0;
+//    }
+    public boolean sendMail(MailDTO mailDTO, List<MultipartFile> fileList) throws IOException, MessagingException {
 
         log.info("[MailService] sendEmail Start");
-        MemberDTO memberDTO = mailMapper.selectMemberDetail(mailDTO.getMemberCode());
+        MemberDTO memberDTO = mailMapper.selectMemberDetailByMemberCode(mailDTO.getMemberCode());
         mailDTO.setMemberDTO(memberDTO);
         mailDTO.setSenderName(memberDTO.getMemberName());
         mailDTO.setSenderEmail(memberDTO.getMemberEmail());
         log.info("[MailService] mailDTO : " + mailDTO);
+
+        int result = mailMapper.saveMail(mailDTO);
+        log.info("[MailService] saveMail result : " + result);
 
         MimeMessage message = javaMailSender.createMimeMessage();
         log.info("[MailService] message : " + message);
@@ -76,13 +117,55 @@ public class MailService {
         helper.setTo(mailDTO.getRecipient());
         helper.setSubject(mailDTO.getMailTitle());
         helper.setText(mailDTO.getMailBody());
+
+        // 참조 목록 추가
+        if (mailDTO.getCc() != null && !mailDTO.getCc().isEmpty()) {
+
+            helper.setCc(mailDTO.getCc().split(","));
+        }
         log.info("[MailService] helper : " + helper);
 
+        // 파일 첨부
+        if (fileList != null) {
+
+            int fileCount = 0;
+            for (MultipartFile file : fileList) {
+
+                // 메일에 첨부
+                String fileName = file.getOriginalFilename();
+                log.info("[MailService] fileName : " + fileName);
+                helper.addAttachment(fileName, new ByteArrayResource(file.getBytes()));
+
+                // DB에 저장
+                fileName = UUID.randomUUID().toString().replace("-", "");
+                String replaceFileName = null;
+                log.info("[ReportService] FILE_DIR : " + FILE_DIR);
+                log.info("[ReportService] fileName : " + fileName);
+
+                replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
+                log.info("[ReportService] replaceFileName : " + replaceFileName);
+
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setFileOriginName(file.getOriginalFilename());
+                fileDTO.setFileName(replaceFileName);
+                fileDTO.setFilePath(FILE_DIR + replaceFileName);
+                fileDTO.setMailCode(mailDTO.getMailCode());
+
+                double fileSizeInBytes = (double) file.getSize();
+
+                String fileSizeString = fileSizeInBytes < (1024 * 1024)?
+                        String.format("%.2f KB", fileSizeInBytes / 1024) :
+                        String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
+                log.info("[ReportService] fileSizeString : " + fileSizeString);
+                fileDTO.setFileSize(fileSizeString);
+                log.info("[ReportService] fileDTO : " + fileDTO);
+
+                fileCount += mailMapper.registerFileWithMailCode(fileDTO);
+                log.info("[ReportService] fileCount : " + fileCount);
+            }
+        }
         javaMailSender.send(message); // void 문제 발생시 런타임 에러 발생
         log.info("[MailService] sent");
-
-        int result = mailMapper.saveMail(mailDTO);
-        log.info("[MailService] saveMail result : " + result);
 
         return result > 0;
     }
@@ -175,6 +258,18 @@ public class MailService {
 
                     matchedMailCount += mailMapper.saveMail(mailDTO);
 
+                    List<FileDTO> fileList = saveAttachmentsAndGetFileList(message, FILE_DIR, mailDTO.getMailCode());
+
+                    if(fileList != null) {
+
+                        int fileCount = 0;
+
+                        for (FileDTO fileDTO : fileList) {
+
+                            fileCount += mailMapper.registerFileWithMailCode(fileDTO);
+                        }
+                        log.info("[ReportService] MailService : " + fileCount);
+                    }
                     message.setFlag(Flags.Flag.SEEN, true); // 메일 읽음 상태로 전환
                 }
             }
@@ -216,6 +311,12 @@ public class MailService {
 
         List<MailDTO> mailList = mailMapper.selectMailListByConditions(selectCriteria);
         // 여유되면 이메일로 멤버 상세정보 구해서 넣는 로직 추가
+
+        for(MailDTO mailDTO : mailList) {
+
+            TagDTO tagDTO = mailMapper.selectTagDetailByTagCode(mailDTO.getTagCode());
+            mailDTO.setTagDTO(tagDTO);
+        }
         log.info("[MailService] mailList : " + mailList);
 
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
@@ -224,6 +325,42 @@ public class MailService {
         log.info("[MailService] responseDTOWithPaging : " + responseDTOWithPaging);
 
         return responseDTOWithPaging;
+    }
+
+    /**
+    	* @MethodName : selectMailDetailByMailCode
+    	* @Date : 2023-04-12
+    	* @Writer : 김수용
+    	* @Description : 메일 상세 조회
+    */
+    public MailDTO selectMailDetailByMailCode(int memberCode, long mailCode) {
+
+        log.info("[MailService] selectMailDetailByMailCode Start");
+        log.info("[MailService] memberCode : " + memberCode);
+        log.info("[MailService] mailCode : " + mailCode);
+
+        MemberDTO member = mailMapper.selectMemberDetailByMemberCode(memberCode);
+        log.info("[MailService] member : " + member);
+
+        HashMap<String, Object> parameters = new HashMap<>();
+        parameters.put("mailCode", mailCode);
+        parameters.put("memberEmail", member.getMemberEmail());
+        log.info("[MailService] parameters : " + parameters);
+
+        MailDTO mailDTO = mailMapper.selectMailDetailByMailCode(parameters);
+
+        TagDTO tagDTO = mailMapper.selectTagDetailByTagCode(mailDTO.getTagCode());
+        mailDTO.setTagDTO(tagDTO);
+
+        String memberEmail = mailDTO.getSenderEmail();
+        MemberDTO senderMember = mailMapper.selectMemberDetailByEmail(memberEmail);
+
+        if (senderMember != null) {
+            mailDTO.setMemberDTO(senderMember);
+        }
+        log.info("[MailService] mailDTO : " + mailDTO);
+
+        return mailDTO;
     }
 
     /**
@@ -284,6 +421,29 @@ public class MailService {
         log.info("[MailService] updateDeleteStatus deleteCount : " + deleteCount);
 
         return deleteCount > 0;
+    }
+
+    /**
+    	* @MethodName : updateMailTag
+    	* @Date : 2023-04-12
+    	* @Writer : 김수용
+    	* @Description : 메일 태그 변경
+    */
+    public boolean updateMailTag(long mailCode, long tagCode) {
+
+        log.info("[MailService] updateMailTag Start");
+        log.info("[MailService] mailCode : " + mailCode);
+        log.info("[MailService] tagCode : " + tagCode);
+
+        MailDTO mailDTO = new MailDTO();
+        mailDTO.setMailCode(mailCode);
+        mailDTO.setTagCode(tagCode);
+        log.info("[MailService] mailDTO : " + mailDTO);
+
+        int result = mailMapper.updateMailTag(mailDTO);
+        log.info("[MailService] result : " + result);
+
+        return result > 0;
     }
 
     /**
@@ -415,6 +575,7 @@ public class MailService {
     private String getTextFromMessage(Message message) throws MessagingException, IOException, IOException {
 
         log.info("[MailService] getTextFromMessage Start");
+        log.info("[MailService] message : " + message);
         String result = "";
 
         if (message.isMimeType("text/plain")) {
@@ -438,6 +599,7 @@ public class MailService {
     private String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws MessagingException, IOException {
 
         log.info("[MailService] getTextFromMimeMultipart Start");
+        log.info("[MailService] mimeMultipart : " + mimeMultipart);
         StringBuilder result = new StringBuilder();
 
         int count = mimeMultipart.getCount();
@@ -460,6 +622,64 @@ public class MailService {
         }
         log.info("[MailService] result : " + result.toString());
         return result.toString();
+    }
+
+    /**
+    	* @MethodName : saveAttachmentsAndGetFileList
+    	* @Date : 2023-04-12
+    	* @Writer : 김수용
+    	* @Description : 첨부파일 저장
+    */
+    private List<FileDTO> saveAttachmentsAndGetFileList(Message message, String outputDirectory, Long mailCode) throws Exception {
+
+        log.info("[MailService] getTextFromMimeMultipart Start");
+        log.info("[MailService] message : " + message);
+        log.info("[MailService] outputDirectory : " + outputDirectory);
+
+        List<FileDTO> fileList = new ArrayList<>();
+
+        if (message.getContent() instanceof Multipart) {
+
+            Multipart multipart = (Multipart) message.getContent();
+            for (int i = 0; i < multipart.getCount(); i++) {
+
+                BodyPart bodyPart = multipart.getBodyPart(i);
+                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getContentType().toLowerCase().startsWith("image/")) {
+
+                    String fileName = bodyPart.getFileName();
+                    String uuidFileName = UUID.randomUUID().toString().replace("-", "");
+
+                    InputStream inputStream = bodyPart.getInputStream();
+                    File outputFile = new File(outputDirectory + File.separator + uuidFileName);
+                    FileOutputStream outputStream = new FileOutputStream(outputFile);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    outputStream.close();
+                    inputStream.close();
+
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFileName(uuidFileName);
+                    fileDTO.setFileOriginName(fileName);
+                    fileDTO.setFilePath(outputFile.getAbsolutePath());
+                    fileDTO.setMailCode(mailCode);
+
+                    double fileSizeInBytes = (double) outputFile.length();
+                    String fileSizeString = fileSizeInBytes < (1024 * 1024) ?
+                            String.format("%.2f KB", fileSizeInBytes / 1024) :
+                            String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
+                    fileDTO.setFileSize(fileSizeString);
+
+                    fileList.add(fileDTO);
+                    log.info("[MailService] fileList : " + fileList);
+                }
+            }
+        }
+        return fileList;
     }
 
     /**

@@ -271,6 +271,7 @@ public class ReportService {
             log.info("[ReportService] registerReport result : " + result);
 
             if(result == 0) {
+
                 throw new CreationFailedException("보고서 등록 실패!");
             }
             Long generatedPk = reportDTO.getReportCode();
@@ -293,14 +294,15 @@ public class ReportService {
                 throw new CreationFailedException("보고자가 등록되지않았습니다!");
             }
             if(fileList != null) {
-                int fileCount = 0;
 
+                int fileCount = 0;
                     for (MultipartFile file : fileList) {
+
                         String fileName = UUID.randomUUID().toString().replace("-", "");
                         String replaceFileName = null;
-
                         log.info("[ReportService] FILE_DIR : " + FILE_DIR);
                         log.info("[ReportService] fileName : " + fileName);
+
                         replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
                         log.info("[ReportService] replaceFileName : " + replaceFileName);
 

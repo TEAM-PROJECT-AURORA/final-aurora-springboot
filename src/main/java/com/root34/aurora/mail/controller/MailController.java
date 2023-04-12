@@ -8,9 +8,11 @@ import com.root34.aurora.mail.service.MailService;
 import com.root34.aurora.report.dto.MailSearchCriteria;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -34,9 +36,31 @@ public class MailController {
     	* @Writer : 김수용
     	* @Description : 메일 전송
     */
+//    @Transactional
+//    @PostMapping(value ="/mails")
+//    public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request, @RequestBody MailDTO mailDTO) {
+//
+//        try {
+//            log.info("[MailController] sendMail Start");
+//            Integer memberCode = (Integer) request.getAttribute("memberCode");
+//            log.info("[MailController] memberCode : " + memberCode);
+//            mailDTO.setMemberCode(memberCode);
+//            log.info("[MailController] mailDTO : " + mailDTO);
+//
+//            boolean result = mailService.sendMail(mailDTO);
+//
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", result));
+//        } catch (Exception e) {
+//            log.info("[MailController] Exception : " + e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+//        }
+//    }
     @Transactional
-    @PostMapping(value ="/mails")
-    public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request, @RequestBody MailDTO mailDTO) {
+    @PostMapping(value = "/mails", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request,
+                                                @RequestPart("mailDTO") MailDTO mailDTO,
+                                                @RequestPart(name = "fileList", required = false) List<MultipartFile> fileList) {
 
         try {
             log.info("[MailController] sendMail Start");
@@ -45,7 +69,7 @@ public class MailController {
             mailDTO.setMemberCode(memberCode);
             log.info("[MailController] mailDTO : " + mailDTO);
 
-            boolean result = mailService.sendMail(mailDTO);
+            boolean result = mailService.sendMail(mailDTO, fileList);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", result));
         } catch (Exception e) {
@@ -108,6 +132,30 @@ public class MailController {
     }
 
     /**
+    	* @MethodName : selectMailDetailByMailCode
+    	* @Date : 2023-04-12
+    	* @Writer : 김수용
+    	* @Description : 메일 상세 조회
+    */
+    @GetMapping(value = "/mails/{mailCode}")
+    public ResponseEntity<ResponseDTO> selectMailDetailByMailCode(HttpServletRequest request, @PathVariable long mailCode) {
+
+        try {
+            log.info("[MailController] selectMailDetailByMailCode Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[MailController] memberCode : " + memberCode);
+            log.info("[MailController] mailCode : " + mailCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 상세 조회 성공",
+                    mailService.selectMailDetailByMailCode(memberCode, mailCode)));
+        } catch (Exception e) {
+            log.info("[MailController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
     	* @MethodName : updateImportantStatus
     	* @Date : 2023-04-10
     	* @Writer : 김수용
@@ -145,7 +193,6 @@ public class MailController {
     */
     @Transactional
     @DeleteMapping("/mails/delete-status/{deleteStatus}")
-//    public ResponseEntity<ResponseDTO> updateDeleteStatus(@PathVariable long mailCode,
     public ResponseEntity<ResponseDTO> updateDeleteStatus(@RequestBody List<Long> mailCodeList,
                                                              @PathVariable char deleteStatus) {
 
@@ -154,13 +201,32 @@ public class MailController {
             log.info("[MailController] mailCodeList : " + mailCodeList);
             log.info("[MailController] deleteStatus : " + deleteStatus);
 
-//            MailDTO mailDTO = new MailDTO();
-//            mailDTO.setMailCode(mailCode);
-//            mailDTO.setDeleteStatus(deleteStatus);
-//            log.info("[MailController] mailDTO : " + mailDTO);
-
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 삭제 상태 수정 성공",
                     mailService.updateDeleteStatus(mailCodeList, deleteStatus)));
+        } catch (Exception e) {
+            log.info("[MailController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+    	* @MethodName : updateMailTag
+    	* @Date : 2023-04-12
+    	* @Writer : 김수용
+    	* @Description : 메일 태그 변경
+    */
+    @Transactional
+    @PutMapping(value = "/mails/{mailCode}/tags/{tagCode}")
+    public ResponseEntity<ResponseDTO> updateMailTag(@PathVariable long mailCode, @PathVariable long tagCode) {
+
+        try {
+            log.info("[MailController] updateMailTag Start");
+            log.info("[MailController] mailCode : " + mailCode);
+            log.info("[MailController] tagCode : " + tagCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 태그 변경 성공",
+                    mailService.updateMailTag(mailCode, tagCode)));
         } catch (Exception e) {
             log.info("[MailController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
