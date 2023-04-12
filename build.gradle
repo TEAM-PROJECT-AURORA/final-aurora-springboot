@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.sun.mail:javax.mail:1.6.2'
     // jsoup HTML parser library @ https://jsoup.org/ imap // html을 텍스트로 변환 김수용 23.04.10
     implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {

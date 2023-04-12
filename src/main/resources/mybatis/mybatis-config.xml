@@ -20,6 +20,7 @@
 		<typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/>
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
+		<typeAlias alias="AlertDTO" type="com.root34.aurora.alert.dto.AlertDTO" />
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
 		<typeAlias alias="TagDTO" type="com.root34.aurora.mail.dto.TagDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
@@ -50,6 +51,7 @@
 		<mapper resource="memberMapper.xml" />
 		<mapper resource="surveyMapper.xml" />
 		<mapper resource="Approval.xml"/>
+		<mapper resource="AlertMapper.xml" />
 		<mapper resource="MailMapper.xml" />
 		<mapper resource="ReportMapper.xml" />
 		<mapper resource="vacationMapper.xml"/>

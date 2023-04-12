@@ -1,5 +1,6 @@
 package com.root34.aurora.mail.service;
 
+import com.root34.aurora.alert.service.AlertService;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
@@ -46,16 +47,15 @@ public class MailService {
     private final ImapProperties imapProperties;
     private final JavaMailSender javaMailSender;
     private final MailMapper mailMapper;
-    private Session emailSession;
-
-    private final String domain = "@project-aurora.co.kr";
+    private final AlertService alertService;
 
     @Autowired
-    public MailService(JavaMailSender javaMailSender, ImapProperties imapProperties, MailMapper mailMapper) {
+    public MailService(JavaMailSender javaMailSender, ImapProperties imapProperties, MailMapper mailMapper, AlertService alertService) {
 
         this.imapProperties = imapProperties;
         this.javaMailSender = javaMailSender;
         this.mailMapper = mailMapper;
+        this.alertService = alertService;
     }
 
     /**
@@ -103,6 +103,7 @@ public class MailService {
         if (fileList != null) {
 
             int fileCount = 0;
+
             for (MultipartFile file : fileList) {
 
                 // 메일에 첨부
@@ -140,6 +141,8 @@ public class MailService {
         }
         javaMailSender.send(message); // void 문제 발생시 런타임 에러 발생
         log.info("[MailService] sent");
+
+        alertService.registerMailAlert(mailDTO.getSenderEmail(), mailDTO.getRecipient(), "메일", mailDTO.getMailCode());
 
         return result > 0;
     }
