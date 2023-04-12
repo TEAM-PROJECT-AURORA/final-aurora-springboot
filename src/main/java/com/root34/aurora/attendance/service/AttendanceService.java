@@ -17,7 +17,7 @@ import java.util.Map;
 	@ClassName : AttendanceService
 	@Date : 2023-03-23
 	@Writer : 정근호
-	@Description :
+	@Description : 근태 서비스
 */
 @Slf4j
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class AttendanceService {
 	    @MethodName : getAttendance
 		@Date : 2023-03-23
 		@Writer : 정근호
-		@Description :
+		@Description :근태 조회
 	*/
 	public Map getAttendance(int memberCode, String selectedDate) {
 
@@ -50,7 +50,7 @@ public class AttendanceService {
 	 @MethodName : selectTime
 	 @Date : 2023-03-24
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 이번주 누적,초과,잔여 이번달 누적 시간 조회
 	 */
 
 	public Map selectTime(int memberCode , String selectTime) {
@@ -70,7 +70,7 @@ public class AttendanceService {
 	    @MethodName : insertWorkTime
 		@Date : 2023-03-23
 		@Writer : 정근호
-		@Description :
+	    @Description : 출근시간 등록
 	*/
 	public void insertWorkTime(int memberCode) {
 
@@ -84,7 +84,7 @@ public class AttendanceService {
 		@MethodName : insertOffTime
 		@Date : 2023-03-24
 		@Writer : 정근호
-		@Description :
+		@Description : 퇴근시간 등록
 	*/
 	public void insertOffTime(int memberCode) {
 
@@ -98,7 +98,7 @@ public class AttendanceService {
 	 @MethodName : insertOrUpdateAttendance
 	 @Date : 2023-04-09
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근태 수정 및 등록
 	 */
 	public void insertOrUpdateAttendance(int memberCode, AttendanceDTO attendanceDTO, String selectedDate) {
 
@@ -112,7 +112,7 @@ public class AttendanceService {
 	 @MethodName : selectMonthTime
 	 @Date : 2023-03-24
 	 @Writer : 정근호
-	 @Description :
+	 @Description :월별 평균근무 시간 근무일수 총 근무시간
 	 */
 	public Map selectMonthTime(int memberCode) {
 
@@ -129,7 +129,7 @@ public class AttendanceService {
 	 @MethodName : selectWorkStatus
 	 @Date : 2023-04-05
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근무 상태 조회
 	 */
 	public Map selectWorkStatus(int memberCode) {
 
@@ -146,7 +146,7 @@ public class AttendanceService {
 	 @MethodName : selectTimeByDay
 	 @Date : 2023-04-05
 	 @Writer : 정근호
-	 @Description :
+	 @Description :근무 시간 조회
 	 */
 
 	public Map selectTimeByDay(int memberCode, LocalDate attRegDate) {
@@ -165,7 +165,7 @@ public class AttendanceService {
 	 @MethodName : attendanceList
 	 @Date : 2023-04-10
 	 @Writer : 정근호
-	 @Description :
+	 @Description :근태 조회 리스트
 	 */
 
 	public Object attendanceList(SelectCriteria selectCriteria,  String selectedDate) {

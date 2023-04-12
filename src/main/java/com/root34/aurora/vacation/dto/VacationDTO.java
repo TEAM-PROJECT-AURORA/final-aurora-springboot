@@ -38,7 +38,9 @@ public class VacationDTO {
      * @variable remainVacation 잔여휴가
      **/
     private double remainVacation;
-
+    /**
+     * @variable appStatus 결재상태
+     **/
     private String appStatus;
 
 

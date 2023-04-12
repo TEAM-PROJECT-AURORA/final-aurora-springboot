@@ -11,7 +11,7 @@ import java.util.Map;
 	@ClassName : VacationMapper
 	@Date : 2023-03-25
 	@Writer : 정근호
-	@Description :
+	@Description : 휴가 매퍼
 */
 @Mapper
 public interface VacationMapper {
