@@ -41,6 +41,9 @@
 		<typeAlias alias="MessengerMemberDTO" type="com.root34.aurora.messenger.dto.MessengerMemberDTO"/>
 		<typeAlias alias="MessengerRequestDTO" type="com.root34.aurora.messenger.dto.MessengerRequestDTO"/>
 		<typeAlias alias="dayWorklogDTO" type="com.root34.aurora.worklog.dao.DayWorklogMapper"/>
+		<typeAlias alias="weekWorklogDTO" type="com.root34.aurora.worklog.dao.WeekWorklogMapper"/>
+		<typeAlias alias="scheduleDTO" type="com.root34.aurora.schedule.dao.ScheduleMapper"/>
+<!--	내부분 넣어야하는듯	-->
 	</typeAliases>
 
 	<mappers>
@@ -55,6 +58,8 @@
 		<mapper resource="vacationMapper.xml"/>
 		<mapper resource="messengerMapper.xml"/>
 		<mapper resource="dayWorklogMapper.xml" />
+		<mapper resource="weekWorklogMapper.xml" />
 		<mapper resource="scheduleMapper.xml" />
+		<!--	내부분 넣어야하는듯	-->
 	</mappers>
 </configuration>

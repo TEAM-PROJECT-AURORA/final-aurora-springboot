@@ -5,10 +5,15 @@ import com.root34.aurora.worklog.dto.WeekWorklogDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Map;
 
+/**
+ @ClassName : WeekWorklogService
+ @Date : 23.03.25
+ @Writer : 서지수
+ @Description : 주간 업무일지 서비스
+ */
 @Slf4j
 @Service
 public class WeekWorklogService {
@@ -17,6 +22,12 @@ public class WeekWorklogService {
 
     public WeekWorklogService(WeekWorklogMapper weekWorklogMapper) { this.weekWorklogMapper = weekWorklogMapper; }
 
+    /**
+     @MethodName  : selectWeekWorklogTotal
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 일일 업무일지
+     */
     public int selectWeekWorklogTotal(int memberCode) {
 
         log.info("[WeekWorklogService] selectWeekWorklogTotal Start ====================");
@@ -26,6 +37,12 @@ public class WeekWorklogService {
         return result;
     }
 
+    /**
+     @MethodName  : selectWeekWorklogListWithPaging
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 전체조회
+     */
     public Object selectWeekWorklogListWithPaging(Map map) {
 
         log.info("[WeekWorklogService] selectWeekWorklogListWithPaging Start ====================");
@@ -35,6 +52,12 @@ public class WeekWorklogService {
         return weekWorklogList;
     }
 
+    /**
+     @MethodName  : selectWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 상세조회
+     */
     public WeekWorklogDTO selectWeekWorklog(int weekWorklogCode) {
 
         log.info("[WeekWorklogService] selectWeekWorklog Start ====================");
@@ -44,6 +67,12 @@ public class WeekWorklogService {
         return weekWorklogDTO;
     }
 
+    /**
+     @MethodName  : insertWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 생성
+     */
     @Transactional
     public Object insertWeekWorklog(WeekWorklogDTO weekWorklogDTO) {
 
@@ -57,6 +86,12 @@ public class WeekWorklogService {
         return (result > 0) ? "주간 업무일지 등록 성공" : "주간 업무일지 등록 실패";
     }
 
+    /**
+     @MethodName  : updateWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 수정
+     */
     @Transactional
     public Object updateWeekWorklog(WeekWorklogDTO weekWorklogDTO) {
 
@@ -70,6 +105,12 @@ public class WeekWorklogService {
         return (result > 0) ? "주간 업무일지 수정 성공" : "주간 업무일지 수정 실패";
     }
 
+    /**
+     @MethodName  : deleteWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 삭제
+     */
     @Transactional
     public Object deleteWeekWorklog(int weekWorklogCode) {
 
