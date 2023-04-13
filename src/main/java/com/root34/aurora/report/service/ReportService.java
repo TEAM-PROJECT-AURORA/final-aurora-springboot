@@ -1,5 +1,6 @@
 package com.root34.aurora.report.service;
 
+import com.root34.aurora.alert.service.AlertService;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
@@ -49,11 +50,13 @@ public class ReportService {
     private String FILE_URL;
 
     private final ReportMapper reportMapper;
+    private final AlertService alertService;
 
     @Autowired
-    public ReportService(ReportMapper reportMapper) {
+    public ReportService(ReportMapper reportMapper, AlertService alertService) {
 
         this.reportMapper = reportMapper;
+        this.alertService = alertService;
     }
 
     /**
@@ -324,6 +327,14 @@ public class ReportService {
                         fileCount += reportMapper.registerFileWithReportCode(fileDTO);
                         log.info("[ReportService] fileCount : " + fileCount);
                     }
+            }
+            if (result > 0 && memberCount == memberList.size()) {
+
+                // 보고서가 정상적으로 등록된 후 알림 생성
+                for (Integer receiverMemberCode : memberList) {
+
+                    alertService.registerAlert(reportDTO.getMemberCode(), receiverMemberCode, "보고", reportDTO.getReportCode());
+                }
             }
             return result > 0 && memberCount == memberList.size();
         } catch (IOException e) {
