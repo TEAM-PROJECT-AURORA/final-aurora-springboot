@@ -22,6 +22,12 @@ public class VacationService {
 
     private final VacationMapper vacationMapper;
 
+    /**
+     @MethodName : selectVacation
+     @Date : 2023-04-05
+     @Writer : 정근호
+     @Description : 남은 휴가 조회
+     */
     public Map selectVacation(int memberCode) {
 
         log.info("[VacationService] selectVacation Start ===================");
@@ -32,7 +38,12 @@ public class VacationService {
 
         return count;
     }
-
+    /**
+     @MethodName : selectUsedVacation
+     @Date : 2023-04-05
+     @Writer : 정근호
+     @Description : 사용한 휴가 조회
+     */
     public Map selectUsedVacation(int memberCode) {
 
         log.info("[VacationService] selectUsedVacation Start ===================");
@@ -43,7 +54,12 @@ public class VacationService {
 
         return count;
     }
-
+    /**
+     @MethodName : updateRemainVacation
+     @Date : 2023-04-05
+     @Writer : 정근호
+     @Description : 사용한 휴가 계산해서 새로 휴가 수정
+     */
     public void updateRemainVacation(int memberCode, int vacationNo ) {
 
         log.info("[VacationService] updateRemainVacation Start ===================");
@@ -52,6 +68,12 @@ public class VacationService {
         vacationMapper.updateRemainVacation(memberCode, vacationNo);
         log.info("[VacationService] updateRemainVacation End ==============================");
     }
+    /**
+     @MethodName : selectVacationDetail
+     @Date : 2023-04-10
+     @Writer : 정근호
+     @Description : 휴가 상세 정보 조회
+     */
 
     public List<VacationDTO> selectVacationDetail(int memberCode) {
 

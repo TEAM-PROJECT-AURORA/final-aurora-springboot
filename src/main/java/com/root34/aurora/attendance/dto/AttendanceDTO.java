@@ -78,10 +78,12 @@ public class AttendanceDTO {
 	 * @variable memberEmail 이메일
 	 **/
 	private String memberEmail;
-
+	/**
+	 * @variable deptCode 부서코드
+	 **/
 	private String deptCode;
 	/**
-	 * @variable jobCode 직윝코드
+	 * @variable jobCode 직급코드
 	 **/
 	private String jobCode;
 	/**
@@ -97,23 +99,6 @@ public class AttendanceDTO {
 	 * @variable teamCode 소속팀코드
 	 **/
 	private String teamCode;
-//	/**
-//	 * @variable tardySum 지각합
-//	 **/
-//	private int tardySum;
-//	/**
-//	 * @variable earlyOffSum 조퇴합
-//	 **/
-//	private int earlyOffSum;
-//	/**
-//	 * @variable truancySum 무단결급합
-//	 **/
-//	private int truancySum;
-//	/**
-//	 * @variable absenceSum 결근합
-//	 **/
-//	private int absenceSum;
-
 
 
 }

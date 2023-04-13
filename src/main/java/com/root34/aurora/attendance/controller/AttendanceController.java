@@ -23,7 +23,7 @@ import java.util.Map;
 	@ClassName : AttendanceController
 	@Date : 2023-03-23
 	@Writer : 정근호
-	@Description :
+	@Description : 근태 컨트롤러
 */
 @Slf4j
 @RestController
@@ -39,7 +39,7 @@ public class AttendanceController {
 		@MethodName : getAttendance
 		@Date : 2023-03-23
 		@Writer : 정근호
-		@Description :
+		@Description : 근태 조회
 	*/
 	@GetMapping("/attendance/{memberCode}")
 	public ResponseEntity<ResponseDTO> selectAttendance(@PathVariable int memberCode, @RequestParam(name = "selectedDate", required = false) String selectedDate) {
@@ -52,7 +52,7 @@ public class AttendanceController {
 	 @MethodName : insertWorkTime
 	 @Date : 2023-03-23
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 출근시간 등록
 	 */
 	@PostMapping("/attendance/{memberCode}")
 	public ResponseEntity<ResponseDTO> insertWorkTime(@PathVariable int memberCode) {
@@ -66,7 +66,7 @@ public class AttendanceController {
 		@MethodName : insertOffTime
 		@Date : 2023-03-26
 		@Writer : 정근호
-		@Description :
+		@Description : 퇴근시간 등록
 	*/
 	@PutMapping("/attendance/{memberCode}")
 	public ResponseEntity<ResponseDTO> insertOffTime(@PathVariable int memberCode) {
@@ -81,7 +81,7 @@ public class AttendanceController {
 	 @MethodName : insertOrUpdateAttendance
 	 @Date : 2023-04-09
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근태 수정 및 등록
 	 */
 	@PutMapping("/attendance/modify/{memberCode}")
 	public ResponseEntity<ResponseDTO> insertOrUpdateAttendance(@PathVariable int memberCode, @RequestBody AttendanceDTO attendanceDTO,
@@ -97,12 +97,10 @@ public class AttendanceController {
 		@MethodName : selectTime
 		@Date : 2023-03-26
 		@Writer : 정근호
-		@Description :
+		@Description : 이번주 누적,초과,잔여 이번달 누적 시간 조회
 	*/
 	@GetMapping("/attendance/time/{memberCode}")
 	public ResponseEntity<ResponseDTO> selectTime(@PathVariable int memberCode, @RequestParam(name = "selectTime", required = false) String selectTime) {
-
-//		attendanceService.selectTime(memberCode, selectTime);
 
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료" , attendanceService.selectTime(memberCode, selectTime)));
 
@@ -119,7 +117,6 @@ public class AttendanceController {
 
 		attendanceService.selectMonthTime(memberCode);
 
-
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회완료", attendanceService.selectMonthTime(memberCode)));
 	}
 
@@ -127,7 +124,7 @@ public class AttendanceController {
 	 @MethodName : selectWorkStatus
 	 @Date : 2023-04-05
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근무 상태 조회
 	 */
 	@GetMapping("/attendance/work-status/{memberCode}")
 	public ResponseEntity<ResponseDTO> selectWorkStatus(@PathVariable int memberCode) {
@@ -141,7 +138,7 @@ public class AttendanceController {
 	 @MethodName : selectTimeByDay
 	 @Date : 2023-04-06
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근무 시간 조회
 	 */
 	@GetMapping("/attendance/time-day/{memberCode}")
 	public ResponseEntity<ResponseDTO> selectTimeByDay(@PathVariable int memberCode ,
@@ -156,12 +153,11 @@ public class AttendanceController {
 	 @MethodName : attendanceList
 	 @Date : 2023-04-10
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근태 조회 리스트
 	 */
 	@GetMapping("/attendance/list")
 	public ResponseEntity<ResponseDTO> attendanceList(@RequestParam(name="offset", defaultValue = "1") String offset,
 													  @RequestParam(name = "selectedDate", required = false)  String selectedDate) {
-
 
 		int totalCount = memberService.selectMemberTotal();
 		int limit = 20;
@@ -180,16 +176,39 @@ public class AttendanceController {
 
 		responseDTOWithPaging.setData(map);
 
-
-
-
-
-
-
-
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", responseDTOWithPaging));
 	}
 
+//	/**
+//	 @MethodName : attendanceListAboutName
+//	 @Date : 2023-04-12
+//	 @Writer : 정근호
+//	 @Description : 근태 조회 리스트 이름 검색
+//	 */
+//	@GetMapping("/attendance/list/name")
+//	public ResponseEntity<ResponseDTO> attendanceListAboutName(@RequestParam(name="offset", defaultValue = "1") String offset,
+//															   @RequestParam(name="name", defaultValue = "all") String search,
+//													  @RequestParam(name = "selectedDate", required = false)  String selectedDate) {
+//
+//		int totalCount = memberService.selectMemberTotal();
+//		int limit = 20;
+//		int buttonAmount = 5;
+//		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+//
+//		log.info("[AttendanceController] selectCriteria : " + selectCriteria);
+//		ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+//		responseDTOWithPaging.setPageInfo(selectCriteria);
+//		Object attendanceList = attendanceService.attendanceListAboutName(selectCriteria,selectedDate, search);
+//		List<AttendanceDTO> getAttendanceList = attendanceService.getAttendanceList(selectedDate);
+//
+//		Map map = new HashMap();
+//		map.put("getAttendanceList", getAttendanceList);
+//		map.put("attendanceList", attendanceList);
+//
+//		responseDTOWithPaging.setData(map);
+//
+//		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", responseDTOWithPaging));
+//	}
 
 
 

@@ -33,14 +33,6 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-//    @GetMapping("/members/{memberId}")
-//    public ResponseEntity<ResponseDTO> selectMyMemberInfo(@PathVariable String memberId) {
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", memberService.selectMyInfo(memberId)));
-//    }
-
-
-
     /**
      * @MethodName : memberList
      * @Date : 23.03.20.
@@ -133,17 +125,9 @@ public class MemberController {
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" ,responseDTOWithPaging ));
-//        memberService.selectMemberListAboutName(search, selectCriteria)
+
 
     }
-
-//       log.info("[MemberController] selectCriteria : " + selectCriteria);
-//
-//        ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
-//        responseDTOWithPaging.setPageInfo(selectCriteria);
-//        responseDTOWithPaging.setData(memberService.memberList(selectCriteria));
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
 
     /**
      * @MethodName : selectMemberListAboutEmail
@@ -255,7 +239,7 @@ public class MemberController {
     	@MethodName : selectCode
     	@Date : 2023-04-03
     	@Writer : 정근호
-    	@Description :
+    	@Description : 회원등록시 보이는 코드와 이름 조회
     */
     @GetMapping("/hrm/code")
     public ResponseEntity<ResponseDTO> selectCode() {
