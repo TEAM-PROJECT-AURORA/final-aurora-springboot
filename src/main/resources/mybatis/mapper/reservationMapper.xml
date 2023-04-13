@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.reservation.dao.ReservationMapper">
+    <select id="selectAllAssets" resultType="assetDTO">
+        SELECT
+            ASSET_CODE,
+            ASSET_NAME,
+            ASSET_CATEGORY,
+            STATUS
+          FROM TBL_ASSET
+    </select>
+    <select id="selectAllAssetCategory" resultType="assetDTO">
+        SELECT
+            DISTINCT ASSET_CATEGORY
+          FROM TBL_ASSET
+    </select>
+    <select id="selectTotalMyReservation" parameterType="map" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_RESERVATION
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <select id="selectAllMyReservation" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            D.TEAM_NAME,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %k:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %k:%i') AS END_TIME,
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+            ON A.TEAM_CODE = D.TEAM_CODE
+         WHERE A.MEMBER_CODE = #{ memberCode }
+        LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+    <select id="selectReservationForUpdate" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            D.TEAM_NAME,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
+         WHERE A.RESERVATION_NO = #{ reservationNo }
+    </select>
+    <update id="updateReservation" parameterType="reservationDTO">
+        UPDATE TBL_RESERVATION
+           SET START_TIME = #{ startTime },
+               END_TIME = #{ endTime },
+               RESERVATION_DATE = #{ reservationDate },
+               DESCRIPTION = #{ description }
+         WHERE RESERVATION_NO = #{ reservationNo }
+    </update>
+    <delete id="deleteReservation" parameterType="String">
+        DELETE FROM TBL_RESERVATION
+         WHERE RESERVATION_NO IN
+        <foreach collection=" reservationNos " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </delete>
+    <select id="selectAllReservationsByAsset" parameterType="map" resultType="reservationDTO">
+        <![CDATA[
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            D.TEAM_NAME,
+            A.DESCRIPTION,
+            DATE_FORMAT(A.START_TIME,'%Y-%m-%d %H:%i') AS START_TIME,
+            DATE_FORMAT(A.END_TIME,'%Y-%m-%d %H:%i') AS END_TIME,
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
+         WHERE A.ASSET_CODE = #{ assetCode }
+           AND A.START_TIME >= #{ startTime }
+           AND A.END_TIME <= #{ endTime }]]>
+    </select>
+    <select id="selectAllReservationsByDate" parameterType="map" resultType="reservationDTO">
+        SELECT
+            A.RESERVATION_NO,
+            A.ASSET_CODE,
+            B.ASSET_NAME,
+            C.MEMBER_NAME,
+            D.TEAM_NAME,
+            A.DESCRIPTION,
+            A.START_TIME,
+            A.END_TIME,
+            DATE_FORMAT(A.RESERVATION_DATE,'%Y-%m-%d') AS RESERVATION_DATE
+          FROM TBL_RESERVATION A
+          JOIN TBL_ASSET B
+            ON A.ASSET_CODE = B.ASSET_CODE
+          JOIN TBL_MEMBER C
+            ON A.MEMBER_CODE = C.MEMBER_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
+         WHERE A.ASSET_CODE = #{ assetCode }
+        <![CDATA[
+           AND (A.START_TIME >= #{ startDateTime } AND A.START_TIME <= #{ endDateTime }
+            OR A.END_TIME >= #{ startDateTime } AND A.END_TIME <= #{ endDateTime })
+            OR (A.START_TIME < #{ startDateTime } AND A.END_TIME > #{ endDateTime })
+        ]]>
+         ORDER BY (A.END_TIME - A.START_TIME) DESC
+    </select>
+    <select id="selectMemberInfoForRegister" parameterType="_int" resultType="memberDTO">
+        SELECT
+            A.MEMBER_NAME,
+            A.TEAM_CODE,
+            B.TEAM_NAME
+          FROM TBL_MEMBER A
+          JOIN TBL_TEAM B
+            ON A.TEAM_CODE = B.TEAM_CODE
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <insert id="insertReservation" parameterType="reservationDTO">
+        INSERT INTO TBL_RESERVATION
+            (ASSET_CODE, MEMBER_CODE, TEAM_CODE, DESCRIPTION, START_TIME, END_TIME, RESERVATION_DATE)
+        VALUES
+            (#{ assetCode }, #{ memberCode }, #{ teamCode }, #{ description }, #{ startTime }, #{ endTime }, #{ reservationDate })
+    </insert>
+    <select id="selectTotalAssets" resultType="_int">
+        SELECT
+            COUNT(*)
+          FROM TBL_ASSET
+    </select>
+    <select id="selectAllAssetsForManagement" parameterType="selectCriteria" resultType="assetDTO">
+        SELECT
+            ASSET_CODE,
+            ASSET_NAME,
+            ASSET_CATEGORY,
+            STATUS
+          FROM TBL_ASSET
+         LIMIT #{ startRow }, #{ limit }
+    </select>
+    <update id="updateAssetStatus" parameterType="assetDTO">
+        UPDATE TBL_ASSET
+           SET STATUS = #{ status }
+         WHERE ASSET_CODE = #{ assetCode }
+    </update>
+    <delete id="deleteAsset" parameterType="String">
+        DELETE FROM TBL_ASSET
+         WHERE ASSET_CODE IN
+        <foreach collection=" assetCodes " item="item" index="index" open="(" close=")" separator=",">
+            #{ item }
+        </foreach>
+    </delete>
+    <insert id="insertAsset" parameterType="assetDTO">
+        INSERT INTO TBL_ASSET
+            (ASSET_CODE, ASSET_NAME, ASSET_CATEGORY, STATUS)
+        VALUES
+            (#{ assetCode }, #{ assetName }, #{ assetCategory }, #{ status })
+    </insert>
+</mapper>

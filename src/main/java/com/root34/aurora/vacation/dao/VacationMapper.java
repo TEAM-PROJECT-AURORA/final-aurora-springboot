@@ -21,6 +21,13 @@ public interface VacationMapper {
 	Map selectUsedVacation(int memberCode);
 
 	void updateRemainVacation(int memberCode , int vacationNo);
+	//vacation insert
+    int insertVacation(int memberCode);
+
+	//use_vacation insert
+	int insertVacationUse(VacationDTO vacationDTO);
+
+	int calculateRemainVacation(VacationDTO vacationDTO);
 
 	List<VacationDTO> selectVacationDetail(int memberCode);
 }

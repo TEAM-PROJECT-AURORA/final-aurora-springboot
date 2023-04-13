@@ -121,7 +121,7 @@ public class MemberController {
         log.info("[MemberController] selectCriteria : " + selectCriteria);
         ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
         responseDTOWithPaging.setPageInfo(selectCriteria);
-        responseDTOWithPaging.setData(memberService.selectMemberListAboutName( search, selectCriteria));
+        responseDTOWithPaging.setData(memberService.selectMemberListAboutName(search, selectCriteria));
 
         log.info("[memberService.selectSearchMemberListAboutName(search))]" + search);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공" ,responseDTOWithPaging ));

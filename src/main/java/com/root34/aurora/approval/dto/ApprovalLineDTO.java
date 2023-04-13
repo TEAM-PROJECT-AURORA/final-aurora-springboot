@@ -19,9 +19,11 @@ public class ApprovalLineDTO {
     private String appStatus;
     /**@Variable : 결재코드*/
     private int appCode;
-    /**@Variable : 사원코드*/
+    /**@Variable : 사원 DTO*/
     private MemberDTO memberDTO;
-
+    /**@Variable : 결재 DTO*/
     private ApprovalDTO approvalDTO;
+    /**@Variable : 문서 DTO*/
+    private DocumentDTO documentDTO;
 
 }

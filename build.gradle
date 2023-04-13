@@ -24,7 +24,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
-    testImplementation 'org.projectlombok:lombok:1.18.22'
+    // webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // sockjs
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    // stomp
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+    // gson
+    implementation 'com.google.code.gson:gson:2.9.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -43,7 +50,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     // test시 H2 내장 데이터베이스 연결 김수용 23.03.24
-    testImplementation 'com.h2database:h2:1.4.200'
+//    testImplementation 'com.h2database:h2:1.4.200'
 }
 
 tasks.named('test') {

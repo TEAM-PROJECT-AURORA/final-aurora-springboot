@@ -1,9 +1,11 @@
 package com.root34.aurora.vacation.service;
 
+import com.root34.aurora.exception.CreationFailedException;
 import com.root34.aurora.vacation.dao.VacationMapper;
 import com.root34.aurora.vacation.dto.VacationDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,4 +87,48 @@ public class VacationService {
         return selectVacationDetail;
     }
 
+    public int insertVacation(int memberCode) {
+
+        try{
+            int result = vacationMapper.insertVacation(memberCode);
+
+            if(result == 0) {
+                throw new Exception("휴가를 신청할 수 없습니다.");
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("[VacationService] insertVacation 에러 발생 ! ", e.getMessage());
+            throw new CreationFailedException("웹 사이트 서버에 문제가 있습니다.",e);
+        }
+    }
+
+    public int PostRemainVacation(VacationDTO vacationDTO) {
+        log.info("[VacationService] : {}", vacationDTO);
+        try{
+            int result = vacationMapper.insertVacationUse(vacationDTO);
+            log.info("[VacationService] : {}", vacationDTO);
+            if(result == 0) {
+                throw new Exception("휴가를 신청할 수 없습니다.");
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("[VacationService] PostRemainVacation 에러 발생 ! ", e.getMessage());
+            throw new CreationFailedException("웹 사이트 서버에 문제가 있습니다.");
+        }
+    }
+
+    public int calculateRemainVacation(VacationDTO vacationDTO) {
+
+        log.info("[calculateRemainVacation] : {}", vacationDTO);
+        try{
+            int result = vacationMapper.calculateRemainVacation(vacationDTO);
+            if(result == 0) {
+                throw new Exception("휴가를 신청할 수 없습니다.");
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("[VacationService] calculateRemainVacation 에러 발생 ! ", e.getMessage());
+            throw new CreationFailedException("웹 사이트 서버에 문제가 있습니다.",e);
+        }
+    }
 }

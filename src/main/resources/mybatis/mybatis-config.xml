@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
-<!DOCTYPE configuration 
-    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
-<configuration> 
-	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 --> 
-	<settings> 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 -->
+	<settings>
 		<!-- query 결과 컬럼의 값이 null일 경우 result에 null로 setting할지 여부 -->
-		<setting name="callSettersOnNulls" value="true" /> 
-		<!-- null parameter 허용 --> 
-		<setting name="jdbcTypeForNull" value="NULL" /> 
+		<setting name="callSettersOnNulls" value="true" />
+		<!-- null parameter 허용 -->
+		<setting name="jdbcTypeForNull" value="NULL" />
 	</settings>
 
 	<typeAliases>
@@ -27,16 +27,33 @@
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="ReportDetailDTO" type="com.root34.aurora.report.dto.ReportDetailDTO" />
 		<typeAlias alias="ReportRoundReplyDTO" type="com.root34.aurora.report.dto.ReportRoundReplyDTO" />
+		<typeAlias alias="reservationDTO" type="com.root34.aurora.reservation.dto.ReservationDTO"/>
+		<typeAlias alias="assetDTO" type="com.root34.aurora.reservation.dto.AssetDTO"/>
+		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
+		<typeAlias alias="MessageDTO" type="com.root34.aurora.messenger.dto.MessageDTO"/>
+		<typeAlias alias="messengerDTO" type="com.root34.aurora.messenger.dto.MessengerDTO"/>
+		<typeAlias alias="surveyDTO" type="com.root34.aurora.survey.dto.SurveyDTO"/>
+		<typeAlias alias="questionDTO" type="com.root34.aurora.survey.dto.QuestionDTO"/>
+		<typeAlias alias="choiceDTO" type="com.root34.aurora.survey.dto.ChoiceDTO"/>
+		<typeAlias alias="replyStatusDTO" type="com.root34.aurora.survey.dto.replyStatusDTO"/>
+		<typeAlias alias="answerDTO" type="com.root34.aurora.survey.dto.answerDTO"/>
+		<typeAlias alias="MessengerMemberDTO" type="com.root34.aurora.messenger.dto.MessengerMemberDTO"/>
+		<typeAlias alias="MessengerRequestDTO" type="com.root34.aurora.messenger.dto.MessengerRequestDTO"/>
+		<typeAlias alias="dayWorklogDTO" type="com.root34.aurora.worklog.dao.DayWorklogMapper"/>
 	</typeAliases>
 
 	<mappers>
-		<mapper resource="memberMapper.xml"/>
 		<mapper resource="attendanceMapper.xml"/>
 		<mapper resource="addressBookMapper.xml" />
+		<mapper resource="reservationMapper.xml" />
+		<mapper resource="memberMapper.xml" />
+		<mapper resource="surveyMapper.xml" />
 		<mapper resource="Approval.xml"/>
 		<mapper resource="MailMapper.xml" />
 		<mapper resource="ReportMapper.xml" />
 		<mapper resource="vacationMapper.xml"/>
-
+		<mapper resource="messengerMapper.xml"/>
+		<mapper resource="dayWorklogMapper.xml" />
+		<mapper resource="scheduleMapper.xml" />
 	</mappers>
 </configuration>

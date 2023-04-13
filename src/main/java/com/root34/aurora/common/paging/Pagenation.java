@@ -26,8 +26,9 @@ public class Pagenation {
             endPage = startPage;
         }
 
-        startRow = (pageNo - 1) * limit;
-        endRow = startRow + limit - 1;
+        //startRow = (pageNo - 1) * limit + 1; //오라클에선 이렇게 해서 첫번째 데이터를 가져온다
+        startRow = (pageNo - 1) * limit; // mysql에선 이렇게 해서 첫번째 데이터를 가져온다
+        endRow = startRow + limit;
 
         System.out.println("startRow : " + startRow);
         System.out.println("endRow : " + endRow);
@@ -84,8 +85,8 @@ public class Pagenation {
         }
 
         /* 조회할 시작 번호와 마지막 행 번호를 계산한다. */
-        startRow = (pageNo - 1) * limit + 1;
-        endRow = startRow + limit - 1;
+        startRow = (pageNo - 1) * limit;
+        endRow = startRow + limit;
 
         System.out.println("startRow : " + startRow);
         System.out.println("endRow : " + endRow);

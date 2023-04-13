@@ -36,7 +36,7 @@ public class MailService {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // 안 하면 수신이메일 인코딩 문제 발생
 
             helper.setTo(mailDTO.getRecipient());
             helper.setSubject(mailDTO.getMailTitle());

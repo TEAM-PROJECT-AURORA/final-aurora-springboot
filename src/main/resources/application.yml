@@ -17,20 +17,35 @@ spring:
     resources:
       static-locations: classpath:/auroraFiles/
   mail:
+    # 사용할 SMTP 서버 호스트 이름
 #    host: smtp.daum.net # 스마트워크
-#    host: mail.project-aurora.co.kr # 사용할 SMTP 서버 호스트 이름
-    host: smtp.gmail.com # 사용할 SMTP 서버 호스트 이름
-#    port: 465 # 다음 스마트워크
-    port: 587 # SMTP 서버 포트 번호 - Gmail
-#    username: test@Gmail.com # SMTP 인증을 위한 계정 이름
-    username: ${ SMTP_EMAIL } # SMTP 인증을 위한 계정 이름
-#    password: test11 # SMTP 인증을 위한 계정 비밀번호
-    password: ${ SMTP_APP_PASSWORD } # SMTP 인증을 위한 계정 비밀번호
-    protocol: smtp # 사용할 프로토콜 지정
-    properties: # JavaMail 프로퍼티
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.ssl.trust: smtp.gmail.com
+#    host: smtp.gmail.com # Gmail
+    host: mail.project-aurora.co.kr # 개인 도메인
+    # SMTP 서버 포트 번호
+    port: 587 # Gmail, 개인 도메인 - STARTTLS 암호화 연결
+#    port: 465 # 다음 스마트워크 - SSL/TLS 암호화 연결
+    # SMTP 인증을 위한 계정 이름
+#    username: ${SMTP_EMAIL} # 윈도우 환경변수
+    username: ssssong125@project-aurora.co.kr # SMTP 인증을 위한 계정 이름
+    # SMTP 인증을 위한 계정 비밀번호
+#    password: ${SMTP_APP_PASSWORD} # 윈도우 환경변수
+    password: ssssong125 # 개인 도메인
+    # 사용할 프로토콜 지정
+    protocol: smtp
+    # JavaMail 프로퍼티
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+#          ssl.trust: smtp.gmail.com
+        imap:
+          host: imap.project-aurora.co.kr
+          port: 993
+          user: ssssong125@project-aurora.co.kr
+          password: ssssong125
+          ssl:
+            enable: true
 
 file:
   add-resource-locations: /auroraFiles/
@@ -56,3 +71,6 @@ mybatis:
 
 logging:
   config: file:src/main/resources/logback-spring.xml
+
+
+

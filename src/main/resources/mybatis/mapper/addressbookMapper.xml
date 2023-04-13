@@ -16,12 +16,14 @@
             A.MEMBER_EMAIL AS EMAIL,
             C.JOB_NAME AS JOB_NAME,
             B.DEPT_NAME AS DEPARTMENT,
-            IF(A.TEAM, '', '대기중') AS COMPANY
+            IF(D.TEAM_NAME, '', '대기중') AS COMPANY
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
           JOIN TBL_JOB C
             ON A.JOB_CODE = C.JOB_CODE
+          JOIN TBL_TEAM D
+            ON A.TEAM_CODE = D.TEAM_CODE
          LIMIT #{ startRow }, #{ limit }
     </select>
     <select id="selectTotalMemberAddressesByDept" resultType="_int">
@@ -38,12 +40,14 @@
             A.MEMBER_EMAIL AS EMAIL,
             C.JOB_NAME AS JOB_NAME,
             B.DEPT_NAME AS DEPARTMENT,
-            IF(A.TEAM, '', '대기중') AS COMPANY
+            IF(D.TEAM_NAME, '', '대기중') AS COMPANY
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
           JOIN TBL_JOB C
             ON A.JOB_CODE = C.JOB_CODE
+          JOIN TBL_TEAM D
+               ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.DEPT_CODE = #{ deptCode }
          LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
@@ -53,17 +57,17 @@
         <if test="memberCode != null and memberCode != ''">
             ,MEMBER_CODE
         </if>
-        <if test="team != null and team != ''">
-            ,TEAM
+        <if test="teamCode != null and teamCode != ''">
+            ,TEAM_CODE
         </if>
              )
         VALUES
             (#{ groupName }
         <if test="memberCode != null and memberCode != ''">
             ,#{ memberCode }
-        </if>
-        <if test="team != null and team != ''">
-            ,#{ team }
+        </if>``
+        <if test="teamCode != null and teamCode != ''">
+            ,#{ teamCode }
         </if>
             )
     </insert>
@@ -77,7 +81,7 @@
             MEMBER_EMAIL,
             INTRODUCTION,
             BIRTHDAY,
-            TEAM,
+            TEAM_CODE,
             PHONE
           FROM TBL_MEMBER
          WHERE MEMBER_CODE = #{ memberCode }
@@ -158,12 +162,13 @@
     <select id="selectTeamGroups" parameterType="_int" resultType="addressGroupDTO">
         SELECT
             GROUP_CODE,
-            GROUP_NAME
+            GROUP_NAME,
+            TEAM_CODE
           FROM TBL_ADDRESS_GROUP
-         WHERE TEAM = (SELECT
-                           TEAM
-                         FROM TBL_MEMBER
-                        WHERE MEMBER_CODE = #{ memberCode })
+         WHERE TEAM_CODE = (SELECT
+                                TEAM_CODE
+                              FROM TBL_MEMBER
+                             WHERE MEMBER_CODE = #{ memberCode })
     </select>
     <select id="selectTotalMembersSearch" parameterType="map" resultType="_int">
         SELECT
@@ -190,12 +195,14 @@
             A.MEMBER_EMAIL AS EMAIL,
             C.JOB_NAME AS JOB_NAME,
             B.DEPT_NAME AS DEPARTMENT,
-            IF(A.TEAM, '', '대기중') AS COMPANY
+            IFNULL(D.TEAM_NAME, '대기중') AS COMPANY
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
           JOIN TBL_JOB C
             ON A.JOB_CODE = C.JOB_CODE
+          JOIN TBL_TEAM D
+            ON A.TEAM_CODE = D.TEAM_CODE
         <if test="searchCondition == 'name'">
            AND A.MEMBER_NAME LIKE CONCAT('%',#{ searchValue },'%')
         </if>
@@ -258,7 +265,7 @@
             A.MEMBER_NAME,
             A.PHONE,
             A.MEMBER_EMAIL,
-            CONCAT('우리회사-', IFNULL(NULLIF(A.TEAM, ''), '대기중')),
+            CONCAT('우리회사-', IFNULL(NULLIF(A.TEAM_CODE, ''), '대기중')),
             B.DEPT_NAME,
             C.JOB_NAME
           FROM TBL_MEMBER A

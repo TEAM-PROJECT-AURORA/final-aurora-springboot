@@ -52,6 +52,7 @@ public class TokenProvider {
                 .setSubject(member.getMemberId());// sub : subject. 토큰 제목을 나타낸다.
         claims.put(AUTHORITIES_KEY, roles);// 권한 담기
         claims.put("memberCode", member.getMemberCode());
+        claims.put("team", member.getTeamCode());
 
         long now = (new Date()).getTime();// 만료시간 때문에 현재 시간을 구하는 듯
 
@@ -91,6 +92,7 @@ public class TokenProvider {
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
+        log.info("claims: " + claims);
 
         // "memberCode" 클레임에서 값을 추출합니다.
 //        Integer memberCodeInteger = (Integer) claims.get("memberCode");
@@ -120,6 +122,7 @@ public class TokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
+        log.info("[TokenProvider] userDetails : ", userDetails);
 
         // UserDetails 객체를 생성해서 UsernamePasswordAuthenticationToken 형태로 리턴, SecuriyContext 를 사용하기 위한 절차
         // SecurityContext 가 Authentication 객체를 저장하고 있기 때문이다.

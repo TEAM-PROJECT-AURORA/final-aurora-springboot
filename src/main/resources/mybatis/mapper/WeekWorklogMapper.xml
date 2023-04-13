@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.worklog.dao.WeekWorklogMapper">
+
+    <select id = "selectWeekWorklogTotal" parameterType="_int" resultType = "_int">
+        SELECT
+            count(*)
+          FROM TBL_WEEK_WORKLOG
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+
+    <select id = "selectWeekWorklogListWithPaging" parameterType="map" resultType="WeekWorklogDTO">
+        SELECT
+            W.WEEK_WORKLOG_CODE,
+            M.MEMBER_CODE,
+            W.WEEK_REPORTING_DATE,
+            W.MON_CONTENT,
+            W.TUES_CONTENT,
+            W.WED_CONTENT,
+            W.THUR_CONTENT,
+            W.FRI_CONTENT,
+            W.WEEK_NOTE,
+            W.WEEK_SPECIAL_NOTE
+          FROM TBL_WEEK_WORKLOG W
+          JOIN TBL_MEMBER M
+            ON W.MEMBER_CODE = M.MEMBER_CODE
+         WHERE W.MEMBER_CODE = #{ memberCode }
+            LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
+    </select>
+
+    <select id = "selectWeekWorklog" parameterType="_int" resultType="WeekWorklogDTO">
+        SELECT
+            W.WEEK_WORKLOG_CODE,
+            M.MEMBER_CODE,
+            W.WEEK_REPORTING_DATE,
+            W.MON_CONTENT,
+            W.TUES_CONTENT,
+            W.WED_CONTENT,
+            W.THUR_CONTENT,
+            W.FRI_CONTENT,
+            W.WEEK_NOTE,
+            W.WEEK_SPECIAL_NOTE
+          FROM TBL_WEEK_WORKLOG W
+          JOIN TBL_MEMBER M
+            ON W.MEMBER_CODE = M.MEMBER_CODE
+         WHERE W.WEEK_WORKLOG_CODE = #{ weekWorklogCode }
+         ORDER BY W.WEEK_WORKLOG_CODE DESC
+    </select>
+
+    <insert id="insertWeekWorklog" parameterType="WeekWorklogDTO">
+        INSERT INTO TBL_WEEK_WORKLOG
+        (
+            MEMBER_CODE,
+            MON_CONTENT,
+            TUES_CONTENT,
+            WED_CONTENT,
+            THUR_CONTENT,
+            FRI_CONTENT,
+            WEEK_NOTE,
+            WEEK_SPECIAL_NOTE
+        )
+        VALUES
+        (
+            #{ memberCode },
+            #{ monContent },
+            #{ tuesContent },
+            #{ wedContent },
+            #{ thurContent },
+            #{ friContent },
+            #{ weekNote },
+            #{ weekSpecialNote }
+        )
+    </insert>
+
+    <update id = "updateWeekWorklog" parameterType="WeekWorklogDTO">
+        UPDATE TBL_WEEK_WORKLOG
+        SET
+            MON_CONTENT = #{ monContent },
+            TUES_CONTENT = #{ tuesContent },
+            WED_CONTENT = #{ wedContent },
+            THUR_CONTENT = #{ thurContent },
+            FRI_CONTENT = #{ friContent },
+            WEEK_NOTE = #{ weekNote },
+            WEEK_SPECIAL_NOTE = #{ weekSpecialNote }
+        WHERE WEEK_WORKLOG_CODE = #{ weekWorklogCode }
+    </update>
+
+    <delete id = "deleteWeekWorklog" parameterType="WeekWorklogDTO">
+        DELETE FROM TBL_WEEK_WORKLOG
+        WHERE WEEK_WORKLOG_CODE = #{ weekWorklogCode }
+    </delete>
+
+</mapper>

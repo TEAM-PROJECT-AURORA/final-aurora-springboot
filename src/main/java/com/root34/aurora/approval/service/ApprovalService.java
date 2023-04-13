@@ -47,7 +47,7 @@ public class ApprovalService {
 
             return approvalDtoList;
         } catch (Exception e) {
-            log.error("[ApprovalService] lastList method error : " + e.getMessage());
+            log.error("[ApprovalService] 조회할 문서가 없습니다. : " + e.getMessage());
             // 에러에 대한 응답 처리
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
@@ -68,7 +68,7 @@ public class ApprovalService {
 
             return pendingList;
         } catch (Exception e) {
-            log.error("[ApprovalService] pendingList method error : " + e.getMessage());
+            log.error("[ApprovalService] 결재대기중인 문서가 없습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
     }
@@ -89,7 +89,7 @@ public class ApprovalService {
 
             return pendingList;
         } catch (Exception e) {
-            log.error("[ApprovalService] completedList method error : " + e.getMessage());
+            log.error("[ApprovalService] 결재완료된 문서가 없습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
     }
@@ -112,7 +112,7 @@ public class ApprovalService {
 
             return approvalDTO;
         }catch (Exception e){
-            log.error("[ApprovalService] detailApprove method error : " + e.getMessage());
+            log.error("[ApprovalService] 결제 상세조회 실패했습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
     }
@@ -123,20 +123,19 @@ public class ApprovalService {
 	@Writer : heojaehong
 	@Description : 결재수정 메서드
 */
-    public ApprovalDTO updateApproval(ApprovalDTO approvalDTO) {
+    public int updateApproval(ApprovalDTO approvalDTO) {
 
-        log.info("[ApprovalService] updateApproval 실행 " );
+        log.info("[ApprovalService] updateApproval 실행 {} : ", approvalDTO );
         try {
-            approvalDTO = approvalMapper.updateApproval(approvalDTO);
-            int appCode = approvalDTO.getAppCode();
-            if(appCode < 0) {
+            int result = approvalMapper.updateApproval(approvalDTO);
+            if(result == 0) {
                 throw new Exception("해당 문서가 존재하지 않습니다.");
             }
 
-            return approvalDTO;
+            return result;
         }
         catch (Exception e) {
-            log.error("[ApprovalService] updateApproval method error" + e.getMessage());
+            log.error("[ApprovalService] 결재문서를 수정할 수 없습니다." + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 페이지가 존재하지 않습니다.", e);
         }
     }
@@ -172,6 +171,7 @@ public class ApprovalService {
 
         try {
             log.info("[ApprovalService] approve 실행");
+            log.info("[ApprovalService] approvalDTO 확인 : {}", approvalDTO);
             int result = approvalMapper.insertApprove(approvalDTO);
             if(result == 0){
                 throw new Exception("제출 실패!");
@@ -179,7 +179,7 @@ public class ApprovalService {
 
             return approvalDTO;
         } catch (Exception e) {
-            log.error("error 발생! 등록 실패 : " + e.getMessage());
+            log.error("[ApprovalService] error 발생! 등록 실패 : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일시적인 오류로 등록에 실패했습니다.",e);
         }
     }
@@ -200,7 +200,7 @@ public class ApprovalService {
             }
             return result;
         } catch (Exception e) {
-            log.error("error 발생! 결재선 작성에 실패 했습니다. : " + e.getMessage());
+            log.error("[ApprovalService] 결재선 작성에 실패 했습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 접근!", e);
         }
     }
@@ -221,9 +221,51 @@ public class ApprovalService {
             }
             return list;
         } catch (Exception e) {
-            log.error("error 발생! 결재선 확인에 실패 했습니다. : " + e.getMessage());
+            log.error("[ApprovalService] 결재선 확인에 실패 했습니다. : " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "확인할 수 없습니다.", e);
         }
 
+    }
+    /**
+     @FileName : ApprovalService
+     @Date : 11:03 AM
+     @작성자 : heojaehong
+     @설명 : 결재요청 보여주는 메서드
+     */
+    public List<ApprovalLineDTO> approvalLineList(int memberCode) {
+
+        try {
+            log.info("[ApprovalService] approvalLineList 실행");
+            List<ApprovalLineDTO> list = approvalMapper.approvalLineList(memberCode);
+
+            if(memberCode < 0){
+                throw new Exception("해당 요청문서가 없습니다");
+            }
+            return list;
+        } catch (Exception e) {
+            log.error("[ApprovalService] 결재선 확인에 실패 했습니다. : " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "확인할 수 없습니다.", e);
+        }
+    }
+    /**
+     @FileName : ApprovalService
+     @Date : 11:03 AM
+     @작성자 : heojaehong
+     @설명 : 결재선 수정하는 메서드
+     */
+    public int patchLineApproval(ApprovalLineDTO approvalLineDTO) {
+
+        try{
+            log.info("[ApprovalService] patchLineApproval 실행");
+            int result = approvalMapper.patchLineApproval(approvalLineDTO);
+
+            if( result == 0) {
+                throw new Exception("수정 할 수 없습니다.");
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("[ApprovalService] 결재선 수정에 실패 했습니다. : " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 수 없습니다.", e);
+        }
     }
 }

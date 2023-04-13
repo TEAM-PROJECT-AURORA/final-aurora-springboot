@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.root34.aurora.messenger.dao.MessengerMapper">
+    <select id="messengerList" resultType="messengerDTO">
+        select
+            *
+        from TBL_MESSENGER
+        where MEMBER_CODE = #{memberCode}
+    </select>
+
+    <insert id="messengerRegister" parameterType="messengerDTO">
+        insert into TBL_MESSENGER
+        values ( #{roomNum},#{memberCode}, #{mesName})
+    </insert>
+</mapper>

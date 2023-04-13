@@ -6,8 +6,9 @@
 
     <select id="selectVacation" resultType="hashmap">
         SELECT
-               REMAIN_VACATION
-
+               REMAIN_VACATION,
+               MEMBER_CODE,
+               VACATION_NO
           FROM TBL_VACATION
          WHERE MEMBER_CODE = #{ memberCode }
       ORDER BY VACATION_NO DESC
@@ -17,33 +18,35 @@
 
     <select id="selectUsedVacation" resultType="hashmap">
         SELECT
-             SUM(IF(IS_HALF_DAY, 0.5, DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) -
-             (FLOOR((DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) + WEEKDAY(VACATION_START_DATE) + 1) / 7) * 2) -
-             (CASE WHEN WEEKDAY(VACATION_START_DATE) = 6 THEN 1 ELSE 0 END) -
-             (CASE WHEN WEEKDAY(VACATION_END_DATE) = 5 THEN 1 ELSE 0 END) + 1)) AS usedDay
+            SUM(IF(IS_HALF_DAY, 0.5, DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) -
+                                     (FLOOR((DATEDIFF(VACATION_END_DATE, VACATION_START_DATE) + WEEKDAY(VACATION_START_DATE) + 1) / 7) * 2) -
+                                     (CASE WHEN WEEKDAY(VACATION_START_DATE) = 6 THEN 1 ELSE 0 END) -
+                                     (CASE WHEN WEEKDAY(VACATION_END_DATE) = 5 THEN 1 ELSE 0 END) + 1)) AS usedDay
         FROM TBL_USED_VACATION A
-        JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
-       WHERE B.MEMBER_CODE = #{ memberCode }
+                 JOIN TBL_VACATION B ON A.VACATION_NO = B.VACATION_NO
+        WHERE B.MEMBER_CODE = #{ memberCode }
 
     </select>
 
-    <update id="updateRemainVacation" parameterType="vacationDTO">
-
-        UPDATE TBL_VACATION B
-        SET REMAIN_VACATION = REMAIN_VACATION - (
-            SELECT
-                SUM(IF(A.IS_HALF_DAY, 0.5, DATEDIFF(A.VACATION_END_DATE, A.VACATION_START_DATE) + 1))
-            FROM
-                TBL_USED_VACATION A
-            WHERE
-                A.VACATION_NO = B.VACATION_NO
-        )
+    <update id="calculateRemainVacation" parameterType="vacationDTO">
+        UPDATE TBL_VACATION
+        SET REMAIN_VACATION = REMAIN_VACATION - #{ usedDay }
         WHERE MEMBER_CODE = #{ memberCode }
           AND VACATION_NO = #{ vacationNo }
-
-
     </update>
+    <insert id="insertVacation" parameterType="int">
 
+        insert into TBL_VACATION
+        (VACATION_NO, MEMBER_CODE)
+        values (null, #{ memberCode })
+    </insert>
+
+    <insert id="insertVacationUse" parameterType="vacationDTO">
+
+        insert into TBL_USED_VACATION
+            (VACATION_NO, MEMBER_CODE, VACATION_START_DATE, VACATION_END_DATE, IS_HALF_DAY)
+        values (#{ vacationNo },#{memberCode}, #{ vacationStartDate }, #{ vacationEndDate }, #{ isHalfDay })
+    </insert>
     <select id="selectVacationDetail" resultType="vacationDTO">
         SELECT
             A.VACATION_START_DATE,
@@ -63,6 +66,21 @@
             LIMIT 5
     </select>
 
+    <update id="updateRemainVacation" parameterType="vacationDTO">
 
+        UPDATE TBL_VACATION B
+        SET REMAIN_VACATION = REMAIN_VACATION - (
+            SELECT
+                SUM(IF(A.IS_HALF_DAY, 0.5, DATEDIFF(A.VACATION_END_DATE, A.VACATION_START_DATE) + 1))
+            FROM
+                TBL_USED_VACATION A
+            WHERE
+                A.VACATION_NO = B.VACATION_NO
+        )
+        WHERE MEMBER_CODE = #{ memberCode }
+          AND VACATION_NO = #{ vacationNo }
+
+
+    </update>
 
 </mapper>

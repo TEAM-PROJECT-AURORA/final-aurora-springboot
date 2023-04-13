@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return mapper.findByMemberId(memberId)
                 .map(user -> addAuthorities(user))
-                .orElseThrow(() -> new UserNotFoundException(memberId + "> 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(memberId + "를 찾을 수 없습니다."));
     }
 
     private MemberDTO addAuthorities(MemberDTO member) {

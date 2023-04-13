@@ -30,15 +30,20 @@ public interface ApprovalMapper {
     List<ApprovalDTO> completedList(int memberCode);
     /** 결재 수정 
     * @param approvalDTO 결재 DTO*/
-    ApprovalDTO updateApproval(ApprovalDTO approvalDTO);
+    int updateApproval(ApprovalDTO approvalDTO);
     /** 결재 삭제 
     * @param deleteMap 다중삭제를 위한 deleteMap*/
     int deleteApproval(Map<String, Object> deleteMap);
     /** 결재선 추가
      * @param approvalLineDTOList 결재선 DTO 리스트*/
     int setLineApproval(List<ApprovalLineDTO> approvalLineDTOList);
-
     /** 결재선 확인
      * @param appCode 결재문서 코드 */
     List<ApprovalLineDTO> approvalLine(int appCode);
+    /** 결재선 확인
+     * @param memberCode 맴버 코드 */
+    List<ApprovalLineDTO> approvalLineList(int memberCode);
+    /** 결재선 수정 확인
+     * @param approvalLineDTO 결재선DTO */
+    int patchLineApproval(ApprovalLineDTO approvalLineDTO);
 }

@@ -1,7 +1,8 @@
 package com.root34.aurora.report.dao;
 
-import com.root34.aurora.common.paging.SelectCriteria;
 import com.root34.aurora.common.FileDTO;
+import com.root34.aurora.common.paging.SelectCriteria;
+import com.root34.aurora.member.dto.MemberDTO;
 import com.root34.aurora.report.dto.ReportDTO;
 import com.root34.aurora.report.dto.ReportDetailDTO;
 import com.root34.aurora.report.dto.ReportRoundDTO;
@@ -24,6 +25,8 @@ public interface ReportMapper {
 
     int registerFileWithReportCode(FileDTO fileDTO); // 보고_첨부파일 등록
 
+    List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 첨부파일 목록 조회
+
     int registerReporter(HashMap<String, Object> parameter); // 보고자 등록
 
     int getReportCount(HashMap<String, Object> searchConditions); // 조건별 보고 갯수 조회
@@ -34,13 +37,19 @@ public interface ReportMapper {
 
     List<ReportRoundDTO> selectReportRoundSummaryListByReportCode(Long reportCode); // 정기보고 회차 요약 목록 조회 - 메인 페이지 요약 출력
 
-    List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 10개 조회
+    List<ReportDTO> selectCasualReportListByMemberCode(int memberCode); // 비정기 보고 20개 조회
+
+    int updateReport(ReportDTO reportDTO); // 보고 수정
+
+    int deleteFile(Integer fileCode); // 파일 DB에서 삭제
 
     int getReportRoundCapacity(Long reportCode); // 보고 회차 정원 조회
 
     int registerReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 등록
 
-    int updateReport(ReportDTO reportDTO); // 보고 수정
+    int updateReportRound(ReportRoundDTO reportRoundDTO); // 보고 회차 수정
+
+    int deleteReportRound(long roundCode); // 보고 회차 삭제
 
     int deleteReporter(Long reportCode); // 보고자 삭제
 
@@ -52,9 +61,7 @@ public interface ReportMapper {
 
     ReportRoundDTO selectReportRoundDetailByRoundCode(Long reportCode); // 보고 회차 상세 조회
 
-    ReportDTO selectCasualReportDetailByReportCode(Long reportCode); // 비정기보고 상세 조회
-
-    List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 비정기보고 첨부파일 목록 조회
+    ReportDTO selectReportDetailByReportCode(Long reportCode); // 보고 상세 조회
 
     int updateReportCompletionStatus(HashMap<String, Object> parameter); // 보고 완료상태 수정
 
@@ -80,9 +87,16 @@ public interface ReportMapper {
 
     List<ReportRoundReplyDTO> selectReportRoundReply(long roundCode); // 보고 댓글 목록 조회
 
+    int getReplyCountByRoundCode(long roundCode); // 보고 회차 보고 댓글 갯수 조회
+
     int updateReportRoundReply(ReportRoundReplyDTO reportRoundReplyDTO); // 보고 댓글 수정
 
     int deleteReportRoundReply(long replyCode); // 보고 댓글 삭제
 
     Integer selectMemberCodeByReplyCode(long replyCode); // 보고 댓글 작성자 확인
+
+    Integer getReportedMemberCountByRoundCode(long roundCode); // 보고 회차 보고한 인원수 조회
+
+    MemberDTO selectReporterDetail(int memberCode); // 보고자 정보 조회
 }
+//    int isRoundTitleExist(HashMap<String, Object> parameter); // 보고 회차명 중복 여부

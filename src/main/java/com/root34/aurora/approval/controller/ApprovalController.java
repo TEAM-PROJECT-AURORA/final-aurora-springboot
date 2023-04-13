@@ -47,15 +47,30 @@ public class ApprovalController {
     }
 
     /**
+     @MethodName : lastList
+     @Date : 4:20 PM
+     @Writer : heojaehong
+     @Description : 최근 요청대기 리스트 조회
+     */
+    @GetMapping("/approvals/approvalLine/{memberCode}")
+    public ResponseEntity<ResponseDTO> approvalLineList(@PathVariable int memberCode){
+
+        log.info("[ApprovalController] GetMapping lastList start ");
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.approvalLineList(memberCode)));
+    }
+
+    /**
      @MethodName : pendingList
      @Date : 12:09 AM
      @Writer : heojaehong
-     @Description : 미결재 리스트 조회
+     @Description : 진행중 리스트 조회
      */
     @GetMapping("/approvals/pending/{memberCode}")
     public ResponseEntity<ResponseDTO> pendingList(@PathVariable int memberCode){
 
-        log.info("[ApprovalController] GetMapping pendingList start ");
+        ApprovalDTO approvalDTO = new ApprovalDTO();
+        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.pendingList(memberCode)));
     }
@@ -69,7 +84,8 @@ public class ApprovalController {
     @GetMapping("/approvals/completed/{memberCode}")
     public ResponseEntity<ResponseDTO> completedList(@PathVariable int memberCode){
 
-        log.info("[ApprovalController] GetMapping lastList: " + memberCode);
+        ApprovalDTO approvalDTO = new ApprovalDTO();
+        log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",approvalService.completedList(memberCode)));
     }
@@ -154,5 +170,18 @@ public class ApprovalController {
         }
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",approvalService.setLineApproval(approvalLineDTOList)));
+    }
+
+    /**
+     @MethodName : detailApprove
+     @Date : 2:01 PM
+     @Writer : heojaehong
+     @Description : 결재선 수정
+     */
+    @PatchMapping("/approvals/draft/form/line/{appCode}")
+    public ResponseEntity<ResponseDTO> updateApprovalLine(@PathVariable int appCode, @RequestBody ApprovalLineDTO approvalLineDTO){
+        log.info("[ApprovalController] PathVariable updateApprovalLine: " + appCode);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "결재선 수정 성공", approvalService.patchLineApproval(approvalLineDTO)));
     }
 }

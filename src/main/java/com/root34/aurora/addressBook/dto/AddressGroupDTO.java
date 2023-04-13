@@ -24,7 +24,7 @@ public class AddressGroupDTO {
 	*/
 	private int memberCode;
 	/**
-		* @variable 소속팀
+		* @variable 소속팀 코드
 	*/
-	private String team;
+	private String teamCode;
 }
