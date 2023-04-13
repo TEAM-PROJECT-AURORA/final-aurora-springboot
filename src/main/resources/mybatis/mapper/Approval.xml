@@ -9,7 +9,9 @@
         <result property="appTitle" column="APP_TITLE"/>
         <result property="appDescript" column="APP_DESCRIPT"/>
         <result property="appDate" column="APP_DATE"/>
+        <result property="appStartDate" column="APP_START_DATE"/>
         <result property="appEndDate" column="APP_END_DATE"/>
+        <result property="appStatus" column="APP_STATUS"/>
         <result property="appOpen" column="APP_OPEN"/>
         <association property="documentDTO" resultMap="documentResultMap">
             <id property="docCode" column="DOC_CODE"/>
@@ -50,15 +52,17 @@
         <result property="memberPassword" column="MEMBER_PASSWORD"/>
         <result property="memberName" column="MEMBER_NAME"/>
         <result property="memberEmail" column="MEMBER_EMAIL"/>
+        <result property="jobCode" column="JOB_CODE"/>
+        <result property="jobName" column="JOB_NAME"/>
         <result property="memberRole" column="MEMBER_ROLE"/>
     </resultMap>
 
     <insert id="insertApprove" parameterType="com.root34.aurora.approval.dto.ApprovalDTO" useGeneratedKeys="true" keyProperty="appCode">
         INSERT INTO TBL_APPROVAL
-        (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT, APP_END_DATE, APP_OPEN)
+        (DOC_CODE, MEMBER_CODE, APP_TITLE, APP_DESCRIPT,APP_START_DATE, APP_END_DATE,APP_STATUS, APP_OPEN)
         VALUES
-            (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appEndDate },
-             #{ appOpen } )
+            (#{ documentDTO.docCode }, #{ memberDTO.memberCode }, #{ appTitle }, #{ appDescript }, #{ appStartDate },
+             #{ appEndDate },#{ appStatus },  #{ appOpen } )
 
     </insert>
 
@@ -73,11 +77,12 @@
 
     <select id="lastList" resultMap="approvalResultMap">
         SELECT
-            *
+            ta.* ,
+            td.* ,
+            tm.*
         from TBL_APPROVAL ta
                  JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
                  JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
-
         where ta.APP_DATE >= date_sub(now(), INTERVAL 7 DAY) and ta.MEMBER_CODE = #{ memberCode }
     </select>
 
@@ -87,13 +92,13 @@
         from TBL_APPROVAL ta
                  JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
                  JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
-        where ta.MEMBER_CODE = #{ memberCode }
+        where ta.MEMBER_CODE = #{ memberCode } and ta.APP_STATUS != 'y'
     </select>
 
     <select id="detailApprove" resultMap="approvalResultMap">
         select
             ta.*,
-            td.DOC_CODE,
+            td.*,
             tm.MEMBER_CODE,
             tm.MEMBER_NAME,
             tm.MEMBER_ID,
@@ -108,8 +113,7 @@
     <select id="approvalLine" resultMap="approvalLineResultMap">
         select
             tal.*,
-            tm.MEMBER_CODE,
-            tm.MEMBER_NAME,
+            tm.*,
             ta.APP_CODE,
             td.DOC_CODE
         from TBL_APPROVAL_LINE tal
@@ -130,13 +134,13 @@
         where tal.MEMBER_CODE = #{ memberCode } and tal.APP_STATUS = 'n';
     </select>
 
-    <select id="completedList" resultType="com.root34.aurora.approval.dto.ApprovalLineDTO">
-        select
-        *
+    <select id="completedList" resultMap="approvalResultMap">
+        SELECT
+            *
         from TBL_APPROVAL ta
-                 join TBL_APPRsetLineApprovalOVAL_LINE tal
-                      ON   (ta.APP_CODE = tal.APP_CODE)
-        where tal.APP_STATUS = 'Y' and ta.MEMBER_CODE = #{ memberCode }
+        JOIN TBL_DOCUMENT td ON ta.DOC_CODE = td.DOC_CODE
+        JOIN TBL_MEMBER tm ON ta.MEMBER_CODE = tm.MEMBER_CODE
+        where ta.APP_STATUS = 'y' and ta.MEMBER_CODE = #{ memberCode }
     </select>
 
     <update id="updateApporval" parameterType="ApprovalDTO">
@@ -157,5 +161,12 @@
         set
             APP_STATUS = #{appStatus}
         where APP_CODE = #{appCode} AND MEMBER_CODE = #{memberDTO.memberCode}
+    </update>
+
+    <update id="updateApproval" parameterType="ApprovalDTO">
+        update TBL_APPROVAL
+        set
+            APP_STATUS = #{appStatus}
+        where APP_CODE = #{appCode}
     </update>
 </mapper>

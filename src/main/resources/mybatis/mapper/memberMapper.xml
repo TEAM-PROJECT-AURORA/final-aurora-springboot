@@ -185,7 +185,7 @@
                  JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
                  JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE A.DEPT_CODE LIKE CONCAT ('%', #{ search } ,'%')
+        WHERE B.DEPT_NAME LIKE CONCAT ('%', #{ search } ,'%')
           AND A.STATUS = '재직'
         ORDER BY A.MEMBER_CODE
     </select>
@@ -211,7 +211,7 @@
                  JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
                  JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE A.JOB_CODE LIKE CONCAT ('%', #{ search } ,'%')
+        WHERE C.JOB_NAME LIKE CONCAT ('%', #{ search } ,'%')
           AND A.STATUS = '재직'
         ORDER BY A.MEMBER_CODE
     </select>
@@ -237,7 +237,7 @@
                  JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
                  JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE
 
-        WHERE A.TASK_CODE LIKE CONCAT ('%', #{ search } ,'%')
+        WHERE D.TASK_NAME LIKE CONCAT ('%', #{ search } ,'%')
           AND A.STATUS = '재직'
         ORDER BY A.MEMBER_CODE
     </select>

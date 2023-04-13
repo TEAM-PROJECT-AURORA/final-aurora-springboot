@@ -4,17 +4,18 @@ import com.root34.aurora.schedule.dto.ScheduleDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ScheduleMapper {
 
-    List<ScheduleDTO> selectScheduleCalendarAboutMonth();
+    List<ScheduleDTO> selectScheduleCalendarAboutMe(int memberCode);
 
-    List<ScheduleDTO> selectScheduleCalendarAboutWeek();
+    List<ScheduleDTO> selectScheduleCalendarAboutTeam(String teamCode);
 
     List<ScheduleDTO> selectScheduleCalendarAboutDay();
 
-    ScheduleDTO selectSchedule(int scheduleCode);
+    List<ScheduleDTO> selectSchedule(Map map);
 
     int insertSchedule(ScheduleDTO scheduleDTO);
 

@@ -16,6 +16,10 @@ public class AnswerDTO {
 	*/
     private String answerNo;
 	/**
+		* @variable 설문 코드 
+	*/
+	private String surveyCode;
+	/**
 		* @variable 질문 번호
 	*/
 	private String questionNo;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -16,19 +17,19 @@ public class ScheduleService {
 
     public ScheduleService(ScheduleMapper scheduleMapper) { this.scheduleMapper = scheduleMapper; }
 
-    public List<ScheduleDTO> selectScheduleCalendarAboutMonth() {
+    public List<ScheduleDTO> selectScheduleCalendarAboutMe(int memberCode) {
 
         log.info("[ScheduleService] selectScheduleCalendarAboutMonth Start ====================");
-        List<ScheduleDTO> selectScheduleCalendarAboutMonth = scheduleMapper.selectScheduleCalendarAboutMonth();
+        List<ScheduleDTO> selectScheduleCalendarAboutMonth = scheduleMapper.selectScheduleCalendarAboutMe(memberCode);
         log.info("[ScheduleService] selectScheduleCalendarAboutMonth End ====================");
 
         return selectScheduleCalendarAboutMonth;
     }
 
-    public List<ScheduleDTO> selectScheduleCalendarAboutWeek() {
+    public List<ScheduleDTO> selectScheduleCalendarAboutTeam(String teamCode) {
 
         log.info("[ScheduleService] selectScheduleCalendarAboutWeek Start ====================");
-        List<ScheduleDTO> selectScheduleCalendarAboutWeek = scheduleMapper.selectScheduleCalendarAboutWeek();
+        List<ScheduleDTO> selectScheduleCalendarAboutWeek = scheduleMapper.selectScheduleCalendarAboutTeam(teamCode);
         log.info("[ScheduleService] selectScheduleCalendarAboutWeek End ====================");
 
         return selectScheduleCalendarAboutWeek;
@@ -43,13 +44,13 @@ public class ScheduleService {
         return selectScheduleCalendarAboutDay;
     }
 
-    public ScheduleDTO selectSchedule(int scheduleCode) {
+    public List<ScheduleDTO> selectSchedule(Map map) {
 
         log.info("[ScheduleService] selectSchedule Start ====================");
-        ScheduleDTO scheduleDTO = scheduleMapper.selectSchedule(scheduleCode);
+        List<ScheduleDTO> schedules = scheduleMapper.selectSchedule(map);
         log.info("[ScheduleService] selectSchedule End ====================");
 
-        return scheduleDTO;
+        return schedules;
     }
 
     @Transactional

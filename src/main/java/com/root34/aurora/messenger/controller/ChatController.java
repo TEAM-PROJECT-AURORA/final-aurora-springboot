@@ -19,6 +19,7 @@ public class ChatController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public MessageDTO sendMessage(@Payload MessageDTO messageDTO) {
+        log.info("Received message: {}", messageDTO);
 
         return messageDTO;
     }

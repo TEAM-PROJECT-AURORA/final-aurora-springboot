@@ -6,41 +6,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  @ClassName : MemberDTO
  @Date : 23.03.19.
  @Writer : 정근호
- @Description : 사원 변수 선언
+ @Description : 사원 변수
  */
 @Data
 public class MemberDTO implements UserDetails {
 
-    /**
-     * @variable memberCode     사원코드
-     * /
-     *
-     * @variable deptCode       부서코드
-     * @variable jobCode        직윝코드
-     * @variable taskCode       직무코드
-     * @variable memberName     이름
-     * @variable memberId       아이디
-     * @variable memberPWD      비밀번호
-     * @variable memberEmail    이메일
-     * @variable address        주소
-     * @variable gender         성별
-     * @variable memberRole     권한
-     * @variable memberHireDate 입사일
-     * @variable memberEndDate  퇴사일
-     * @variable introduction   자기소개
-     * @variable significant    특이사항
-     * @variable status         재직상태
-     * @variable birthDay       생년월일
-     * @variable team           소속팀
-     * @variable fileCode       사진파일코드
-     * @variable phone          핸드폰
-     */
     /**
      * @variable memberCode 사원코드
      **/
@@ -137,6 +112,8 @@ public class MemberDTO implements UserDetails {
      * @variable teamName 팀명
      **/
     private String teamName;
+
+
 
 
 

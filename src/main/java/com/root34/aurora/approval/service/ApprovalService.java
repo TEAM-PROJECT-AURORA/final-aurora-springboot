@@ -123,17 +123,16 @@ public class ApprovalService {
 	@Writer : heojaehong
 	@Description : 결재수정 메서드
 */
-    public ApprovalDTO updateApproval(ApprovalDTO approvalDTO) {
+    public int updateApproval(ApprovalDTO approvalDTO) {
 
-        log.info("[ApprovalService] updateApproval 실행 " );
+        log.info("[ApprovalService] updateApproval 실행 {} : ", approvalDTO );
         try {
-            approvalDTO = approvalMapper.updateApproval(approvalDTO);
-            int appCode = approvalDTO.getAppCode();
-            if(appCode < 0) {
+            int result = approvalMapper.updateApproval(approvalDTO);
+            if(result == 0) {
                 throw new Exception("해당 문서가 존재하지 않습니다.");
             }
 
-            return approvalDTO;
+            return result;
         }
         catch (Exception e) {
             log.error("[ApprovalService] 결재문서를 수정할 수 없습니다." + e.getMessage());
@@ -172,6 +171,7 @@ public class ApprovalService {
 
         try {
             log.info("[ApprovalService] approve 실행");
+            log.info("[ApprovalService] approvalDTO 확인 : {}", approvalDTO);
             int result = approvalMapper.insertApprove(approvalDTO);
             if(result == 0){
                 throw new Exception("제출 실패!");

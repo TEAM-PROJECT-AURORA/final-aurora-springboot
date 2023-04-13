@@ -30,7 +30,7 @@ public interface ApprovalMapper {
     List<ApprovalDTO> completedList(int memberCode);
     /** 결재 수정 
     * @param approvalDTO 결재 DTO*/
-    ApprovalDTO updateApproval(ApprovalDTO approvalDTO);
+    int updateApproval(ApprovalDTO approvalDTO);
     /** 결재 삭제 
     * @param deleteMap 다중삭제를 위한 deleteMap*/
     int deleteApproval(Map<String, Object> deleteMap);

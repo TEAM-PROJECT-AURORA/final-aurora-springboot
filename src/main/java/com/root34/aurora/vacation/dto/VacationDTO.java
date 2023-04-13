@@ -28,12 +28,8 @@ public class VacationDTO {
     /**
      * @variable isHalfDay 반차 사용여부
      **/
-    private boolean isHalfDay;
+    private int isHalfDay;
     //tbl_vacation
-    /**
-     * @variable vacationReason 휴가사유
-     **/
-    private String vacationReason;
     /**
      * @variable memberCode 사원코드
      **/
@@ -42,6 +38,17 @@ public class VacationDTO {
      * @variable remainVacation 잔여휴가
      **/
     private double remainVacation;
+    /**
+     * @variable 휴가일
+     **/
+    private int usedDay;
+
+    /**
+     * @variable appStatus 결재상태
+     **/
+    private String appStatus;
+
+
 
 
 

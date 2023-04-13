@@ -29,7 +29,12 @@ public class AuthController {
         this.authService = authService;
         this.memberService = memberService;
     }
-
+    /**
+     @MethodName : signup
+     @Date : 2023-03-23
+     @Writer : 정근호
+     @Description :사원 등록
+     */
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDTO> signup(@RequestBody MemberDTO memberDTO) {
