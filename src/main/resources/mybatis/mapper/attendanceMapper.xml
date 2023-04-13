@@ -176,6 +176,40 @@
 
     </select>
 
+<!--    <select id="attendanceListAboutName" resultType="AttendanceDTO">-->
+<!--        SELECT-->
+<!--            A.MEMBER_CODE,-->
+<!--            A.MEMBER_NAME,-->
+<!--            A.PHONE,-->
+<!--            A.MEMBER_EMAIL,-->
+<!--            A.DEPT_CODE,-->
+<!--            B.DEPT_NAME,-->
+<!--            A.JOB_CODE,-->
+<!--            C.JOB_NAME,-->
+<!--            A.TASK_CODE,-->
+<!--            D.TASK_NAME,-->
+<!--            F.WORK_STATUS,-->
+<!--            F.WORK_TIME,-->
+<!--            F.OFF_TIME,-->
+<!--            F.ATT_REG_DATE,-->
+<!--            IFNULL(F.TARDY, 'N') AS TARDY,-->
+<!--            IFNULL(F.EARLY_OFF, 'N') AS EARLY_OFF,-->
+<!--            IFNULL(F.TRUANCY, 'N') AS TRUANCY,-->
+<!--            IFNULL(F.ABSENCE, 'N') AS ABSENCE-->
+
+
+<!--        FROM TBL_MEMBER A-->
+<!--                 JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE-->
+<!--                 JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE-->
+<!--                 JOIN TBL_TASK D ON A.TASK_CODE = D.TASK_CODE-->
+<!--                 LEFT OUTER JOIN TBL_ATTENDANCE F ON A.MEMBER_CODE = F.MEMBER_CODE-->
+<!--            AND F.ATT_REG_DATE = #{ selectedDate }-->
+<!--        WHERE A.MEMBER_NAME LIKE CONCAT ('%', #{ search } ,'%')-->
+<!--          AND A.STATUS = '재직'-->
+<!--        ORDER BY A.MEMBER_CODE-->
+
+<!--    </select>-->
+
 
 
 

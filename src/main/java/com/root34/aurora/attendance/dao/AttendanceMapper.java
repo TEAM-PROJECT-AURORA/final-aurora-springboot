@@ -38,4 +38,6 @@ public interface AttendanceMapper {
 
 	Map selectMonthTime(int MemberCode);
 
+
+//	List<AttendanceDTO> attendanceListAboutName(SelectCriteria selectCriteria,String search , String selectedDate);
 }

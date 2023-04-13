@@ -179,6 +179,36 @@ public class AttendanceController {
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", responseDTOWithPaging));
 	}
 
+//	/**
+//	 @MethodName : attendanceListAboutName
+//	 @Date : 2023-04-12
+//	 @Writer : 정근호
+//	 @Description : 근태 조회 리스트 이름 검색
+//	 */
+//	@GetMapping("/attendance/list/name")
+//	public ResponseEntity<ResponseDTO> attendanceListAboutName(@RequestParam(name="offset", defaultValue = "1") String offset,
+//															   @RequestParam(name="name", defaultValue = "all") String search,
+//													  @RequestParam(name = "selectedDate", required = false)  String selectedDate) {
+//
+//		int totalCount = memberService.selectMemberTotal();
+//		int limit = 20;
+//		int buttonAmount = 5;
+//		SelectCriteria selectCriteria = Pagenation.getSelectCriteria(Integer.parseInt(offset), totalCount, limit, buttonAmount );
+//
+//		log.info("[AttendanceController] selectCriteria : " + selectCriteria);
+//		ResponseDTOWithPaging responseDTOWithPaging = new ResponseDTOWithPaging();
+//		responseDTOWithPaging.setPageInfo(selectCriteria);
+//		Object attendanceList = attendanceService.attendanceListAboutName(selectCriteria,selectedDate, search);
+//		List<AttendanceDTO> getAttendanceList = attendanceService.getAttendanceList(selectedDate);
+//
+//		Map map = new HashMap();
+//		map.put("getAttendanceList", getAttendanceList);
+//		map.put("attendanceList", attendanceList);
+//
+//		responseDTOWithPaging.setData(map);
+//
+//		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 완료", responseDTOWithPaging));
+//	}
 
 
 

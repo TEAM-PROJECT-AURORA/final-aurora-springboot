@@ -187,4 +187,14 @@ public class AttendanceService {
 
 	}
 
+//	public Object attendanceListAboutName(SelectCriteria selectCriteria,  String selectedDate, String search) {
+//
+//		log.info("[AttendanceService] attendanceListAboutName Start =========================");
+//		List<AttendanceDTO> attendanceListAboutName = attendanceMapper.attendanceListAboutName(selectCriteria, selectedDate,search);
+//
+//		log.info("[MemberService] attendanceListAboutName End =============================");
+//
+//		return attendanceListAboutName;
+//	}
+
 }
