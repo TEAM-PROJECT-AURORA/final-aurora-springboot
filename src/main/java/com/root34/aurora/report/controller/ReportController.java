@@ -283,14 +283,16 @@ public class ReportController {
      */
     @Transactional
     @PostMapping(value = "/reports/rounds")
-    public ResponseEntity<ResponseDTO> registerReportRound(@RequestBody ReportRoundDTO reportRoundDTO) {
+    public ResponseEntity<ResponseDTO> registerReportRound(HttpServletRequest request, @RequestBody ReportRoundDTO reportRoundDTO) {
 
         try {
             log.info("[ReportController] registerReportRound Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+            log.info("[ReportController] memberCode : " + memberCode);
             log.info("[ReportController] ReportRoundDTO : " + reportRoundDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "보고 회차 등록 성공",
-                    reportService.registerReportRound(reportRoundDTO)));
+                    reportService.registerReportRound(memberCode, reportRoundDTO)));
         } catch (Exception e) {
             log.info("[ReportController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

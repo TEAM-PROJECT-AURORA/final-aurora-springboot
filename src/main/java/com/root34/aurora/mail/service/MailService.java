@@ -157,7 +157,7 @@ public class MailService {
     @Scheduled(fixedRate = 300000) // 스케쥴링 5분마다 실행
     public void readUnseenMails() {
 
-        log.info("[MailService] sendEmail Start");
+        log.info("[MailService] readUnseenMails Start");
 
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
