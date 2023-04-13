@@ -151,7 +151,7 @@ public class AlertService {
      * @MethodName : readAlert
      * @Date : 2023-04-13
      * @Writer : 김수용
-     * @Description : 알림 읽기
+     * @Description : 알림 읽기 - 알림 x 버튼
      */
     public void readAlert(long alertCode) {
 
@@ -165,7 +165,7 @@ public class AlertService {
      * @MethodName : readAllAlert
      * @Date : 2023-04-13
      * @Writer : 김수용
-     * @Description : 모든 알림 읽기
+     * @Description : 모든 알림 읽기 - 모든 알림 닫기
      */
     public void readAllAlert(int memberCode) {
 

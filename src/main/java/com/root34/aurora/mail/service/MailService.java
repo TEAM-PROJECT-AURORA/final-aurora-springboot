@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -153,6 +154,7 @@ public class MailService {
      * @Writer : 김수용
      * @Description : 읽지 않은 메일 조회
      */
+    @Scheduled(fixedRate = 300000) // 스케쥴링 5분마다 실행
     public void readUnseenMails() {
 
         log.info("[MailService] sendEmail Start");
@@ -234,6 +236,8 @@ public class MailService {
                     log.info("[MailService] mailDTO : " + mailDTO);
 
                     matchedMailCount += mailMapper.saveMail(mailDTO);
+
+                    alertService.registerMailAlert(senderEmail, toAddresses[0].toString(), "메일", mailDTO.getMailCode()); // 알림 등록
 
                     List<FileDTO> fileList = saveAttachmentsAndGetFileList(message, FILE_DIR, mailDTO.getMailCode());
 
@@ -324,6 +328,8 @@ public class MailService {
         log.info("[MailService] parameters : " + parameters);
 
         MailDTO mailDTO = mailMapper.selectMailDetailByMailCode(parameters);
+
+        alertService.updateAlert(memberCode, "메일", mailCode); // 알림 읽기
 
         TagDTO tagDTO = mailMapper.selectTagDetailByTagCode(mailDTO.getTagCode());
         mailDTO.setTagDTO(tagDTO);
