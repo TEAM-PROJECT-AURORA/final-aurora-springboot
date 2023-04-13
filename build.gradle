@@ -51,6 +51,12 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     // test시 H2 내장 데이터베이스 연결 김수용 23.03.24
 //    testImplementation 'com.h2database:h2:1.4.200'
+    // mail 세팅 값 김수용 23.04.10
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    // mail imap 김수용 23.04.10
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    // jsoup HTML parser library @ https://jsoup.org/ imap // html을 텍스트로 변환 김수용 23.04.10
+    implementation 'org.jsoup:jsoup:1.15.4'
 }
 
 tasks.named('test') {

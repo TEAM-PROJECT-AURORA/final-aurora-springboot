@@ -21,6 +21,7 @@
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
+		<typeAlias alias="TagDTO" type="com.root34.aurora.mail.dto.TagDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
 		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
