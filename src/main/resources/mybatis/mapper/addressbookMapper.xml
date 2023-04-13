@@ -65,7 +65,7 @@
             (#{ groupName }
         <if test="memberCode != null and memberCode != ''">
             ,#{ memberCode }
-        </if>``
+        </if>
         <if test="teamCode != null and teamCode != ''">
             ,#{ teamCode }
         </if>
