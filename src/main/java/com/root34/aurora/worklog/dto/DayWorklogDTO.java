@@ -1,9 +1,14 @@
 package com.root34.aurora.worklog.dto;
 
 import lombok.Data;
-
 import java.sql.Date;
 
+/**
+ @ClassName : DayWorklogDTO
+ @Date : 23.03.23 -> 23.04.10
+ @Writer : 서지수
+ @Description : 일일 업무일지 정보 DTO
+ */
 @Data
 public class DayWorklogDTO {
 

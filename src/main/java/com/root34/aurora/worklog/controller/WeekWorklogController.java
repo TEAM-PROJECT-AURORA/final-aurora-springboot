@@ -10,10 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ @ClassName : WeekWorklogController
+ @Date : 23.03.25
+ @Writer : 서지수
+ @Description : 주간 업무일지 컨트롤러
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -23,6 +28,12 @@ public class WeekWorklogController {
 
     public WeekWorklogController(WeekWorklogService weekWorklogService) { this.weekWorklogService = weekWorklogService; }
 
+    /**
+     @MethodName  : selectWeekWorklogListWithPaging
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 나의 주간 업무일지 전체조회
+     */
     @GetMapping("/worklogs/weeks/{memberCode}")
     public ResponseEntity<ResponseDTO> selectWeekWorklogListWithPaging(@RequestParam(name = "offset", defaultValue = "1") String offset,
                                                                        @PathVariable int memberCode) {
@@ -43,6 +54,12 @@ public class WeekWorklogController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
     }
 
+    /**
+     @MethodName  : selectWeekWorklogDetail
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 상세조회
+     */
     @GetMapping("/worklogs/weeks/detail/{weekWorklogCode}")
     public ResponseEntity<ResponseDTO> selectWeekWorklogDetail(@PathVariable int weekWorklogCode) {
 
@@ -50,6 +67,12 @@ public class WeekWorklogController {
                 weekWorklogService.selectWeekWorklog(weekWorklogCode)));
     }
 
+    /**
+     @MethodName  : insertWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 생성
+     */
     @PostMapping(value = "/worklogs/weeks")
     public ResponseEntity<ResponseDTO> insertWeekWorklog(@RequestBody WeekWorklogDTO weekWorklogDTO) {
 
@@ -59,6 +82,12 @@ public class WeekWorklogController {
                 weekWorklogService.insertWeekWorklog(weekWorklogDTO)));
     }
 
+    /**
+     @MethodName  : updateWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 수정
+     */
     @PutMapping(value = "/worklogs/weeks")
     public ResponseEntity<ResponseDTO> updateWeekWorklog(@RequestBody WeekWorklogDTO weekWorklogDTO) {
 
@@ -68,6 +97,12 @@ public class WeekWorklogController {
                 weekWorklogService.updateWeekWorklog(weekWorklogDTO)));
     }
 
+    /**
+     @MethodName  : deleteWeekWorklog
+     @Date : 23.03.25
+     @Writer : 서지수
+     @Description : 주간 업무일지 삭제
+     */
     @DeleteMapping(value = "/worklogs/weeks/{weekWorklogCode}")
     public ResponseEntity<ResponseDTO> deleteWeekWorklog(@PathVariable int weekWorklogCode) {
 

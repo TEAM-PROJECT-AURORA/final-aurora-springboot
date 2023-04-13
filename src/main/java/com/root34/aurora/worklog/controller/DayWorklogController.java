@@ -10,10 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ @ClassName : DayWorklogController
+ @Date : 23.03.23
+ @Writer : 서지수
+ @Description : 일일 업무일지 컨트롤러
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -23,7 +28,12 @@ public class DayWorklogController {
 
     public DayWorklogController(DayWorklogService dayWorklogService) { this.dayWorklogService = dayWorklogService; }
 
-    //일일 업무일지 전체조회
+    /**
+     @MethodName  : selectDayWorklogListWithPaging
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 전체조회
+     */
     @GetMapping("/worklogs/days/{memberCode}")
     public ResponseEntity<ResponseDTO> selectDayWorklogListWithPaging(@RequestParam(name="offset", defaultValue="1") String offset,
                                                                       @PathVariable int memberCode) {
@@ -44,6 +54,12 @@ public class DayWorklogController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", responseDTOWithPaging));
     }
 
+    /**
+     @MethodName  : selectDayWorklogDetail
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 상세조회
+     */
     @GetMapping("/worklogs/days/detail/{dayWorklogCode}")
     public ResponseEntity<ResponseDTO> selectDayWorklogDetail(@PathVariable int dayWorklogCode) {
 
@@ -51,6 +67,12 @@ public class DayWorklogController {
                 dayWorklogService.selectDayWorklog(dayWorklogCode)));
     }
 
+    /**
+     @MethodName  : selectMemberInfo
+     @Date : 23.04.10
+     @Writer : 서지수
+     @Description : 멤버 정보 조회
+     */
     @GetMapping("/worklogs/days/member/{memberCode}")
     public ResponseEntity<ResponseDTO> selectMemberInfo(@PathVariable int memberCode) {
 
@@ -58,8 +80,12 @@ public class DayWorklogController {
                 dayWorklogService.selectMemberInfo(memberCode)));
     }
 
-
-
+    /**
+     @MethodName  : insertDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 생성
+     */
     @PostMapping(value = "/worklogs/days")
     public ResponseEntity<ResponseDTO> insertDayWorklog(@RequestBody DayWorklogDTO dayWorklogDTO) {
 
@@ -69,7 +95,12 @@ public class DayWorklogController {
                 dayWorklogService.insertDayWorklog(dayWorklogDTO)));
     }
 
-
+    /**
+     @MethodName  : updateDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 수정
+     */
     @PutMapping(value = "/worklogs/days")
     public ResponseEntity<ResponseDTO> updateDayWorklog(@RequestBody DayWorklogDTO dayWorklogDTO) {
 
@@ -79,6 +110,12 @@ public class DayWorklogController {
                 dayWorklogService.updateDayWorklog(dayWorklogDTO)));
     }
 
+    /**
+     @MethodName  : deleteDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 삭제
+     */
     @DeleteMapping(value = "/worklogs/days/{dayWorklogCode}")
     public ResponseEntity<ResponseDTO> deleteDayWorklog(@PathVariable int dayWorklogCode) {
 
