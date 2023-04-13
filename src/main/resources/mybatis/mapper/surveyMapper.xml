@@ -71,7 +71,7 @@
             ON A.SURVEY_CODE = B.SURVEY_CODE
          INNER JOIN TBL_QUESTION_CHOICE C
             ON B.QUESTION_NO = C.QUESTION_NO
-         ORDER BY A.SURVEY_CODE DESC
+         ORDER BY A.SURVEY_CODE DESC, C.CHOICE_NO ASC
     </select>
     <select id="selectReplyStatus" parameterType="map" resultType="String">
         SELECT
@@ -194,5 +194,6 @@
             ON A.QUESTION_NO = B.QUESTION_NO
          WHERE A.MEMBER_CODE = #{ memberCode }
            AND B.SURVEY_CODE = #{ surveyCode }
+         ORDER BY A.CHOICE_NO
     </select>
 </mapper>
