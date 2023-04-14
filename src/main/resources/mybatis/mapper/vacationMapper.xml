@@ -36,16 +36,16 @@
     </update>
     <insert id="insertVacation" parameterType="int">
 
-        insert into TBL_VACATION
+        INSERT INTO TBL_VACATION
         (VACATION_NO, MEMBER_CODE)
-        values (null, #{ memberCode })
+        VALUES (NULL, #{ memberCode })
     </insert>
 
     <insert id="insertVacationUse" parameterType="vacationDTO">
 
-        insert into TBL_USED_VACATION
+        INSERT INTO TBL_USED_VACATION
             (VACATION_NO, MEMBER_CODE, VACATION_START_DATE, VACATION_END_DATE, IS_HALF_DAY)
-        values (#{ vacationNo },#{memberCode}, #{ vacationStartDate }, #{ vacationEndDate }, #{ isHalfDay })
+        VALUES (#{ vacationNo }, #{ memberCode }, #{ vacationStartDate }, #{ vacationEndDate }, #{ isHalfDay })
     </insert>
     <select id="selectVacationDetail" resultType="vacationDTO">
         SELECT

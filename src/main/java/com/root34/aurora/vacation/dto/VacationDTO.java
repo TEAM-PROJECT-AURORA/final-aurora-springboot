@@ -42,7 +42,6 @@ public class VacationDTO {
      * @variable 휴가일
      **/
     private int usedDay;
-
     /**
      * @variable appStatus 결재상태
      **/

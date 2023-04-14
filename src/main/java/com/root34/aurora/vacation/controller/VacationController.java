@@ -1,6 +1,5 @@
 package com.root34.aurora.vacation.controller;
 
-import com.root34.aurora.approval.dto.ApprovalDTO;
 import com.root34.aurora.common.ResponseDTO;
 import com.root34.aurora.vacation.dto.VacationDTO;
 import com.root34.aurora.vacation.service.VacationService;
@@ -68,8 +67,8 @@ public class VacationController {
 	@PostMapping("/vacation/remain/{memberCode}")
 	public ResponseEntity<ResponseDTO> PostRemainVacation(@PathVariable int memberCode , @RequestBody @Valid VacationDTO vacationDTO) {
 		vacationDTO.setMemberCode(memberCode);
+		log.info("[VacationController] PostRemainVacation start" + vacationDTO);
 		vacationService.PostRemainVacation(vacationDTO);
-
 		return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "등록 성공", vacationService.selectVacation(memberCode)));
 	}
 
