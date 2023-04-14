@@ -1,5 +1,6 @@
 package com.root34.aurora.mail.service;
 
+import com.root34.aurora.alert.service.AlertService;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,16 +48,15 @@ public class MailService {
     private final ImapProperties imapProperties;
     private final JavaMailSender javaMailSender;
     private final MailMapper mailMapper;
-    private Session emailSession;
-
-    private final String domain = "@project-aurora.co.kr";
+    private final AlertService alertService;
 
     @Autowired
-    public MailService(JavaMailSender javaMailSender, ImapProperties imapProperties, MailMapper mailMapper) {
+    public MailService(JavaMailSender javaMailSender, ImapProperties imapProperties, MailMapper mailMapper, AlertService alertService) {
 
         this.imapProperties = imapProperties;
         this.javaMailSender = javaMailSender;
         this.mailMapper = mailMapper;
+        this.alertService = alertService;
     }
 
     /**
@@ -103,6 +104,7 @@ public class MailService {
         if (fileList != null) {
 
             int fileCount = 0;
+
             for (MultipartFile file : fileList) {
 
                 // 메일에 첨부
@@ -141,6 +143,8 @@ public class MailService {
         javaMailSender.send(message); // void 문제 발생시 런타임 에러 발생
         log.info("[MailService] sent");
 
+        alertService.registerMailAlert(mailDTO.getSenderEmail(), mailDTO.getRecipient(), "메일", mailDTO.getMailCode());
+
         return result > 0;
     }
 
@@ -150,9 +154,10 @@ public class MailService {
      * @Writer : 김수용
      * @Description : 읽지 않은 메일 조회
      */
+    @Scheduled(fixedRate = 300000) // 스케쥴링 5분마다 실행
     public void readUnseenMails() {
 
-        log.info("[MailService] sendEmail Start");
+        log.info("[MailService] readUnseenMails Start");
 
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
@@ -231,6 +236,8 @@ public class MailService {
                     log.info("[MailService] mailDTO : " + mailDTO);
 
                     matchedMailCount += mailMapper.saveMail(mailDTO);
+
+                    alertService.registerMailAlert(senderEmail, toAddresses[0].toString(), "메일", mailDTO.getMailCode()); // 알림 등록
 
                     List<FileDTO> fileList = saveAttachmentsAndGetFileList(message, FILE_DIR, mailDTO.getMailCode());
 
@@ -321,6 +328,8 @@ public class MailService {
         log.info("[MailService] parameters : " + parameters);
 
         MailDTO mailDTO = mailMapper.selectMailDetailByMailCode(parameters);
+
+        alertService.updateAlert(memberCode, "메일", mailCode); // 알림 읽기
 
         TagDTO tagDTO = mailMapper.selectTagDetailByTagCode(mailDTO.getTagCode());
         mailDTO.setTagDTO(tagDTO);

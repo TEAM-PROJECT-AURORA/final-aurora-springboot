@@ -27,6 +27,7 @@ public class MailController {
     private final MailService mailService;
 
     public MailController(MailService mailsService) {
+
         this.mailService = mailsService;
     }
 
@@ -36,26 +37,6 @@ public class MailController {
     	* @Writer : 김수용
     	* @Description : 메일 전송
     */
-//    @Transactional
-//    @PostMapping(value ="/mails")
-//    public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request, @RequestBody MailDTO mailDTO) {
-//
-//        try {
-//            log.info("[MailController] sendMail Start");
-//            Integer memberCode = (Integer) request.getAttribute("memberCode");
-//            log.info("[MailController] memberCode : " + memberCode);
-//            mailDTO.setMemberCode(memberCode);
-//            log.info("[MailController] mailDTO : " + mailDTO);
-//
-//            boolean result = mailService.sendMail(mailDTO);
-//
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "메일 전송 성공!", result));
-//        } catch (Exception e) {
-//            log.info("[MailController] Exception : " + e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
-//        }
-//    }
     @Transactional
     @PostMapping(value = "/mails", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> sendMail(HttpServletRequest request,

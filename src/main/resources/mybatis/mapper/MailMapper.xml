@@ -97,8 +97,11 @@
                              WHERE B.MAIL_CODE = A.MAIL_CODE)
                THEN 1
                ELSE 0
-                END AS hasAttachments
+                END AS hasAttachments,
+                    C.READ_STATUS AS readStatus
           FROM TBL_MAIL A
+          LEFT JOIN TBL_ALERT C
+            ON A.MAIL_CODE = C.MAIL_CODE
          WHERE 1 = 1
         <if test="searchConditions.tagCode != 0">
             AND A.TAG_CODE = #{ searchConditions.tagCode }
@@ -143,21 +146,37 @@
          LIMIT #{ startRow }, #{ limit }
     </select>
     <!--메일 상세 조회-->
+<!--    &#45;&#45;         SELECT MAIL_CODE,-->
+<!--    &#45;&#45;                TAG_CODE,-->
+<!--    &#45;&#45;                MAIL_TITLE,-->
+<!--    &#45;&#45;                MAIL_BODY,-->
+<!--    &#45;&#45;                SENDER_NAME,-->
+<!--    &#45;&#45;                SENDER_EMAIL,-->
+<!--    &#45;&#45;                RECIPIENT,-->
+<!--    &#45;&#45;                SHIP_DATE,-->
+<!--    &#45;&#45;                READ_STATUS,-->
+<!--    &#45;&#45;                IMPORTANT_STATUS,-->
+<!--    &#45;&#45;                DELETE_STATUS-->
+<!--    &#45;&#45;           FROM TBL_MAIL-->
+<!--    &#45;&#45;          WHERE MAIL_CODE = #{ mailCode }-->
+<!--    &#45;&#45;            AND (RECIPIENT = #{ memberEmail } OR SENDER_EMAIL = #{ memberEmail })-->
     <select id="selectMailDetailByMailCode" parameterType="HashMap" resultType="MailDTO">
-        SELECT MAIL_CODE,
-               TAG_CODE,
-               MAIL_TITLE,
-               MAIL_BODY,
-               SENDER_NAME,
-               SENDER_EMAIL,
-               RECIPIENT,
-               SHIP_DATE,
-               READ_STATUS,
-               IMPORTANT_STATUS,
-               DELETE_STATUS
-          FROM TBL_MAIL
-         WHERE MAIL_CODE = #{ mailCode }
-           AND (RECIPIENT = #{ memberEmail } OR SENDER_EMAIL = #{ memberEmail })
+        SELECT A.MAIL_CODE,
+        A.TAG_CODE,
+        A.MAIL_TITLE,
+        A.MAIL_BODY,
+        A.SENDER_NAME,
+        A.SENDER_EMAIL,
+        A.RECIPIENT,
+        A.SHIP_DATE,
+        C.READ_STATUS,
+        A.IMPORTANT_STATUS,
+        A.DELETE_STATUS
+        FROM TBL_MAIL A
+        LEFT JOIN TBL_ALERT C
+        ON A.MAIL_CODE = C.MAIL_CODE
+        WHERE A.MAIL_CODE = #{ mailCode }
+        AND (A.RECIPIENT = #{ memberEmail } OR A.SENDER_EMAIL = #{ memberEmail })
     </select>
     <!--메일 첨부파일 목록 조회-->
     <select id="selectAttachmentListByMailCode" parameterType="Long" resultType="FileDTO">
