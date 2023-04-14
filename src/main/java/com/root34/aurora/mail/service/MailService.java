@@ -9,7 +9,7 @@ import com.root34.aurora.mail.dao.MailMapper;
 import com.root34.aurora.mail.dto.MailDTO;
 import com.root34.aurora.mail.dto.TagDTO;
 import com.root34.aurora.member.dto.MemberDTO;
-import com.root34.aurora.report.dto.MailSearchCriteria;
+import com.root34.aurora.mail.dto.MailSearchCriteria;
 import com.root34.aurora.util.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;

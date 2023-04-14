@@ -1,4 +1,4 @@
-package com.root34.aurora.report.dto;
+package com.root34.aurora.mail.dto;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

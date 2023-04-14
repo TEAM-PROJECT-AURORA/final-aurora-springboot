@@ -5,7 +5,7 @@ import com.root34.aurora.mail.dto.BlackList;
 import com.root34.aurora.mail.dto.MailDTO;
 import com.root34.aurora.mail.dto.TagDTO;
 import com.root34.aurora.mail.service.MailService;
-import com.root34.aurora.report.dto.MailSearchCriteria;
+import com.root34.aurora.mail.dto.MailSearchCriteria;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
