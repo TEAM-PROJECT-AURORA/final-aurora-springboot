@@ -11,10 +11,33 @@
             (#{senderMemberCode}, #{senderEmail}, #{receiverMemberCode}, #{alertType}, #{mailCode}, #{reportCode}, #{roundCode}, #{detailCode}, #{replyCode}, #{appCode})
     </insert>
     <!--알림 목록 조회-->
+<!--    <select id="selectAlertListByMemberCode" parameterType="Integer" resultType="AlertDTO">-->
+<!--        SELECT *-->
+<!--          FROM TBL_ALERT-->
+<!--         WHERE RECEIVER_MEMBER_CODE = #{ memberCode }-->
+<!--    </select>-->
     <select id="selectAlertListByMemberCode" parameterType="Integer" resultType="AlertDTO">
-        SELECT *
-          FROM TBL_ALERT
-         WHERE RECEIVER_MEMBER_CODE = #{ memberCode }
+        SELECT A.ALERT_CODE,
+               A.SENDER_MEMBER_CODE,
+               A.RECEIVER_MEMBER_CODE,
+               B.MEMBER_NAME,
+               A.ALERT_TYPE,
+               A.MAIL_CODE,
+               A.REPORT_CODE,
+               A.ROUND_CODE,
+               A.DETAIL_CODE,
+               A.REPLY_CODE,
+               A.APP_CODE,
+               CASE
+                   WHEN A.ALERT_TYPE = '메일' THEN (SELECT MAIL_TITLE FROM TBL_MAIL WHERE MAIL_CODE = A.MAIL_CODE)
+                   WHEN A.ALERT_TYPE = '보고' THEN (SELECT REPORT_TITLE FROM TBL_REPORT WHERE REPORT_CODE = A.REPORT_CODE)
+                   WHEN A.ALERT_TYPE = '보고 회차' THEN (SELECT ROUND_TITLE FROM TBL_REPORT_ROUND WHERE ROUND_CODE = A.ROUND_CODE)
+                   WHEN A.ALERT_TYPE = '상세 보고' THEN (SELECT DETAIL_BODY FROM TBL_REPORT_DETAIL WHERE DETAIL_CODE = A.DETAIL_CODE)
+                   WHEN A.ALERT_TYPE = '보고 댓글' THEN (SELECT REPLY_BODY FROM TBL_REPORT_ROUND_REPLY WHERE REPLY_CODE = A.REPLY_CODE)
+                   END AS alertMessage
+          FROM TBL_ALERT A
+          JOIN TBL_MEMBER B ON A.SENDER_MEMBER_CODE = B.MEMBER_CODE
+         WHERE A.RECEIVER_MEMBER_CODE = #{ receiverMemberCode } AND A.READ_STATUS = 'N';
     </select>
     <!--알림 수정-->
     <update id="updateAlert" parameterType="AlertDTO">

@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("api/v1")
 public class AlertController {
 
+//    @Autowired
+//    private SimpMessagingTemplate messagingTemplate;
     private final AlertService alertService;
 
     public AlertController(AlertService alertService) {
@@ -22,9 +24,18 @@ public class AlertController {
         this.alertService = alertService;
     }
 
-//    @Transactional
-//    @PostMapping(value = "/alerts")
-//    public ResponseEntity<ResponseDTO>
+    /**
+    	* @MethodName : sendAlertToUser
+    	* @Date : 2023-04-14
+    	* @Writer : 김수용
+    	* @Description : 알림 전송
+    */
+//    public void sendAlertToUser(AlertDTO alertDTO, int receiverMemberCode) {
+//
+//        log.info("[AlertController] sendAlertToUser Start");
+//        messagingTemplate.convertAndSendToUser(
+//                String.valueOf(receiverMemberCode), "/topic/alert", alertDTO);
+//    }
 
     /**
      * @MethodName : selectAlertListByMemberCode
@@ -38,12 +49,12 @@ public class AlertController {
         try {
             log.info("[AlertController] selectAlertListByMemberCode Start");
             Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[MailController] memberCode : " + memberCode);
+            log.info("[AlertController] memberCode : " + memberCode);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "알림 목록 조회 성공",
                     alertService.selectAlertListByMemberCode(memberCode)));
         } catch (Exception e) {
-            log.info("[MailController] Exception : " + e);
+            log.info("[AlertController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
@@ -67,7 +78,7 @@ public class AlertController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "알림 읽기 성공",
                     true));
         } catch (Exception e) {
-            log.info("[MailController] Exception : " + e);
+            log.info("[AlertController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }
@@ -86,14 +97,14 @@ public class AlertController {
         try {
             log.info("[AlertController] readAllAlert Start");
             Integer memberCode = (Integer) request.getAttribute("memberCode");
-            log.info("[MailController] memberCode : " + memberCode);
+            log.info("[AlertController] memberCode : " + memberCode);
 
             alertService.readAllAlert(memberCode);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모든 알림 읽기 성공",
                     true));
         } catch (Exception e) {
-            log.info("[MailController] Exception : " + e);
+            log.info("[AlertController] Exception : " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
         }

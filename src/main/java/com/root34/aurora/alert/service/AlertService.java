@@ -4,6 +4,7 @@ import com.root34.aurora.alert.dao.AlertMapper;
 import com.root34.aurora.alert.dto.AlertDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.List;
 @Service
 public class AlertService {
 
+//    @Autowired
+//    private AlertController alertController;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     private final AlertMapper alertMapper;
 
     @Autowired
@@ -32,39 +37,39 @@ public class AlertService {
      * @Writer : 김수용
      * @Description : 알림 등록
      */
-    public void registerAlert(int senderMemberCode, int receiverMemberCode, String alertType, Object code) {
-
-        log.info("[AlertService] registerAlert Start");
-        AlertDTO alertDTO = new AlertDTO();
-        alertDTO.setSenderMemberCode(senderMemberCode);
-        alertDTO.setReceiverMemberCode(receiverMemberCode);
-        alertDTO.setAlertType(alertType);
-
-        switch (alertType) {
-
-            case "메일":
-                alertDTO.setMailCode((Long) code);
-                break;
-            case "보고":
-                alertDTO.setReportCode((Long) code);
-                break;
-            case "보고 회차":
-                alertDTO.setRoundCode((Long) code);
-                break;
-            case "상세보고":
-                alertDTO.setDetailCode((Long) code);
-                break;
-            case "보고 댓글":
-                alertDTO.setReplyCode((Long) code);
-                break;
-            case "결재":
-                alertDTO.setAppCode((Integer) code);
-                break;
-        }
-        log.info("[AlertService] alertDTO : " + alertDTO);
-
-        alertMapper.registerAlert(alertDTO);
-    }
+//    public void registerAlert(int senderMemberCode, int receiverMemberCode, String alertType, Object code) {
+//
+//        log.info("[AlertService] registerAlert Start");
+//        AlertDTO alertDTO = new AlertDTO();
+//        alertDTO.setSenderMemberCode(senderMemberCode);
+//        alertDTO.setReceiverMemberCode(receiverMemberCode);
+//        alertDTO.setAlertType(alertType);
+//
+//        switch (alertType) {
+//
+//            case "메일":
+//                alertDTO.setMailCode((Long) code);
+//                break;
+//            case "보고":
+//                alertDTO.setReportCode((Long) code);
+//                break;
+//            case "보고 회차":
+//                alertDTO.setRoundCode((Long) code);
+//                break;
+//            case "상세보고":
+//                alertDTO.setDetailCode((Long) code);
+//                break;
+//            case "보고 댓글":
+//                alertDTO.setReplyCode((Long) code);
+//                break;
+//            case "결재":
+//                alertDTO.setAppCode((Integer) code);
+//                break;
+//        }
+//        log.info("[AlertService] alertDTO : " + alertDTO);
+//
+//        alertMapper.registerAlert(alertDTO);
+//    }
 
     /**
      * @MethodName : registerMailAlert
@@ -89,6 +94,88 @@ public class AlertService {
         log.info("[AlertService] alertDTO : " + alertDTO);
 
         alertMapper.registerAlert(alertDTO);
+
+        // 웹소켓을 통해 알림 전송
+        sendAlertToUser(alertDTO, memberCode);
+    }
+
+    public void sendAlertToUser(AlertDTO alertDTO, int receiverMemberCode) {
+
+        log.info("[AlertService] sendAlertToUser Start");
+        messagingTemplate.convertAndSendToUser(
+                String.valueOf(receiverMemberCode), "/topic/alert", alertDTO);
+    }
+
+    /**
+    	* @MethodName : registerReportAlert
+    	* @Date : 2023-04-14
+    	* @Writer : 김수용
+    	* @Description : 보고 알림 등록
+    */
+    public void registerReportAlert(AlertDTO alertDTO) {
+
+        log.info("[AlertService] registerAlert Start");
+        alertDTO.setAlertType("보고");
+
+        alertMapper.registerAlert(alertDTO);
+        log.info("[AlertService] alertDTO : " + alertDTO);
+
+        // 웹소켓을 통해 알림 전송
+        sendAlertToUser(alertDTO, alertDTO.getReceiverMemberCode());
+    }
+
+    /**
+    	* @MethodName : registerReportRoundAlert
+    	* @Date : 2023-04-14
+    	* @Writer : 김수용
+    	* @Description : 보고 회차 알림 등록
+    */
+    public void registerReportRoundAlert(AlertDTO alertDTO) {
+
+        log.info("[AlertService] registerReportRoundAlert Start");
+        alertDTO.setAlertType("보고 회차");
+
+        alertMapper.registerAlert(alertDTO);
+        log.info("[AlertService] alertDTO : " + alertDTO);
+
+        // 웹소켓을 통해 알림 전송
+        sendAlertToUser(alertDTO, alertDTO.getReceiverMemberCode());
+    }
+
+    /**
+    	* @MethodName : registerDetailReportAlert
+    	* @Date : 2023-04-14
+    	* @Writer : 김수용
+    	* @Description : 상세보고 알림 등록
+    */
+    public void registerDetailReportAlert(AlertDTO alertDTO) {
+
+        log.info("[AlertService] registerDetailReportAlert Start");
+        alertDTO.setAlertType("상세 보고");
+
+        alertMapper.registerAlert(alertDTO);
+        log.info("[AlertService] alertDTO : " + alertDTO);
+
+        // 웹소켓을 통해 알림 전송
+        sendAlertToUser(alertDTO, alertDTO.getReceiverMemberCode());
+    }
+
+    /**
+    	* @MethodName : registerReportRoundReplyAlert
+    	* @Date : 2023-04-14
+    	* @Writer : 김수용
+    	* @Description : 보고 댓글
+    */
+    public void registerReportRoundReplyAlert(AlertDTO alertDTO) {
+
+        log.info("[AlertService] registerReportRoundReplyAlert Start");
+        alertDTO.setAlertType("보고 댓글");
+
+        alertMapper.registerAlert(alertDTO);
+        log.info("[AlertService] alertDTO : " + alertDTO);
+
+        // 웹소켓을 통해 알림 전송
+        sendAlertToUser(alertDTO, alertDTO.getReceiverMemberCode());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.root34.aurora.report.service;
 
+import com.root34.aurora.alert.dto.AlertDTO;
 import com.root34.aurora.alert.service.AlertService;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
@@ -295,7 +296,7 @@ public class ReportService {
 
             throw new CreationFailedException("보고자가 등록되지않았습니다!");
         }
-        if(fileList != null) {
+        if(reportDTO.getReportType().equals("Casual") && fileList != null) {
 
             int fileCount = 0;
                 for (MultipartFile file : fileList) {
@@ -327,12 +328,17 @@ public class ReportService {
                     log.info("[ReportService] fileCount : " + fileCount);
                 }
         }
-        if (result > 0 && memberCount == memberList.size()) {
+        if (result > 0 && memberCount == memberList.size() && reportDTO.getReportType().equals("Casual")) {
 
             // 보고서가 정상적으로 등록된 후 알림 생성
             for (Integer receiverMemberCode : memberList) {
 
-                alertService.registerAlert(reportDTO.getMemberCode(), receiverMemberCode, "보고", reportDTO.getReportCode());
+                AlertDTO alertDTO = new AlertDTO();
+                alertDTO.setSenderMemberCode(reportDTO.getMemberCode());
+                alertDTO.setReceiverMemberCode(receiverMemberCode);
+                alertDTO.setReportCode(reportDTO.getReportCode());
+
+                alertService.registerReportAlert(alertDTO);
             }
         }
         return result > 0 && memberCount == memberList.size();
@@ -380,6 +386,8 @@ public class ReportService {
             response.put("reporterDetail", reportMapper.selectReporterDetail(memberList.get(0)));
         }
         log.info("[ReportService] selectReportDetailByReportCode response : " + response);
+
+        alertService.updateAlert(memberCode, "보고", reportCode);
 
         return response;
     }
@@ -569,13 +577,16 @@ public class ReportService {
 
         for(Integer reporterMemberCode : reporterList) {
 
-            alertService.registerAlert(memberCode, reporterMemberCode, "보고 회차", reportRoundDTO.getReportCode());
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(memberCode);
+            alertDTO.setReceiverMemberCode(reporterMemberCode);
+            alertDTO.setRoundCode(reportRoundDTO.getRoundCode());
+
+            alertService.registerReportRoundAlert(alertDTO);
         }
         if(result == 0) {
             throw new CreationFailedException("보고 회차 등록 실패!");
         }
-//        updateReportReadStatusToUnread(reportRoundDTO.getReportCode());
-
         return result > 0;
     }
 
@@ -763,6 +774,8 @@ public class ReportService {
         result.put("reportDTO", reportDTO);
         result.put("memberDTO", memberDTO);
 
+        alertService.updateAlert(memberCode, "보고 회차", roundCode);
+
         return result;
     }
 
@@ -792,8 +805,13 @@ public class ReportService {
 
         for(Integer receiverMemberCode : involvedMemberCodeList) {
 
-            alertService.registerAlert(reportDetailDTO.getMemberCode(), receiverMemberCode,
-                    "상세보고", reportDetailDTO.getDetailCode());
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(reportDetailDTO.getMemberCode());
+            alertDTO.setReceiverMemberCode(receiverMemberCode);
+            alertDTO.setRoundCode(reportDetailDTO.getRoundCode());
+            alertDTO.setDetailCode(reportDetailDTO.getDetailCode());
+
+            alertService.registerDetailReportAlert(alertDTO);
         }
         return result > 0;
     }
@@ -893,8 +911,13 @@ public class ReportService {
 
         for(Integer receiverMemberCode : involvedMemberCodeList) {
 
-            alertService.registerAlert(reportRoundReplyDTO.getMemberCode(), receiverMemberCode,
-                    "보고 댓글", reportRoundReplyDTO.getReplyCode());
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(reportRoundReplyDTO.getMemberCode());
+            alertDTO.setReceiverMemberCode(receiverMemberCode);
+            alertDTO.setRoundCode(reportRoundReplyDTO.getRoundCode());
+            alertDTO.setReplyCode(reportRoundReplyDTO.getReplyCode());
+
+            alertService.registerReportRoundReplyAlert(alertDTO);
         }
         return result > 0;
     }

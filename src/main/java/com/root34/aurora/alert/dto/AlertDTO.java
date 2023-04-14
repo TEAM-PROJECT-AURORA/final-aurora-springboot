@@ -67,4 +67,8 @@ public class AlertDTO {
      * @variable appCode 결재 코드
      */
     private Integer appCode;
+    /**
+     * @variable alertMessage 알림 내용
+     */
+    private String alertMessage;
 }
