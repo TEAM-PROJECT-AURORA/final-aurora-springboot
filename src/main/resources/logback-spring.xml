@@ -11,10 +11,10 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
-        <file>elk-spring.log</file>
+        <file>aurora-spring.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <fileNamePattern>/var/slog/elk-spring.-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/var/slog/aurora-spring.-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -30,17 +30,17 @@
 			LogstashEncoder : spring에서 발생하는 로그를 elk stack에서 사용되는 json 형태로 변환
 		  LogstashTcpSocketAppender : Logstash 서버에 로그 전송
      -->
-<!--    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
-<!--        <destination>127.0.0.1:4560</destination>-->
-<!--        <destination>172.22.208.213:4560</destination>-->
-<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>-->
-<!--    </appender>-->
+    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>127.0.0.1:4560</destination>
+        <destination>172.22.208.213:4560</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
+    </appender>
 
     <!-- root레벨 설정 -->
 <!--    <root level="DEBUG">-->
     <root level="debug">
         <appender-ref ref="console" />
-<!--        <appender-ref ref="stash" />-->
+        <appender-ref ref="stash" />
         <appender-ref ref="ROLLING" />
     </root>
 

@@ -133,6 +133,7 @@ public class ApprovalController {
     */
     @DeleteMapping("approvals/{appCode}")
     public ResponseEntity<ResponseDTO> deleteApproval(@PathVariable int appCode) {
+        log.info("delete start");
         Map<String, Object> deleteMap = new HashMap<>();
         deleteMap.put("appCode", appCode);
 
