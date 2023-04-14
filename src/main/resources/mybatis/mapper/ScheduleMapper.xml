@@ -16,6 +16,7 @@
           FROM TBL_SCHEDULE S
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
+         WHERE M.MEMBER_CODE = #{memberCode}
     </select>
 
     <select id = "selectScheduleCalendarAboutTeam" resultType = "ScheduleDTO">
