@@ -16,7 +16,7 @@
             A.MEMBER_EMAIL AS EMAIL,
             C.JOB_NAME AS JOB_NAME,
             B.DEPT_NAME AS DEPARTMENT,
-            IFNULL(D.TEAM_CODE, '대기중') AS COMPANY
+            IFNULL(D.TEAM_NAME, '대기중') AS COMPANY
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
@@ -40,7 +40,7 @@
             A.MEMBER_EMAIL AS EMAIL,
             C.JOB_NAME AS JOB_NAME,
             B.DEPT_NAME AS DEPARTMENT,
-            IFNULL(D.TEAM_CODE, '대기중') AS COMPANY
+            IFNULL(D.TEAM_NAME, '대기중') AS COMPANY
           FROM TBL_MEMBER A
           JOIN TBL_DEPARTMENT B
             ON A.DEPT_CODE = B.DEPT_CODE
