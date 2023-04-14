@@ -11,7 +11,7 @@ import java.util.Collection;
  @ClassName : MemberDTO
  @Date : 23.03.19.
  @Writer : 정근호
- @Description : 사원 변수 선언
+ @Description : 사원 변수
  */
 @Data
 public class MemberDTO implements UserDetails {

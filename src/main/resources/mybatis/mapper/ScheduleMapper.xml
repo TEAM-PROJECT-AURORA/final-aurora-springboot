@@ -8,33 +8,27 @@
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-
+         WHERE M.MEMBER_CODE = #{memberCode}
     </select>
 
     <select id = "selectScheduleCalendarAboutTeam" resultType = "ScheduleDTO">
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
@@ -44,15 +38,12 @@
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
@@ -62,15 +53,12 @@
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
@@ -82,22 +70,18 @@
         INSERT INTO TBL_SCHEDULE
         (
             MEMBER_CODE,
-
             SCHEDULE_NAME,
             SCHEDULE_START_DAY,
             SCHEDULE_END_DAY,
-
             SCHEDULE_PLACE,
             SCHEDULE_CONTENT
         )
         VALUES
         (
             #{ memberCode },
-
             #{ scheduleName },
             #{ scheduleStartDay },
             #{ scheduleEndDay },
-
             #{ schedulePlace },
             #{ scheduleContent }
         )
@@ -105,13 +89,9 @@
 
     <update id = "updateSchedule" parameterType = "ScheduleDTO">
         UPDATE TBL_SCHEDULE
-           SET
-               MEMBER_CODE = #{ memberCode },
-
-               SCHEDULE_NAME = #{ scheduleName },
+           SET SCHEDULE_NAME = #{ scheduleName },
                SCHEDULE_START_DAY = #{ scheduleStartDay },
                SCHEDULE_END_DAY = #{ scheduleEndDay },
-
                SCHEDULE_PLACE = #{ schedulePlace },
                SCHEDULE_CONTENT = #{ scheduleContent }
          WHERE SCHEDULE_CODE = #{ scheduleCode }

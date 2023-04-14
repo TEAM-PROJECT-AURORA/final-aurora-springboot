@@ -17,35 +17,27 @@ spring:
     resources:
       static-locations: classpath:/auroraFiles/
   mail:
-    # 사용할 SMTP 서버 호스트 이름
 #    host: smtp.daum.net # 스마트워크
-#    host: smtp.gmail.com # Gmail
-    host: mail.project-aurora.co.kr # 개인 도메인
-    # SMTP 서버 포트 번호
+    host: smtp.gmail.com # Gmail
+#    host: mail.project-aurora.co.kr # 개인 도메인
     port: 587 # Gmail, 개인 도메인 - STARTTLS 암호화 연결
 #    port: 465 # 다음 스마트워크 - SSL/TLS 암호화 연결
-    # SMTP 인증을 위한 계정 이름
-#    username: ${SMTP_EMAIL} # 윈도우 환경변수
-    username: ssssong125@project-aurora.co.kr # SMTP 인증을 위한 계정 이름
-    # SMTP 인증을 위한 계정 비밀번호
-#    password: ${SMTP_APP_PASSWORD} # 윈도우 환경변수
-    password: ssssong125 # 개인 도메인
-    # 사용할 프로토콜 지정
-    protocol: smtp
-    # JavaMail 프로퍼티
+    username: ${SMTP_EMAIL} # 윈도우 환경변수
+#    username: ssssong125@project-aurora.co.kr # SMTP 인증을 위한 계정 이름
+    password: ${SMTP_APP_PASSWORD} # 윈도우 환경변수
+#    password: ssssong125 # 개인 도메인
     properties:
       mail:
         smtp:
           auth: true
           starttls.enable: true
-#          ssl.trust: smtp.gmail.com
-        imap:
-          host: imap.project-aurora.co.kr
-          port: 993
-          user: ssssong125@project-aurora.co.kr
-          password: ssssong125
-          ssl:
-            enable: true
+
+imap:
+  host: imap.gmail.com
+  port: 993
+  ssl.enable: true
+  username: ${SMTP_EMAIL}
+  password: ${SMTP_APP_PASSWORD}
 
 file:
   add-resource-locations: /auroraFiles/
@@ -53,12 +45,6 @@ file:
 
   file-dir: /auroraFiles/
   file-url: http://localhost:8090/auroraFiles/
-#image:
-#  add-resource-locations: /auroraFiles/
-#  add-resource-handler: /auroraFiles/**
-#
-#  image-dir: /auroraFiles/
-#  image-url: http://localhost:8090/auroraFiles/
 
 jwt:
   secret: ZmluYWwtcHJvamVjdC1hdXJvcmEtcmVhY3Qtbmdpbngtc3ByaW5nYm9vdC1kb2NrZXItZWMyLW15c3FsLWp3dC1maW5hbC1wcm9qZWN0LWF1cm9yYS1yZWFjdC1uZ2lueC1zcHJpbmdib290LWRvY2tlci1lYzItbXlzcWwtand0

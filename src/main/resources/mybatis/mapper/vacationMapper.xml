@@ -47,4 +47,40 @@
             (VACATION_NO, MEMBER_CODE, VACATION_START_DATE, VACATION_END_DATE, IS_HALF_DAY)
         values (#{ vacationNo },#{memberCode}, #{ vacationStartDate }, #{ vacationEndDate }, #{ isHalfDay })
     </insert>
+    <select id="selectVacationDetail" resultType="vacationDTO">
+        SELECT
+            A.VACATION_START_DATE,
+            A.VACATION_END_DATE,
+            A.VACATION_NO,
+            A.IS_HALF_DAY,
+            B.APP_STATUS
+        FROM TBL_USED_VACATION A
+                 JOIN TBL_APPROVAL B ON A.MEMBER_CODE = B.MEMBER_CODE AND B.DOC_CODE = 8
+        WHERE A.MEMBER_CODE = #{ memberCode }
+          AND B.APP_DATE = (
+            SELECT MAX(C.APP_DATE)
+            FROM TBL_APPROVAL C
+            WHERE C.MEMBER_CODE = A.MEMBER_CODE AND C.DOC_CODE = 8 AND B.APP_DATE = C.APP_DATE
+        )
+        ORDER BY A.VACATION_START_DATE DESC
+            LIMIT 5
+    </select>
+
+    <update id="updateRemainVacation" parameterType="vacationDTO">
+
+        UPDATE TBL_VACATION B
+        SET REMAIN_VACATION = REMAIN_VACATION - (
+            SELECT
+                SUM(IF(A.IS_HALF_DAY, 0.5, DATEDIFF(A.VACATION_END_DATE, A.VACATION_START_DATE) + 1))
+            FROM
+                TBL_USED_VACATION A
+            WHERE
+                A.VACATION_NO = B.VACATION_NO
+        )
+        WHERE MEMBER_CODE = #{ memberCode }
+          AND VACATION_NO = #{ vacationNo }
+
+
+    </update>
+
 </mapper>

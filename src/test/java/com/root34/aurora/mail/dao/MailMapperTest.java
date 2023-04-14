@@ -25,19 +25,20 @@ public class MailMapperTest {
     @Test
     @Transactional
     @Rollback(false)
-    void 메일_보내기_테스트() {
+    void 메일_저장_맵퍼_테스트() {
 
         // given
         MailDTO mailDTO = new MailDTO();
 //        mailDTO.setMemberCode(1);
         mailDTO.setMailTitle("Test Title");
         mailDTO.setMailBody("Test Body");
-        mailDTO.setSender("TEST-01@project-aurora.co.kr");
+        mailDTO.setSenderName("테스트 이름");
+        mailDTO.setSenderEmail("TEST-01@project-aurora.co.kr");
         mailDTO.setRecipient("ssssong125@gmail.com");
 //        ( DEFAULT, NULL, 1, 'Test 제목', 'Test 내용', 'TEST-01@project-aurora.co.kr', 'ssssong125@gmail.com' )
 
         // when
-        int result = mailMapper.sendMail(mailDTO);
+        int result = mailMapper.saveMail(mailDTO);
 
         // then
         assertEquals(1, result);

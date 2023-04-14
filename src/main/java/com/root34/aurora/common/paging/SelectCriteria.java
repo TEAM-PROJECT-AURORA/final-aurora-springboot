@@ -22,6 +22,7 @@ public class SelectCriteria {
     private HashMap<String, Object> searchConditions; // 다중 검색 조건
 
     public SelectCriteria(int pageNo, int totalCount, int limit, int buttonAmount, int maxPage, int startPage, int endPage, int startRow, int endRow) {
+
         this.pageNo = pageNo;
         this.totalCount = totalCount;
         this.limit = limit;

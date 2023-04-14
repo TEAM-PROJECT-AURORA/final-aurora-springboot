@@ -25,6 +25,7 @@
           JOIN TBL_MEMBER M
             ON D.MEMBER_CODE = M.MEMBER_CODE
          WHERE D.MEMBER_CODE = #{ memberCode }
+         ORDER BY D.DAY_WORKLOG_CODE DESC
          LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
 

@@ -5,10 +5,15 @@ import com.root34.aurora.worklog.dto.DayWorklogDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Map;
 
+/**
+ @ClassName : DayWorklogService
+ @Date : 23.03.23
+ @Writer : 서지수
+ @Description : 일일 업무일지 서비스
+ */
 @Slf4j
 @Service
 public class DayWorklogService {
@@ -17,6 +22,12 @@ public class DayWorklogService {
 
     public DayWorklogService(DayWorklogMapper dayWorklogMapper) { this.dayWorklogMapper = dayWorklogMapper; }
 
+    /**
+     @MethodName  : selectDayWorklogTotal
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 나의 일일 업무일지
+     */
     public int selectDayWorklogTotal(int memberCode) {
 
         log.info("[DayWorklogService] selectDayWorklogTotal Start ====================");
@@ -26,6 +37,12 @@ public class DayWorklogService {
         return result;
     }
 
+    /**
+     @MethodName  : selectDayWorklogListWithPaging
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 전체조회
+     */
     public Object selectDayWorklogListWithPaging(Map map) {
 
         log.info("[DayWorklogService] selectDayWorklogListWithPaging Start ====================");
@@ -35,6 +52,12 @@ public class DayWorklogService {
         return dayWorklogList;
     }
 
+    /**
+     @MethodName  : selectDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 상세조회
+     */
     public DayWorklogDTO selectDayWorklog(int dayWorklogCode) {
 
         log.info("[DayWorklogService] selectDayWorklog Start ====================");
@@ -44,6 +67,12 @@ public class DayWorklogService {
         return dayWorklogDTO;
     }
 
+    /**
+     @MethodName  : insertDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 생성
+     */
     @Transactional
     public Object insertDayWorklog(DayWorklogDTO dayWorklogDTO) {
 
@@ -57,6 +86,12 @@ public class DayWorklogService {
         return (result > 0) ? "일일 업무일지 등록 성공" : "일일 업무일지 등록 실패";
     }
 
+    /**
+     @MethodName  : updateDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 수정
+     */
     @Transactional
     public Object updateDayWorklog(DayWorklogDTO dayWorklogDTO) {
 
@@ -70,6 +105,12 @@ public class DayWorklogService {
         return (result > 0) ? "일일 업무일지 업데이트 성공" : "일일 업무일지 업데이트 실패";
     }
 
+    /**
+     @MethodName  : deleteDayWorklog
+     @Date : 23.03.23
+     @Writer : 서지수
+     @Description : 일일 업무일지 삭제
+     */
     @Transactional
     public Object deleteDayWorklog(int dayWorklogCode) {
 
@@ -83,6 +124,12 @@ public class DayWorklogService {
         return (result > 0) ? "일일 업무일지 삭제 성공" : "일일 업무일지 삭제 실패";
     }
 
+    /**
+     @MethodName  : selectMemberInfo
+     @Date : 23.04.10
+     @Writer : 서지수
+     @Description : 멤버 정보 조회
+     */
     public DayWorklogDTO  selectMemberInfo(int memberCode) {
         DayWorklogDTO  result = dayWorklogMapper.selectMemberInfo(memberCode);
         log.info("[selectMemberInfo] result > 0 성공 : " + result);

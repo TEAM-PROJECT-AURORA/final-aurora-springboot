@@ -1,19 +1,23 @@
 package com.root34.aurora.attendance.service;
 
 import com.root34.aurora.attendance.dao.AttendanceMapper;
+import com.root34.aurora.attendance.dto.AttendanceDTO;
+import com.root34.aurora.common.paging.SelectCriteria;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
 	@ClassName : AttendanceService
 	@Date : 2023-03-23
 	@Writer : 정근호
-	@Description :
+	@Description : 근태 서비스
 */
 @Slf4j
 @AllArgsConstructor
@@ -26,15 +30,15 @@ public class AttendanceService {
 	    @MethodName : getAttendance
 		@Date : 2023-03-23
 		@Writer : 정근호
-		@Description :
+		@Description :근태 조회
 	*/
-	public Map getAttendance(int memberCode) {
+	public Map getAttendance(int memberCode, String selectedDate) {
 
 
 
 		log.info("[AttendanceService] getAttendance Start ===================");
 		log.info("[memberCode]   :" + memberCode );
-		Map count = attendanceMapper.getAttendance(memberCode);
+		Map count = attendanceMapper.getAttendance(memberCode, selectedDate);
 		log.info("[count]   :" + count );
 		log.info("[AttendanceService] getAttendance End ===================");
 
@@ -46,18 +50,18 @@ public class AttendanceService {
 	 @MethodName : selectTime
 	 @Date : 2023-03-24
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 이번주 누적,초과,잔여 이번달 누적 시간 조회
 	 */
 
-	public Map selectTime(int memberCode) {
+	public Map selectTime(int memberCode , String selectTime) {
 
 		log.info("[AttendanceService] selectTime Start ===================");
-		Map selectTime = attendanceMapper.selectTime(memberCode);
+		Map selectTimes = attendanceMapper.selectTime(memberCode, selectTime);
 		log.info("[memberCode]   :" + memberCode );
-		log.info("[selectTime]   :" + selectTime );
+		log.info("[selectTimes]   :" + selectTimes );
 		log.info("[AttendanceService] selectTime End ===================");
 
-		return selectTime;
+		return selectTimes;
 
 
 	}
@@ -66,7 +70,7 @@ public class AttendanceService {
 	    @MethodName : insertWorkTime
 		@Date : 2023-03-23
 		@Writer : 정근호
-		@Description :
+	    @Description : 출근시간 등록
 	*/
 	public void insertWorkTime(int memberCode) {
 
@@ -80,7 +84,7 @@ public class AttendanceService {
 		@MethodName : insertOffTime
 		@Date : 2023-03-24
 		@Writer : 정근호
-		@Description :
+		@Description : 퇴근시간 등록
 	*/
 	public void insertOffTime(int memberCode) {
 
@@ -91,10 +95,24 @@ public class AttendanceService {
 	}
 
 	/**
+	 @MethodName : insertOrUpdateAttendance
+	 @Date : 2023-04-09
+	 @Writer : 정근호
+	 @Description : 근태 수정 및 등록
+	 */
+	public void insertOrUpdateAttendance(int memberCode, AttendanceDTO attendanceDTO, String selectedDate) {
+
+		log.info("[AttendanceService] insertOrUpdateAttendance Start ===================");
+
+		attendanceMapper.insertOrUpdateAttendance(memberCode,attendanceDTO, selectedDate);
+		log.info("[AttendanceService] insertOrUpdateAttendance End ===================");
+	}
+
+	/**
 	 @MethodName : selectMonthTime
 	 @Date : 2023-03-24
 	 @Writer : 정근호
-	 @Description :
+	 @Description :월별 평균근무 시간 근무일수 총 근무시간
 	 */
 	public Map selectMonthTime(int memberCode) {
 
@@ -111,7 +129,7 @@ public class AttendanceService {
 	 @MethodName : selectWorkStatus
 	 @Date : 2023-04-05
 	 @Writer : 정근호
-	 @Description :
+	 @Description : 근무 상태 조회
 	 */
 	public Map selectWorkStatus(int memberCode) {
 
@@ -124,11 +142,17 @@ public class AttendanceService {
 		return selectWorkStatus;
 
 	}
+	/**
+	 @MethodName : selectTimeByDay
+	 @Date : 2023-04-05
+	 @Writer : 정근호
+	 @Description :근무 시간 조회
+	 */
 
-	public Map selectTimeByDay(int memberCode) {
+	public Map selectTimeByDay(int memberCode, LocalDate attRegDate) {
 
 		log.info("[AttendanceService] selectTimeByDay Start ===================");
-		Map selectTimeByDay = attendanceMapper.selectTimeByDay(memberCode);
+		Map selectTimeByDay = attendanceMapper.selectTimeByDay(memberCode, attRegDate);
 		log.info("[memberCode]   :" + memberCode );
 		log.info("[selectTimeByDay]   :" + selectTimeByDay );
 		log.info("[AttendanceService] selectTimeByDay End ===================");
@@ -136,5 +160,41 @@ public class AttendanceService {
 		return selectTimeByDay;
 
 	}
+
+	/**
+	 @MethodName : attendanceList
+	 @Date : 2023-04-10
+	 @Writer : 정근호
+	 @Description :근태 조회 리스트
+	 */
+
+	public Object attendanceList(SelectCriteria selectCriteria,  String selectedDate) {
+
+		log.info("[AttendanceService] attendanceList Start =========================");
+		List<AttendanceDTO> attendanceList = attendanceMapper.attendanceList(selectCriteria, selectedDate);
+
+		log.info("[MemberService] selectMemberListWithPaging End =============================");
+
+		return attendanceList;
+	}
+
+	public List<AttendanceDTO> getAttendanceList(@RequestParam(name="selectedDate") String selectedDate) {
+
+		log.info("[AttendanceService] getAttendanceList Start =========================");
+
+		log.info("[MemberService] getAttendanceList End =============================");
+		return attendanceMapper.getAttendanceList(selectedDate);
+
+	}
+
+//	public Object attendanceListAboutName(SelectCriteria selectCriteria,  String selectedDate, String search) {
+//
+//		log.info("[AttendanceService] attendanceListAboutName Start =========================");
+//		List<AttendanceDTO> attendanceListAboutName = attendanceMapper.attendanceListAboutName(selectCriteria, selectedDate,search);
+//
+//		log.info("[MemberService] attendanceListAboutName End =============================");
+//
+//		return attendanceListAboutName;
+//	}
 
 }

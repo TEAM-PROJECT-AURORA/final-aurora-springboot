@@ -3,18 +3,250 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.mail.dao.MailMapper">
-    <!--메일 보내기-->
-    <insert id="sendMail" parameterType="MailDTO">
+    <!--멤버 정보 조회(멤버 코드)-->
+    <select id="selectMemberDetailByMemberCode" parameterType="Integer" resultType="MemberDTO">
+        SELECT
+                A.MEMBER_CODE,
+                B.DEPT_NAME,
+                C.JOB_NAME,
+                A.MEMBER_NAME,
+                A.MEMBER_EMAIL
+           FROM TBL_MEMBER A
+           JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+           JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+          WHERE A.MEMBER_CODE = #{ memberCode }
+    </select>
+    <!--멤버 정보 조회(이메일)-->
+    <select id="selectMemberDetailByEmail" parameterType="String" resultType="MemberDTO">
+        SELECT
+               A.MEMBER_CODE,
+               B.DEPT_NAME,
+               C.JOB_NAME,
+               A.MEMBER_NAME,
+               A.MEMBER_EMAIL
+          FROM TBL_MEMBER A
+          JOIN TBL_DEPARTMENT B ON A.DEPT_CODE = B.DEPT_CODE
+          JOIN TBL_JOB C ON A.JOB_CODE = C.JOB_CODE
+         WHERE A.MEMBER_EMAIL = #{ memberEmail }
+    </select>
+    <!--메일 저장(발송)-->
+    <insert id="saveMail" parameterType="MailDTO" useGeneratedKeys="true" keyProperty="mailCode">
         INSERT INTO TBL_MAIL
-            ( MAIL_CODE, TAG_CODE, MAIL_TITLE, MAIL_BODY, SENDER, RECIPIENT )
+            ( MAIL_TITLE, MAIL_BODY, SENDER_NAME, SENDER_EMAIL, RECIPIENT )
         VALUES
-            ( DEFAULT, NULL, 'Test 제목', 'Test 내용', 'TEST-01@project-aurora.co.kr', 'ssssong125@gmail.com' )
+            ( #{ mailTitle }, #{ mailBody }, #{ senderName }, #{ senderEmail }, #{ recipient } )
     </insert>
-<!--    <select id="select"-->
-    <!--메일 휴지통으로 이동-->
-    <update id="moveMailToTrash" parameterType="long">
+    <!--메일 첨부파일 등록-->
+    <insert id="registerFileWithMailCode" parameterType="FileDTO">
+        INSERT INTO TBL_FILE
+            ( FILE_NAME, FILE_ORIGIN_NAME, FILE_SIZE, FILE_PATH, MAIL_CODE )
+        VALUES
+            ( #{ fileName }, #{fileOriginName}, #{ fileSize }, #{ filePath }, #{ mailCode } )
+    </insert>
+    <!--조건별 메일 갯수 조회-->
+    <select id="getMailCount" parameterType="HashMap" resultType="int">
+        SELECT COUNT(DISTINCT A.MAIL_CODE)
+        FROM TBL_MAIL A
+        WHERE 1 = 1
+        <if test="tagCode != 0">
+            AND TAG_CODE = #{ tagCode }
+        </if>
+        <if test="mailTitle != null">
+            AND MAIL_TITLE LIKE CONCAT('%', #{ mailTitle }, '%')
+        </if>
+        <if test="mailBody != null">
+            AND MAIL_BODY LIKE CONCAT('%', #{ mailBody }, '%')
+        </if>
+        <if test="senderName != null">
+            AND SENDER_NAME LIKE CONCAT('%', #{ senderName }, '%')
+        </if>
+        <if test="senderEmail != null">
+            AND SENDER_EMAIL LIKE CONCAT('%', #{ senderEmail }, '%')
+        </if>
+        <if test="recipients != null">
+            AND RECIPIENT LIKE CONCAT('%', #{ recipients }, '%')
+        </if>
+        <if test="startDate != null and endDate == null">
+            AND SHIP_DATE &gt;= #{startDate}
+        </if>
+        <if test="startDate == null and endDate != null">
+            AND SHIP_DATE &lt;= #{endDate}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND SHIP_DATE BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="importantStatus != null and importantStatus != ''">
+            AND IMPORTANT_STATUS = #{importantStatus}
+        </if>
+        <if test="deleteStatus != null and deleteStatus != ''">
+            AND DELETE_STATUS = #{deleteStatus}
+        </if>
+        <if test="blackList != null and blackList.size() > 0">
+            AND SENDER_EMAIL NOT IN
+            <foreach item="email" index="index" collection="blackList" open="(" separator="," close=")">
+                #{ email }
+            </foreach>
+        </if>
+    </select>
+    <!--조건별 메일 목록 조회-->
+    <select id="selectMailListByConditions" parameterType="SelectCriteria" resultType="MailDTO">
+        SELECT A.*,
+               CASE
+               WHEN EXISTS (SELECT 1
+                              FROM TBL_FILE B
+                             WHERE B.MAIL_CODE = A.MAIL_CODE)
+               THEN 1
+               ELSE 0
+                END AS hasAttachments
+          FROM TBL_MAIL A
+         WHERE 1 = 1
+        <if test="searchConditions.tagCode != 0">
+            AND A.TAG_CODE = #{ searchConditions.tagCode }
+        </if>
+        <if test="searchConditions.mailTitle != null">
+            AND A.MAIL_TITLE LIKE CONCAT('%', #{ searchConditions.mailTitle }, '%')
+        </if>
+        <if test="searchConditions.mailBody != null">
+            AND A.MAIL_BODY LIKE CONCAT('%', #{ searchConditions.mailBody }, '%')
+        </if>
+        <if test="searchConditions.senderName != null">
+            AND A.SENDER_NAME LIKE CONCAT('%', #{ searchConditions.senderName }, '%')
+        </if>
+        <if test="searchConditions.senderEmail != null">
+            AND A.SENDER_EMAIL LIKE CONCAT('%', #{ searchConditions.senderEmail }, '%')
+        </if>
+        <if test="searchConditions.recipients != null">
+            AND A.RECIPIENT LIKE CONCAT('%', #{ searchConditions.recipients }, '%')
+        </if>
+        <if test="searchConditions.startDate != null and searchConditions.endDate == null">
+            AND A.SHIP_DATE &gt;= #{ searchConditions.startDate }
+        </if>
+        <if test="searchConditions.startDate == null and searchConditions.endDate != null">
+            AND A.SHIP_DATE &lt;= #{ searchConditions.endDate }
+        </if>
+        <if test="searchConditions.startDate != null and searchConditions.endDate != null">
+            AND A.SHIP_DATE BETWEEN #{ searchConditions.startDate } AND #{ searchConditions.endDate }
+        </if>
+        <if test="searchConditions.importantStatus != null and searchConditions.importantStatus != ''">
+            AND A.IMPORTANT_STATUS = #{ searchConditions.importantStatus }
+        </if>
+        <if test="searchConditions.deleteStatus != null and searchConditions.deleteStatus != ''">
+            AND A.DELETE_STATUS = #{ searchConditions.deleteStatus }
+        </if>
+        <if test="searchConditions.blackList != null and searchConditions.blackList.size() > 0">
+            AND A.SENDER_EMAIL NOT IN
+            <foreach item="email" index="index" collection="searchConditions.blackList" open="(" separator="," close=")">
+                #{ email }
+            </foreach>
+        </if>
+         ORDER BY A.SHIP_DATE DESC
+         LIMIT #{ startRow }, #{ limit }
+    </select>
+    <!--메일 상세 조회-->
+    <select id="selectMailDetailByMailCode" parameterType="HashMap" resultType="MailDTO">
+        SELECT MAIL_CODE,
+               TAG_CODE,
+               MAIL_TITLE,
+               MAIL_BODY,
+               SENDER_NAME,
+               SENDER_EMAIL,
+               RECIPIENT,
+               SHIP_DATE,
+               READ_STATUS,
+               IMPORTANT_STATUS,
+               DELETE_STATUS
+          FROM TBL_MAIL
+         WHERE MAIL_CODE = #{ mailCode }
+           AND (RECIPIENT = #{ memberEmail } OR SENDER_EMAIL = #{ memberEmail })
+    </select>
+    <!--메일 첨부파일 목록 조회-->
+    <select id="selectAttachmentListByMailCode" parameterType="Long" resultType="FileDTO">
+        SELECT FILE_CODE,
+               FILE_NAME,
+               FILE_ORIGIN_NAME,
+               FILE_SIZE,
+               FILE_PATH,
+               MAIL_CODE
+          FROM TBL_FILE
+         WHERE MAIL_CODE = #{ mailCode }
+    </select>
+    <!--메일 중요 상태 수정-->
+    <update id="updateImportantStatus" parameterType="MailDTO">
         UPDATE TBL_MAIL
-           SET DELETE_STATUS = 'Y'
+           SET IMPORTANT_STATUS = #{ importantStatus }
          WHERE MAIL_CODE = #{ mailCode }
     </update>
+    <!--메일 삭제 상태 수정-->
+    <update id="updateDeleteStatus" parameterType="HashMap">
+        UPDATE TBL_MAIL
+           SET DELETE_STATUS = #{ deleteStatus }
+         WHERE MAIL_CODE = #{ mailCode }
+    </update>
+    <!--메일 태그 변경-->
+    <update id="updateMailTag" parameterType="MailDTO">
+        UPDATE TBL_MAIL
+           SET TAG_CODE = #{ tagCode }
+         WHERE MAIL_CODE = #{ mailCode }
+    </update>
+    <!--메일 완전 삭제-->
+    <delete id="deleteMail" parameterType="Long">
+        DELETE FROM TBL_MAIL
+         WHERE MAIL_CODE = #{ mailCode }
+    </delete>
+    <!--태그 생성-->
+    <insert id="registerTag" parameterType="TagDTO">
+        INSERT INTO TBL_TAG
+            ( MEMBER_CODE, TAG_NAME, TAG_COLOR )
+        VALUES
+            ( #{ memberCode }, #{ tagName }, #{ tagColor } )
+    </insert>
+    <!--태그 목록 조회-->
+    <select id="selectTagListByMemberCode" parameterType="Integer" resultType="TagDTO">
+        SELECT TAG_CODE,
+               MEMBER_CODE,
+               TAG_NAME,
+               TAG_COLOR
+          FROM TBL_TAG
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <!--태그 상세 조회-->
+    <select id="selectTagDetailByTagCode" parameterType="Long" resultType="TagDTO">
+        SELECT TAG_CODE,
+               MEMBER_CODE,
+               TAG_NAME,
+               TAG_COLOR
+          FROM TBL_TAG
+         WHERE TAG_CODE = #{ tagCode }
+    </select>
+    <!--태그 수정-->
+    <update id="updateTag" parameterType="TagDTO">
+        UPDATE TBL_TAG
+           SET TAG_NAME = #{ tagName },
+               TAG_COLOR = #{ tagColor }
+         WHERE TAG_CODE = #{ tagCode }
+    </update>
+    <!--태그 삭제-->
+    <delete id="deleteTag" parameterType="Long">
+        DELETE FROM TBL_TAG
+         WHERE TAG_CODE = #{ tagCode }
+    </delete>
+    <!--블랙리스트 등록-->
+    <insert id="registerBlackList" parameterType="HashMap">
+        INSERT IGNORE INTO TBL_BLACK_LIST
+            ( MEMBER_CODE, BLOCKED_SENDER )
+        VALUES
+            ( #{ memberCode}, #{ email } )
+    </insert>
+    <!--블랙리스트 조회-->
+    <select id="selectBlackListByMemberCode" parameterType="Integer" resultType="String">
+        SELECT BLOCKED_SENDER
+          FROM TBL_BLACK_LIST
+         WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+    <!--블랙리스트에서 삭제-->
+    <delete id="deleteBlockedSenderEmail" parameterType="HashMap">
+        DELETE FROM TBL_BLACK_LIST
+         WHERE BLOCKED_SENDER = #{ blockedSender }
+           AND MEMBER_CODE = #{ memberCode }
+    </delete>
 </mapper>
