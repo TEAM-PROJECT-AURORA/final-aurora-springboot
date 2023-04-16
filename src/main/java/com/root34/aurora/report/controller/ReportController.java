@@ -70,6 +70,60 @@ public class ReportController {
     }
 
     /**
+     * @MethodName : selectSideBarRoutineReportList
+     * @Date : 2023-04-16
+     * @Writer : 김수용
+     * @Description : 정기보고 목록 조회 - 사이드바
+     */
+    @GetMapping(value = "/reports/routines/side-bar")
+    public ResponseEntity<ResponseDTO> selectSideBarRoutineReportList(HttpServletRequest request) {
+
+        try {
+            log.info("[ReportController] selectSideBarRoutineReportList Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+
+            HashMap<String, Object> searchConditions = new HashMap<>();
+            searchConditions.put("memberCode", memberCode);
+            searchConditions.put("reportType", "Routine");
+            searchConditions.put("completionStatus", 'N');
+            log.info("[ReportController] searchConditions : " + searchConditions);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "사이드바 정기보고 목록 조회 성공", reportService.selectReportListByConditions(1, searchConditions)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
+     * @MethodName : selectSideBarCasualReportList
+     * @Date : 2023-04-16
+     * @Writer : 김수용
+     * @Description : 정기보고 목록 조회 - 사이드바
+     */
+    @GetMapping(value = "/reports/casuals/side-bar")
+    public ResponseEntity<ResponseDTO> selectSideBarCasualReportList(HttpServletRequest request) {
+
+        try {
+            log.info("[ReportController] selectSideBarRoutineReportList Start");
+            Integer memberCode = (Integer) request.getAttribute("memberCode");
+
+            HashMap<String, Object> searchConditions = new HashMap<>();
+            searchConditions.put("memberCode", memberCode);
+            searchConditions.put("reportType", "Casual");
+            searchConditions.put("completionStatus", 'N');
+            log.info("[ReportController] searchConditions : " + searchConditions);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "사이드바 비정기보고 목록 조회 성공", reportService.selectReportListByConditions(1, searchConditions)));
+        } catch (Exception e) {
+            log.info("[ReportController] Exception : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null));
+        }
+    }
+
+    /**
      * @MethodName : getAllReportList
      * @Date : 2023-03-23
      * @Writer : 김수용
