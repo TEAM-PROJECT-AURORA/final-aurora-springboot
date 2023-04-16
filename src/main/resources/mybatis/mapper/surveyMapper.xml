@@ -146,6 +146,13 @@
             A.END_DATE,
             B.QUESTION_NO,
             B.QUESTION_BODY,
+            ((SELECT
+                  COUNT(D.REPLY_STATUS)
+              FROM TBL_SURVEY_REPLY_STATE D
+              WHERE D.SURVEY_CODE = A.SURVEY_CODE
+                AND D.REPLY_STATUS = 'Y') / (SELECT
+                                                 COUNT(*)
+                                             FROM TBL_MEMBER) * 100) AS REPLY_STATUS,
             CASE
                 WHEN (SELECT COUNT(*) FROM TBL_QUESTION_CHOICE D WHERE D.QUESTION_NO = B.QUESTION_NO) > 1 THEN 'choice'
                 ELSE 'write'
@@ -158,6 +165,7 @@
          INNER JOIN TBL_QUESTION_CHOICE C
             ON B.QUESTION_NO = C.QUESTION_NO
          WHERE A.SURVEY_CODE = #{ surveyCode }
+         ORDER BY B.QUESTION_NO ASC
     </select>
     <update id="updateSurvey" parameterType="surveyDTO">
         UPDATE TBL_SURVEY
