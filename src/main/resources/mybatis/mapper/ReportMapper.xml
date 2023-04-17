@@ -160,6 +160,7 @@
           LEFT JOIN TBL_REPORTER B ON A.REPORT_CODE = B.REPORT_CODE
          WHERE (A.MEMBER_CODE = #{ memberCode } OR B.MEMBER_CODE = #{ memberCode })
            AND A.REPORT_TYPE = 'Casual'
+           AND A.COMPLETION_STATUS = 'N'
          ORDER BY A.REPORT_CODE DESC
          LIMIT 20
     </select>
