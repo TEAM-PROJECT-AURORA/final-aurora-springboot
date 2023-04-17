@@ -5,9 +5,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # local
-#    url: jdbc:mysql://localhost:3306/aurora?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/aurora?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&allowMultiQueries=true
     # Docker
-    url: jdbc:mysql://192.168.1.96:3306/aurora?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&allowMultiQueries=true
+#    url: jdbc:mysql://192.168.1.96:3306/aurora?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&allowMultiQueries=true
     username: aurora
     password: aurora
   servlet:
