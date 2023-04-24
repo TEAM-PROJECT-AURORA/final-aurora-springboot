@@ -27,3 +27,5 @@ feature/user, feature/board, feature/planner, feature/recode...로 작명하여 
 develop에 feature기능을 머지 다하면 main 브랜치에 머지 하기전에 테스트하는 브랜치 테스트 후 정상적으로 구동하면 main에다가 머지를 한다.
 
 feature => develop => release => main 순으로 
+
+![경로](./useStack.png)
