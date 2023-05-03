@@ -8,7 +8,6 @@
 * 정근호 -  jgh337337@gmail.com
 * 허재홍 - zero5140@gmail.com
 
-![image](https://user-images.githubusercontent.com/115364621/235852777-0f19638a-64bb-4a3c-bb5e-3da06b24de76.png)
 ------------
 
 그룹웨어 
