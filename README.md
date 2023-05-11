@@ -21,7 +21,6 @@
 ------------
 
 # [개발언어]
-![이미지](./stack.png)
 ### 1. Frontend
 #### - Javascript
 #### - JQuery (latest)
