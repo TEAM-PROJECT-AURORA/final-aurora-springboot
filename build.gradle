@@ -33,12 +33,7 @@ dependencies {
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
     // 패키지 의존성 주입
-    implementation 'com.root34.aurora:approval:1.0.0'
-    implementation 'com.root34.aurora:alert:1.0.0'
-    implementation 'com.root34.aurora:attendance:1.0.0'
-    implementation 'com.root34.aurora:jwt:1.0.0'
-    implementation 'com.root34.aurora:messenger:1.0.0'
-    implementation 'com.root34.aurora:report:1.0.0'
+
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
