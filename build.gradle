@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.root34.aurora:attendance:1.0.0'
     implementation 'com.root34.aurora:jwt:1.0.0'
     implementation 'com.root34.aurora:messenger:1.0.0'
+    implementation 'com.root34.aurora:report:1.0.0'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
