@@ -8,6 +8,7 @@ import com.root34.aurora.common.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,12 @@ public class ApprovalController {
         this.approvalService = approvalService;
     }
 
+
+    @GetMapping("/approval/{appCode}")
+    public ResponseEntity<ResponseDTO> findApproval(@PathVariable int appCode) {
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회성공", approvalService.findApproval(appCode)));
+    }
     /**
         @MethodName : lastList
     	@Date : 4:20 PM

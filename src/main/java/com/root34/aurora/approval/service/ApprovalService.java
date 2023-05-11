@@ -3,6 +3,8 @@ package com.root34.aurora.approval.service;
 import com.root34.aurora.approval.dao.ApprovalMapper;
 import com.root34.aurora.approval.dto.ApprovalDTO;
 import com.root34.aurora.approval.dto.ApprovalLineDTO;
+import com.root34.aurora.approval.entity.Approval;
+import com.root34.aurora.approval.repository.ApprovalRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,19 +27,33 @@ import java.util.Map;
 public class ApprovalService {
 
     private final ApprovalMapper approvalMapper;
+    private final ApprovalRepository approvalRepository;
 
-    public ApprovalService (ApprovalMapper approvalMapper) {
+    public ApprovalService (ApprovalMapper approvalMapper, ApprovalRepository approvalRepository) {
         this.approvalMapper = approvalMapper;
+        this.approvalRepository = approvalRepository;
     }
 
+
+    public Approval findApproval(int appCode){
+
+        log.info("=====JPA 실행=====");
+
+        return approvalRepository.findByAppCode(appCode);
+    }
     /**
      @MethodName : lastList
      @Date : 4:21 PM
      @Writer : heojaehong
      @Description : 최근 결재 리스트 조회
      */
+    // jpa 사용시 dto를 사용하지 않고 Approval를 이용한다.
     public List<ApprovalDTO> lastList(int memberCode) {
 
+        // jpa 이용
+//        return approvalRepository.findByAppTitle(memberCode);
+
+// 마이바티스 이용
         try {
             List<ApprovalDTO> approvalDtoList = approvalMapper.lastList(memberCode);
             log.info("[ApprovalService] lastList :" + approvalDtoList);
@@ -51,6 +67,7 @@ public class ApprovalService {
             // 에러에 대한 응답 처리
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당페이지가 존재하지 않습니다.", e);
         }
+
     }
     /**
         @MethodName : pendingList
