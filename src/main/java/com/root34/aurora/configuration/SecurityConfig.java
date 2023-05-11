@@ -66,7 +66,6 @@ public class SecurityConfig {
                 .antMatchers("/api/**/**").hasAnyRole("USER", "ADMIN", "MANAGER")// 나머지 api 는 전부 인증 필요
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN", "MANAGER")// 나머지 api 는 전부 인증 필요
                 .antMatchers("/api/v1/approvals/**").permitAll()//
-                .antMatchers("/api/v1/recipes-recommend/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/address-book/**").permitAll()
                 .antMatchers("/api/v1/members/**").permitAll()
                 .antMatchers("/api/v1/messenger-lists/**").permitAll()
