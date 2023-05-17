@@ -23,7 +23,7 @@ public interface ReportMapper {
 
     int registerReport(ReportDTO reportDTO); // 보고서 작성
 
-    int registerFileWithReportCode(FileDTO fileDTO); // 보고_첨부파일 등록
+    int registerFileWithReportCode(FileDTO fileDTO); // 보고 첨부파일 등록
 
     List<FileDTO> selectReportAttachmentListByReportCode(Long reportCode); // 첨부파일 목록 조회
 
@@ -98,5 +98,9 @@ public interface ReportMapper {
     Integer getReportedMemberCountByRoundCode(long roundCode); // 보고 회차 보고한 인원수 조회
 
     MemberDTO selectReporterDetail(int memberCode); // 보고자 정보 조회
+
+    List<Integer> selectReporterListByReportCode(long memberCdoe); // 보고자 멤버코드 목록 조회
+
+    long getReportCodeByRoundCode(long roundCode); // 보고 코드 조회
 }
 //    int isRoundTitleExist(HashMap<String, Object> parameter); // 보고 회차명 중복 여부

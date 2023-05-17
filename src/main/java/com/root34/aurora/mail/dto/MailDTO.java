@@ -58,7 +58,13 @@ public class MailDTO {
      * @variable readStatus 읽음 상태
      */
     private char readStatus;
+    /**
+     * @variable importantStatus 중요 상태
+     */
     private char importantStatus;
+    /**
+     * @variable deleteStatus 삭제 상태
+     */
     private char deleteStatus;
     /**
      * @variable memberCode 멤버 코드

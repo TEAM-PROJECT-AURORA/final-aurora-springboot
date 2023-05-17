@@ -160,6 +160,7 @@
           LEFT JOIN TBL_REPORTER B ON A.REPORT_CODE = B.REPORT_CODE
          WHERE (A.MEMBER_CODE = #{ memberCode } OR B.MEMBER_CODE = #{ memberCode })
            AND A.REPORT_TYPE = 'Casual'
+           AND A.COMPLETION_STATUS = 'N'
          ORDER BY A.REPORT_CODE DESC
          LIMIT 20
     </select>
@@ -187,11 +188,11 @@
          WHERE REPORT_CODE = #{ reportCode };
     </delete>
     <!--보고 회차 등록-->
-    <insert id="registerReportRound" parameterType="ReportRoundDTO">
+    <insert id="registerReportRound" parameterType="ReportRoundDTO" useGeneratedKeys="true" keyProperty="roundCode">
         INSERT INTO TBL_REPORT_ROUND
             ( REPORT_CODE, ROUND_TITLE, ROUND_BODY, CAPACITY )
         VALUES
-            ( #{ reportCode }, #{ roundTitle }, #{roundBody }, #{ capacity } )
+            ( #{ reportCode }, #{ roundTitle }, #{ roundBody }, #{ capacity } )
     </insert>
     <!--정기보고 회차 목록 조회-->
     <select id="selectReportRoundListByReportCode" parameterType="SelectCriteria" resultType="ReportRoundDTO">
@@ -261,7 +262,7 @@
          WHERE ROUND_CODE = #{ roundCode }
     </select>
     <!--회차별 상세 보고 작성-->
-    <insert id="registerReportDetail" parameterType="ReportDetailDTO">
+    <insert id="registerReportDetail" parameterType="ReportDetailDTO" useGeneratedKeys="true" keyProperty="detailCode">
         INSERT INTO TBL_REPORT_DETAIL
             ( ROUND_CODE, MEMBER_CODE, DETAIL_BODY )
         VALUES
@@ -296,7 +297,7 @@
          WHERE DETAIL_CODE = #{ detailCode }
     </delete>
     <!--보고 댓글 작성-->
-    <insert id="registerReportRoundReply" parameterType="ReportRoundReplyDTO">
+    <insert id="registerReportRoundReply" parameterType="ReportRoundReplyDTO" useGeneratedKeys="true" keyProperty="replyCode">
         INSERT INTO TBL_REPORT_ROUND_REPLY
             ( ROUND_CODE, MEMBER_CODE, REPLY_BODY )
         VALUES
@@ -335,6 +336,18 @@
         DELETE FROM TBL_REPORT_ROUND_REPLY
          WHERE REPLY_CODE = #{ replyCode }
     </delete>
+    <!--보고자 멤버코드 목록 조회-->
+    <select id="selectReporterListByReportCode" parameterType="Long" resultType="Integer">
+        SELECT MEMBER_CODE
+          FROM TBL_REPORTER
+         WHERE REPORT_CODE = #{ reportCode }
+    </select>
+    <!--보고 코드 조회-->
+    <select id="getReportCodeByRoundCode" parameterType="long" resultType="long">
+        SELECT REPORT_CODE
+          FROM TBL_REPORT_ROUND
+         WHERE ROUND_CODE = #{ roundCode }
+    </select>
 </mapper>
 
 <!--    &lt;!&ndash;보고 회차명 중복 여부&ndash;&gt;-->

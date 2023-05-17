@@ -27,8 +27,6 @@ public interface MemberMapper {
 
     List<MemberDTO> memberList(SelectCriteria selectCriteria);
 
-    //MemberDTO memberDetail(MemberDTO memberCode);
-
     MemberDTO selectMemberDetail(int memberCode);
 
     List<JobDTO> selectJob();
@@ -52,8 +50,6 @@ public interface MemberMapper {
     List<MemberDTO> selectMemberListAboutJob(String search, SelectCriteria selectCriteria);
 
     List<MemberDTO> selectMemberListAboutTask(String search, SelectCriteria selectCriteria);
-//
-//    List<MemberDTO> selectMemberListAboutEmail();
 
 
 }

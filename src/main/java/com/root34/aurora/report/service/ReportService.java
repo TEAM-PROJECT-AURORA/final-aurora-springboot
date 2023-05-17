@@ -1,5 +1,7 @@
 package com.root34.aurora.report.service;
 
+import com.root34.aurora.alert.dto.AlertDTO;
+import com.root34.aurora.alert.service.AlertService;
 import com.root34.aurora.common.FileDTO;
 import com.root34.aurora.common.paging.Pagenation;
 import com.root34.aurora.common.paging.ResponseDTOWithPaging;
@@ -49,11 +51,13 @@ public class ReportService {
     private String FILE_URL;
 
     private final ReportMapper reportMapper;
+    private final AlertService alertService;
 
     @Autowired
-    public ReportService(ReportMapper reportMapper) {
+    public ReportService(ReportMapper reportMapper, AlertService alertService) {
 
         this.reportMapper = reportMapper;
+        this.alertService = alertService;
     }
 
     /**
@@ -259,74 +263,85 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 작성
     */
-    public boolean registerReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList) {
+    public boolean registerReport(ReportDTO reportDTO, List<Integer> memberList, List<MultipartFile> fileList) throws IOException {
 
-        try {
-            log.info("[ReportService] registerReport Start");
-            log.info("[ReportService] reportDTO : " + reportDTO);
-            log.info("[ReportService] memberList : " + memberList);
-            log.info("[ReportService] fileList : " + fileList);
+        log.info("[ReportService] registerReport Start");
+        log.info("[ReportService] reportDTO : " + reportDTO);
+        log.info("[ReportService] memberList : " + memberList);
+        log.info("[ReportService] fileList : " + fileList);
 
-            int result = reportMapper.registerReport(reportDTO);
-            log.info("[ReportService] registerReport result : " + result);
+        int result = reportMapper.registerReport(reportDTO);
+        log.info("[ReportService] registerReport result : " + result);
 
-            if(result == 0) {
-                throw new CreationFailedException("보고서 등록 실패!");
-            }
-            Long generatedPk = reportDTO.getReportCode();
-            log.info("[ReportService] generatedPk : " + generatedPk);
+        if(result == 0) {
 
-            int memberCount = 0;
-
-            for (Integer listItem : memberList) {
-
-                HashMap<String, Object> parameter = new HashMap<>();
-                parameter.put("reportCode", generatedPk);
-                parameter.put("listItem", listItem);
-
-                memberCount += reportMapper.registerReporter(parameter);
-            }
-            log.info("[ReportService] memberCount : " + memberCount);
-
-            if(memberCount == 0) {
-
-                throw new CreationFailedException("보고자가 등록되지않았습니다!");
-            }
-            if(fileList != null) {
-                int fileCount = 0;
-
-                    for (MultipartFile file : fileList) {
-                        String fileName = UUID.randomUUID().toString().replace("-", "");
-                        String replaceFileName = null;
-
-                        log.info("[ReportService] FILE_DIR : " + FILE_DIR);
-                        log.info("[ReportService] fileName : " + fileName);
-                        replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
-                        log.info("[ReportService] replaceFileName : " + replaceFileName);
-
-                        FileDTO fileDTO = new FileDTO();
-                        fileDTO.setFileOriginName(file.getOriginalFilename());
-                        fileDTO.setFileName(replaceFileName);
-                        fileDTO.setFilePath(FILE_DIR + replaceFileName);
-                        fileDTO.setReportCode(generatedPk);
-
-                        double fileSizeInBytes = (double) file.getSize();
-
-                        String fileSizeString = fileSizeInBytes < (1024 * 1024)?
-                                String.format("%.2f KB", fileSizeInBytes / 1024) :
-                                String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
-                        log.info("[ReportService] fileSizeString : " + fileSizeString);
-                        fileDTO.setFileSize(fileSizeString);
-                        log.info("[ReportService] fileDTO : " + fileDTO);
-
-                        fileCount += reportMapper.registerFileWithReportCode(fileDTO);
-                        log.info("[ReportService] fileCount : " + fileCount);
-                    }
-            }
-            return result > 0 && memberCount == memberList.size();
-        } catch (IOException e) {
-            throw new RuntimeException("파일 업로드에 실패했습니다!");
+            throw new CreationFailedException("보고서 등록 실패!");
         }
+        Long generatedPk = reportDTO.getReportCode();
+        log.info("[ReportService] generatedPk : " + generatedPk);
+
+        int memberCount = 0;
+
+        for (Integer listItem : memberList) {
+
+            HashMap<String, Object> parameter = new HashMap<>();
+            parameter.put("reportCode", generatedPk);
+            parameter.put("listItem", listItem);
+
+            memberCount += reportMapper.registerReporter(parameter);
+        }
+        log.info("[ReportService] memberCount : " + memberCount);
+
+        if(memberCount == 0) {
+
+            throw new CreationFailedException("보고자가 등록되지않았습니다!");
+        }
+        if(reportDTO.getReportType().equals("Casual") && fileList != null) {
+
+            int fileCount = 0;
+                for (MultipartFile file : fileList) {
+
+                    String fileName = UUID.randomUUID().toString().replace("-", "");
+                    String replaceFileName = null;
+                    log.info("[ReportService] FILE_DIR : " + FILE_DIR);
+                    log.info("[ReportService] fileName : " + fileName);
+
+                    replaceFileName = FileUploadUtils.saveFile(FILE_DIR, fileName, file);
+                    log.info("[ReportService] replaceFileName : " + replaceFileName);
+
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFileOriginName(file.getOriginalFilename());
+                    fileDTO.setFileName(replaceFileName);
+                    fileDTO.setFilePath(FILE_DIR + replaceFileName);
+                    fileDTO.setReportCode(generatedPk);
+
+                    double fileSizeInBytes = (double) file.getSize();
+
+                    String fileSizeString = fileSizeInBytes < (1024 * 1024)?
+                            String.format("%.2f KB", fileSizeInBytes / 1024) :
+                            String.format("%.2f MB", fileSizeInBytes / (1024 * 1024));
+                    log.info("[ReportService] fileSizeString : " + fileSizeString);
+                    fileDTO.setFileSize(fileSizeString);
+                    log.info("[ReportService] fileDTO : " + fileDTO);
+
+                    fileCount += reportMapper.registerFileWithReportCode(fileDTO);
+                    log.info("[ReportService] fileCount : " + fileCount);
+                }
+        }
+        if (result > 0 && memberCount == memberList.size() && reportDTO.getReportType().equals("Casual")) {
+
+            // 보고서가 정상적으로 등록된 후 알림 생성
+            for (Integer receiverMemberCode : memberList) {
+
+                AlertDTO alertDTO = new AlertDTO();
+                alertDTO.setSenderMemberCode(reportDTO.getMemberCode());
+                alertDTO.setReceiverMemberCode(receiverMemberCode);
+                alertDTO.setReportCode(reportDTO.getReportCode());
+
+                alertService.registerReportAlert(alertDTO);
+            }
+        }
+        return result > 0 && memberCount == memberList.size();
     }
 
     /**
@@ -362,7 +377,7 @@ public class ReportService {
             for(int reporterMemberCode : memberList) {
 
                 MemberDTO reporterMemberDTO = reportMapper.selectReporterDetail(reporterMemberCode);
-                memberDTOList.add(memberDTO);
+                memberDTOList.add(reporterMemberDTO);
             }
             response.put("memberList", memberDTOList); // 보고자 목록
         } else {
@@ -371,6 +386,8 @@ public class ReportService {
             response.put("reporterDetail", reportMapper.selectReporterDetail(memberList.get(0)));
         }
         log.info("[ReportService] selectReportDetailByReportCode response : " + response);
+
+        alertService.updateAlert(memberCode, "보고", reportCode);
 
         return response;
     }
@@ -536,7 +553,7 @@ public class ReportService {
     	* @Writer : 김수용
     	* @Description : 보고 회차 등록
     */
-    public boolean registerReportRound(ReportRoundDTO reportRoundDTO) {
+    public boolean registerReportRound(int memberCode, ReportRoundDTO reportRoundDTO) {
 
         log.info("[ReportService] registerReportRound Start");
         log.info("[ReportService] reportRoundDTO : " + reportRoundDTO);
@@ -550,18 +567,26 @@ public class ReportService {
             throw new InvalidReportTypeException("해당 보고서는 정기보고가 아닙니다!");
         }
 
-        int capacity = reportMapper.getReportRoundCapacity(reportRoundDTO.getReportCode());
-        reportRoundDTO.setCapacity(capacity);
-        log.info("[ReportService] capacity : " + capacity);
-
         int result = reportMapper.registerReportRound(reportRoundDTO);
         log.info("[ReportService] result : " + (result > 0));
 
+        List<Integer> reporterList = reportMapper.selectReporterListByReportCode(reportRoundDTO.getReportCode());
+        reportRoundDTO.setCapacity(reporterList.size());
+        log.info("[ReportService] reporterList : " + reporterList);
+        log.info("[ReportService] capacity : " + reporterList.size());
+
+        for(Integer reporterMemberCode : reporterList) {
+
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(memberCode);
+            alertDTO.setReceiverMemberCode(reporterMemberCode);
+            alertDTO.setRoundCode(reportRoundDTO.getRoundCode());
+
+            alertService.registerReportRoundAlert(alertDTO);
+        }
         if(result == 0) {
             throw new CreationFailedException("보고 회차 등록 실패!");
         }
-        updateReportReadStatusToUnread(reportRoundDTO.getReportCode());
-
         return result > 0;
     }
 
@@ -749,6 +774,8 @@ public class ReportService {
         result.put("reportDTO", reportDTO);
         result.put("memberDTO", memberDTO);
 
+        alertService.updateAlert(memberCode, "보고 회차", roundCode);
+
         return result;
     }
 
@@ -772,6 +799,19 @@ public class ReportService {
 
         if(result == 0) {
             throw new CreationFailedException("상세 보고 작성 실패!");
+        }
+        List<Integer> involvedMemberCodeList = reportMapper.selectMemberListInvolvedInReport(reportCode); // 보고 관련자 목록
+        involvedMemberCodeList.removeIf(memberCode -> memberCode == reportDetailDTO.getMemberCode()); // 작성자 제외
+
+        for(Integer receiverMemberCode : involvedMemberCodeList) {
+
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(reportDetailDTO.getMemberCode());
+            alertDTO.setReceiverMemberCode(receiverMemberCode);
+            alertDTO.setRoundCode(reportDetailDTO.getRoundCode());
+            alertDTO.setDetailCode(reportDetailDTO.getDetailCode());
+
+            alertService.registerDetailReportAlert(alertDTO);
         }
         return result > 0;
     }
@@ -864,6 +904,21 @@ public class ReportService {
         if(result == 0 ) {
             throw new CreationFailedException("보고 댓글 작성 실패!");
         }
+        long reportCode = reportMapper.getReportCodeByRoundCode(reportRoundReplyDTO.getRoundCode());
+
+        List<Integer> involvedMemberCodeList = reportMapper.selectMemberListInvolvedInReport(reportCode); // 보고 관련자 목록
+        involvedMemberCodeList.removeIf(memberCode -> memberCode == reportRoundReplyDTO.getMemberCode()); // 작성자 제외
+
+        for(Integer receiverMemberCode : involvedMemberCodeList) {
+
+            AlertDTO alertDTO = new AlertDTO();
+            alertDTO.setSenderMemberCode(reportRoundReplyDTO.getMemberCode());
+            alertDTO.setReceiverMemberCode(receiverMemberCode);
+            alertDTO.setRoundCode(reportRoundReplyDTO.getRoundCode());
+            alertDTO.setReplyCode(reportRoundReplyDTO.getReplyCode());
+
+            alertService.registerReportRoundReplyAlert(alertDTO);
+        }
         return result > 0;
     }
 
@@ -888,10 +943,6 @@ public class ReportService {
 
             reportReplyDTO.setMemberName(reportMapper.selectReporterDetail(memberCode).getMemberName());
         }
-
-//        if(reportReplyList.isEmpty()) {
-//            throw new DataNotFoundException("조회된 보고 댓글이 없습니다!");
-//        }
         return reportReplyList;
     }
 

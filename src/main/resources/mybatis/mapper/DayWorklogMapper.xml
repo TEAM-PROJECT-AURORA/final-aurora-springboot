@@ -8,7 +8,6 @@
         SELECT
             count(*)
           FROM TBL_DAY_WORKLOG
-
          WHERE MEMBER_CODE = #{ memberCode }
     </select>
 
@@ -26,6 +25,7 @@
           JOIN TBL_MEMBER M
             ON D.MEMBER_CODE = M.MEMBER_CODE
          WHERE D.MEMBER_CODE = #{ memberCode }
+         ORDER BY D.DAY_WORKLOG_CODE DESC
          LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
 
@@ -46,6 +46,27 @@
          ORDER BY D.DAY_WORKLOG_CODE DESC
     </select>
 
+    <select id="selectMemberInfo" parameterType="_int" resultType="DayWorklogDTO">
+        SELECT
+            M.MEMBER_CODE,
+            M.MEMBER_NAME,
+            M.DEPT_CODE,
+            D.DEPT_NAME,
+            M.JOB_CODE,
+            J.JOB_NAME,
+            M.TASK_CODE,
+            M.MEMBER_EMAIL,
+            M.INTRODUCTION,
+            M.BIRTHDAY,
+            M.PHONE
+        FROM TBL_MEMBER M
+        JOIN TBL_DEPARTMENT D
+          ON M.DEPT_CODE = D.DEPT_CODE
+        JOIN TBL_JOB J
+          ON M.JOB_CODE = J.JOB_CODE
+        WHERE MEMBER_CODE = #{ memberCode }
+    </select>
+
     <insert id="insertDayWorklog" parameterType="DayWorklogDTO">
         INSERT INTO TBL_DAY_WORKLOG
             (
@@ -63,14 +84,13 @@
              #{ afternoonDayContent },
              #{ morningDayNote },
              #{ afternoonDayNote },
-             #{ daySpecialNote}
+             #{ daySpecialNote }
             )
     </insert>
 
     <update id = "updateDayWorklog" parameterType="DayWorklogDTO">
         UPDATE TBL_DAY_WORKLOG
            SET
-               MEMBER_CODE = #{ memberCode },
                MORNING_DAY_CONTENT = #{ morningDayContent },
                AFTERNOON_DAY_CONTENT = #{ afternoonDayContent },
                MORNING_DAY_NOTE = #{ morningDayNote },

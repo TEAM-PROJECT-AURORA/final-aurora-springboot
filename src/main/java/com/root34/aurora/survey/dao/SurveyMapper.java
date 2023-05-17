@@ -24,9 +24,13 @@ public interface SurveyMapper {
 
     List<SurveyDTO> selectAllSurveysForManagementWithPaging(SelectCriteria selectCriteria);
 
-    int insertSurveyReply(List<AnswerDTO> answerDTOList);
+    int insertSurveyReply(AnswerDTO answerDTO);
+
+    int updateSurveyReply(AnswerDTO answerDTO);
 
     int insertSurveyReplyStatus(ReplyStatusDTO replyStatusDTO);
+
+    int updateSurveyReplyStatus(ReplyStatusDTO replyStatusDTO);
 
     int deleteSurveys(String[] surveyCodes);
 
@@ -34,7 +38,7 @@ public interface SurveyMapper {
 
     int updateSurvey(SurveyDTO surveyDTO);
 
-    int updateQuestions(QuestionDTO questionDTO);
+    int deleteQuestions(String[] questionNos);
 
-    int updateChoices(ChoiceDTO choiceDTO);
+    List<AnswerDTO> selectSurveyReplyDetail(Map map);
 }

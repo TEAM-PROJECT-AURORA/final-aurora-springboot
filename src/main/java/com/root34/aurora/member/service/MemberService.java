@@ -14,7 +14,7 @@ import java.util.List;
  @ClassName : MemberService
  @Date : 23.03.20.
  @Writer : 정근호
- @Description :
+ @Description : 인사 서비스
  */
 @Slf4j
 @Service
@@ -59,7 +59,7 @@ public class MemberService {
      * @Writer : 정근호
      * @Description :사원 전체 조회를 위한 매소드
      */
-    public Object memberList(SelectCriteria selectCriteria){
+    public Object memberList(SelectCriteria selectCriteria) {
 
         log.info("[MemberService] selectMemberListWithPaging Start =========================");
         List<MemberDTO> memberList = memberMapper.memberList(selectCriteria);
@@ -74,17 +74,6 @@ public class MemberService {
      * @Writer : 정근호
      * @Description : 사원의 상세 조회를 위한 매소드
      */
-//    public MemberDTO memberDetail(Integer memberCode) {
-//
-//        log.info("[MemberService] memberDetail Start =========================");
-//        MemberDTO memberDTO = new MemberDTO();
-//        memberDTO.setMemberCode(memberCode);
-//
-//        MemberDTO result = memberMapper.memberDetail(memberDTO);
-//
-//        log.info("[MemberService] memberDetail End =============================");
-//        return result;
-//    }
     public MemberDTO selectMemberDetail(int memberCode) {
 
         log.info("[MemberService] memberDetail Start =========================");
@@ -106,8 +95,6 @@ public class MemberService {
     @Transactional
     public String memberModify(MemberDTO memberDTO) {
 
-        // MemberDTO modifyDTO = new Member(멤버 맵퍼.조회(멤버DTO.사원번호))
-        // modifymember.set memberDTO !null
         log.info("[MemberService] memberModify Start =========================");
         memberMapper.memberModify(memberDTO);
         int result = 0;
@@ -212,7 +199,7 @@ public class MemberService {
     	@MethodName : selectJob
     	@Date : 2023-04-01
     	@Writer : 정근호
-    	@Description :
+    	@Description : 직위 조회
     */
     public List<JobDTO> selectJob() {
 
@@ -229,7 +216,7 @@ public class MemberService {
      @MethodName : selectDept
      @Date : 2023-04-01
      @Writer : 정근호
-     @Description :
+     @Description : 부서 조회
      */
     public List<DeptDTO> selectDept() {
 
@@ -245,7 +232,7 @@ public class MemberService {
      @MethodName : selectTask
      @Date : 2023-04-01
      @Writer : 정근호
-     @Description :
+     @Description : 직무 조회
      */
     public List<TaskDTO> selectTask() {
 
@@ -260,7 +247,7 @@ public class MemberService {
      @MethodName : selectTeam
      @Date : 2023-04-01
      @Writer : 정근호
-     @Description :
+     @Description : 팀 조회
      */
     public List<TeamDTO> selectTeam() {
 

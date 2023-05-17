@@ -4,41 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.root34.aurora.schedule.dao.ScheduleMapper">
 
-    <select id = "selectScheduleCalendarAboutMonth" resultType = "ScheduleDTO">
+    <select id = "selectScheduleCalendarAboutMe" resultType = "ScheduleDTO">
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-            C.SCHEDULE_CATEGORY_CODE,
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-            S.SCHEDULE_START_TIME,
-            S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-          JOIN TBL_SCHEDULE_CATEGORY C
-            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
-
+         WHERE M.MEMBER_CODE = #{memberCode}
     </select>
 
-    <select id = "selectScheduleCalendarAboutWeek" resultType = "ScheduleDTO">
+    <select id = "selectScheduleCalendarAboutTeam" resultType = "ScheduleDTO">
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-            C.SCHEDULE_CATEGORY_CODE,
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-            S.SCHEDULE_START_TIME,
-            S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-          JOIN TBL_SCHEDULE_CATEGORY C
-            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
@@ -48,71 +38,60 @@
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-            C.SCHEDULE_CATEGORY_CODE,
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-            S.SCHEDULE_START_TIME,
-            S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-          JOIN TBL_SCHEDULE_CATEGORY C
-            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
-    <select id = "selectSchedule" resultType="ScheduleDTO">
+    <select id = "selectSchedule" parameterType="map" resultType="ScheduleDTO">
         SELECT
             S.SCHEDULE_CODE,
             M.MEMBER_CODE,
-            C.SCHEDULE_CATEGORY_CODE,
             S.SCHEDULE_NAME,
             S.SCHEDULE_START_DAY,
             S.SCHEDULE_END_DAY,
-            S.SCHEDULE_START_TIME,
-            S.SCHEDULE_END_TIME,
             S.SCHEDULE_PLACE,
             S.SCHEDULE_CONTENT
           FROM TBL_SCHEDULE S
-          JOIN TBL_SCHEDULE_CATEGORY C
-            ON (S.SCHEDULE_CATEGORY_CODE = C.SCHEDULE_CATEGORY_CODE)
           JOIN TBL_MEMBER M
             ON (S.MEMBER_CODE = M.MEMBER_CODE)
          WHERE S.SCHEDULE_CODE = #{ scheduleCode }
     </select>
 
+
+
     <insert id = "insertSchedule" parameterType="ScheduleDTO">
         INSERT INTO TBL_SCHEDULE
-            (
-                MEMBER_CODE,
-                SCHEDULE_CATEGORY_CODE,
-                SCHEDULE_NAME,
-                SCHEDULE_PLACE,
-                SCHEDULE_CONTENT
-            )
+        (
+            MEMBER_CODE,
+            SCHEDULE_NAME,
+            SCHEDULE_START_DAY,
+            SCHEDULE_END_DAY,
+            SCHEDULE_PLACE,
+            SCHEDULE_CONTENT
+        )
         VALUES
-            (
-                #{ memberCode },
-                #{ scheduleCategoryCode },
-                #{ scheduleName },
-                #{ schedulePlace },
-                #{ scheduleContent }
-            )
+        (
+            #{ memberCode },
+            #{ scheduleName },
+            #{ scheduleStartDay },
+            #{ scheduleEndDay },
+            #{ schedulePlace },
+            #{ scheduleContent }
+        )
     </insert>
 
     <update id = "updateSchedule" parameterType = "ScheduleDTO">
         UPDATE TBL_SCHEDULE
-           SET
-               MEMBER_CODE = #{ memberCode },
-               SCHEDULE_CATEGORY_CODE = #{ scheduleCategoryCode },
-               SCHEDULE_NAME = #{ scheduleName },
+           SET SCHEDULE_NAME = #{ scheduleName },
                SCHEDULE_START_DAY = #{ scheduleStartDay },
                SCHEDULE_END_DAY = #{ scheduleEndDay },
-               SCHEDULE_START_TIME = #{ scheduleStartTime },
-               SCHEDULE_END_TIME = #{ scheduleEndTime },
                SCHEDULE_PLACE = #{ schedulePlace },
                SCHEDULE_CONTENT = #{ scheduleContent }
          WHERE SCHEDULE_CODE = #{ scheduleCode }

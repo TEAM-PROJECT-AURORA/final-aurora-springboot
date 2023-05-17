@@ -21,12 +21,17 @@
             COUNT(*)
           FROM TBL_RESERVATION
          WHERE MEMBER_CODE = #{ memberCode }
+            OR TEAM_CODE = (SELECT
+                                TEAM_CODE
+                              FROM TBL_MEMBER
+                             WHERE MEMBER_CODE = #{ memberCode })
     </select>
     <select id="selectAllMyReservation" parameterType="map" resultType="reservationDTO">
         SELECT
             A.RESERVATION_NO,
             A.ASSET_CODE,
             B.ASSET_NAME,
+            A.MEMBER_CODE,
             C.MEMBER_NAME,
             D.TEAM_NAME,
             A.DESCRIPTION,
@@ -41,6 +46,10 @@
           JOIN TBL_TEAM D
             ON A.TEAM_CODE = D.TEAM_CODE
          WHERE A.MEMBER_CODE = #{ memberCode }
+            OR A.TEAM_CODE = (SELECT
+                                TEAM_CODE
+                            FROM TBL_MEMBER
+                            WHERE MEMBER_CODE = #{ memberCode })
         LIMIT #{ selectCriteria.startRow }, #{ selectCriteria.limit }
     </select>
     <select id="selectReservationForUpdate" resultType="reservationDTO">
