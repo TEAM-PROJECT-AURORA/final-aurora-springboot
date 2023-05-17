@@ -2,7 +2,7 @@ package com.root34.aurora.member.service;
 
 import com.root34.aurora.exception.UserNotFoundException;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDto;
+import com.root34.aurora.member.dto.MemberDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UserNotFoundException(memberId + "를 찾을 수 없습니다."));
     }
 
-    private MemberDto addAuthorities(MemberDto member) {
+    private MemberDTO addAuthorities(MemberDTO member) {
         member.setAuthorities(Arrays.asList(new SimpleGrantedAuthority(member.getMemberRole())));
 
         return member;
