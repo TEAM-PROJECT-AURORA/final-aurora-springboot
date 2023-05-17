@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
-		PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+    PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<!-- http://www.mybatis.org/mybatis-3/configuration.html#settings 참고 -->
 	<settings>
@@ -13,19 +13,18 @@
 
 	<typeAliases>
 		<typeAlias alias="memberDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
-		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.member.dto.MemberDTO"/>
 		<typeAlias alias="ApprovalDTO" type="com.root34.aurora.approval.dto.ApprovalDTO"/>
 		<typeAlias alias="ApprovalLineDTO" type="com.root34.aurora.approval.dto.ApprovalLineDTO"/>
 		<typeAlias alias="DocumentDTO" type="com.root34.aurora.approval.dto.DocumentDTO"/>
 		<typeAlias alias="addressBookDTO" type="com.root34.aurora.addressBook.dto.AddressBookDTO"/>
 		<typeAlias alias="addressGroupDTO" type="com.root34.aurora.addressBook.dto.AddressGroupDTO"/>
 		<typeAlias alias="selectCriteria" type="com.root34.aurora.common.paging.SelectCriteria"/>
-		<typeAlias alias="AlertDTO" type="com.root34.aurora.alert.dto.AlertDTO" />
 		<typeAlias alias="MailDTO" type="com.root34.aurora.mail.dto.MailDTO" />
-		<typeAlias alias="TagDTO" type="com.root34.aurora.mail.dto.TagDTO" />
 		<typeAlias alias="ReportDTO" type="com.root34.aurora.report.dto.ReportDTO" />
 		<typeAlias alias="FileDTO" type="com.root34.aurora.common.FileDTO" />
 		<typeAlias alias="ReportRoundDTO" type="com.root34.aurora.report.dto.ReportRoundDTO" />
+		<typeAlias alias="attendanceDTO" type="com.root34.aurora.attendance.dto.AttendanceDTO"/>
 		<typeAlias alias="vacationDTO" type="com.root34.aurora.vacation.dto.VacationDTO"/>
 		<typeAlias alias="ReportDetailDTO" type="com.root34.aurora.report.dto.ReportDetailDTO" />
 		<typeAlias alias="ReportRoundReplyDTO" type="com.root34.aurora.report.dto.ReportRoundReplyDTO" />
@@ -38,13 +37,9 @@
 		<typeAlias alias="questionDTO" type="com.root34.aurora.survey.dto.QuestionDTO"/>
 		<typeAlias alias="choiceDTO" type="com.root34.aurora.survey.dto.ChoiceDTO"/>
 		<typeAlias alias="replyStatusDTO" type="com.root34.aurora.survey.dto.replyStatusDTO"/>
-		<typeAlias alias="answerDTO" type="com.root34.aurora.survey.dto.answerDTO"/>
 		<typeAlias alias="MessengerMemberDTO" type="com.root34.aurora.messenger.dto.MessengerMemberDTO"/>
 		<typeAlias alias="MessengerRequestDTO" type="com.root34.aurora.messenger.dto.MessengerRequestDTO"/>
-		<typeAlias alias="dayWorklogDTO" type="com.root34.aurora.worklog.dao.DayWorklogMapper"/>
-		<typeAlias alias="weekWorklogDTO" type="com.root34.aurora.worklog.dao.WeekWorklogMapper"/>
-		<typeAlias alias="scheduleDTO" type="com.root34.aurora.schedule.dao.ScheduleMapper"/>
-		<!--	내부분 넣어야하는듯	-->
+
 	</typeAliases>
 
 	<mappers>
@@ -54,14 +49,9 @@
 		<mapper resource="memberMapper.xml" />
 		<mapper resource="surveyMapper.xml" />
 		<mapper resource="Approval.xml"/>
-		<mapper resource="AlertMapper.xml" />
 		<mapper resource="MailMapper.xml" />
 		<mapper resource="ReportMapper.xml" />
 		<mapper resource="vacationMapper.xml"/>
 		<mapper resource="messengerMapper.xml"/>
-		<mapper resource="dayWorklogMapper.xml" />
-		<mapper resource="weekWorklogMapper.xml" />
-		<mapper resource="scheduleMapper.xml" />
-		<!--	내부분 넣어야하는듯	-->
 	</mappers>
 </configuration>

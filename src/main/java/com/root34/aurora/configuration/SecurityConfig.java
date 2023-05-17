@@ -63,10 +63,19 @@ public class SecurityConfig {
                 .authorizeRequests()// http servletRequest 를 사용하는 요청들에 대한 접근제한을 설정
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/auth/**").permitAll()// 로그인, 회원가입 api 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permit all
-                .antMatchers("/api/v1/recipes/**").permitAll()// 레시피 누구나 접근 가능
-                .antMatchers("/api/v1/categories/**").permitAll()// 레시피 누구나 접근 가능
+                .antMatchers("/api/v1/approvals/**").permitAll()//
                 .antMatchers("/api/v1/recipes-recommend/**").hasRole("ADMIN")
-                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")// 나머지 api 는 전부 인증 필요
+                .antMatchers("/api/v1/address-book/**").permitAll()
+                .antMatchers("/api/v1/members/**").permitAll()
+                .antMatchers("/api/v1/messenger-lists/**").permitAll()
+                // 메일
+                // 로그인 추가후 수정
+//                .antMatchers("/api/v1/mail/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
+                .antMatchers("/api/v1/mail/**").permitAll() // 메일 누구나 접근 가능
+                .antMatchers(("/api/v1/hrm/**")).permitAll()
+                .antMatchers("/api/v1/report/**").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인해야 접근 가능
+//                .antMatchers("/api/v1/reports/**").permitAll() // 메일 누구나 접근 가능
+                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN", "MANAGER")// 나머지 api 는 전부 인증 필요
                 .and()
                 .cors()
                 .and()
@@ -80,11 +89,13 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         // 로컬 React에서 오는 요청은 CORS 허용해준다.
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000" ));// 해당 ip만 응답
-        configuration.setAllowedOrigins(Arrays.asList("http://15.165.122.190:3000" ));// 해당 ip만 응답
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000" ));// 해당 ip만 응답
+//        configuration.setAllowedOrigins(Arrays.asList("http://15.165.122.190:3000" ));// 해당 ip만 응답
 
-        configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE"));// 해당메소드만응답하겠다
+        configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE", "PATCH"));// 해당메소드만응답하겠다
         configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Content-Type", "Access-Control-Allow-Headers", "Authorization", "X-Requested-With"));// 해당 헤더의 응답만허용
+        //웹소캣을 위해 추가
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

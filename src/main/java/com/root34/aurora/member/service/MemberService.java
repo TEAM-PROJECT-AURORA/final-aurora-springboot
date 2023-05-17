@@ -1,18 +1,21 @@
 package com.root34.aurora.member.service;
 
 import com.root34.aurora.common.paging.SelectCriteria;
-import com.root34.aurora.exception.WrongPasswordException;
 import com.root34.aurora.member.dao.MemberMapper;
-import com.root34.aurora.member.dto.MemberDto;
+import com.root34.aurora.member.dto.*;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ @ClassName : MemberService
+ @Date : 23.03.20.
+ @Writer : 정근호
+ @Description :
+ */
 @Slf4j
 @Service
 public class MemberService {
@@ -25,13 +28,247 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public MemberDto selectMyInfo(String memberId) {
+    public MemberDTO selectMyInfo(String memberId) {
 
         log.info("[MemberService] getMyInfo Start ==============================");
-        MemberDto member = memberMapper.selectByMemberId(memberId);
+        MemberDTO member = memberMapper.selectByMemberId(memberId);
         log.info("[MemberService] {}", member);
         log.info("[MemberService] getMyInfo End ==============================");
 
         return member;
+    }
+
+    /**
+     * @MethodName : selectMemberTotal
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Description :페이징 처리를 위한 매소드
+     */
+    public int selectMemberTotal() {
+
+        log.info("[MemberService] selectMemberTotal Start ====================");
+        int result = memberMapper.selectMemberTotal();
+
+        log.info("[MemberService] selectMemberTotal End ====================");
+        return result;
+    }
+
+    /**
+     * @MethodName : memberList
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Description :사원 전체 조회를 위한 매소드
+     */
+    public Object memberList(SelectCriteria selectCriteria){
+
+        log.info("[MemberService] selectMemberListWithPaging Start =========================");
+        List<MemberDTO> memberList = memberMapper.memberList(selectCriteria);
+
+        log.info("[MemberService] selectMemberListWithPaging End =============================");
+        return memberList;
+    }
+
+    /**
+     * @MethodName : memberDetail
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Description : 사원의 상세 조회를 위한 매소드
+     */
+//    public MemberDTO memberDetail(Integer memberCode) {
+//
+//        log.info("[MemberService] memberDetail Start =========================");
+//        MemberDTO memberDTO = new MemberDTO();
+//        memberDTO.setMemberCode(memberCode);
+//
+//        MemberDTO result = memberMapper.memberDetail(memberDTO);
+//
+//        log.info("[MemberService] memberDetail End =============================");
+//        return result;
+//    }
+    public MemberDTO selectMemberDetail(int memberCode) {
+
+        log.info("[MemberService] memberDetail Start =========================");
+//       MemberDTO memberDTO = new MemberDTO();
+//        memberDTO.setMemberCode(memberCode);
+
+        MemberDTO result = memberMapper.selectMemberDetail(memberCode);
+
+        log.info("[MemberService] memberDetail End =============================");
+        return result;
+    }
+
+    /**
+     * @MethodName : memberModify
+     * @Date : 23.03.20.
+     * @Writer : 정근호
+     * @Description :사원 정보 수정을 위한 매소드
+     */
+    @Transactional
+    public String memberModify(MemberDTO memberDTO) {
+
+        // MemberDTO modifyDTO = new Member(멤버 맵퍼.조회(멤버DTO.사원번호))
+        // modifymember.set memberDTO !null
+        log.info("[MemberService] memberModify Start =========================");
+        memberMapper.memberModify(memberDTO);
+        int result = 0;
+
+        result = memberMapper.memberModify(memberDTO);
+
+        log.info("[MemberService] memberModify End =============================");
+        return  (result > 0 ) ? " 수정 성공" : "수정 실패 ";
+    }
+
+    /**
+     * @MethodName : selectMemberListAboutName
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Description : 이름으로 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutName(String search, SelectCriteria selectCriteria) {
+
+        log.info("[MemberService] selectSearchMemberList Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> selectMemberListAboutName = memberMapper.selectMemberListAboutName(search, selectCriteria);
+        log.info("[MemberService] selectSearchMemberList : " + selectMemberListAboutName);
+
+        log.info("[MemberService] selectSearchMemberList End =============================");
+
+        return selectMemberListAboutName;
+    }
+
+    /**
+     * @MethodName : selectMemberListAboutEmail
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Description : 이메일로 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutEmail(String search, SelectCriteria selectCriteria) {
+
+        log.info("[MemberService] selectMemberListAboutEmail Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListAboutEmail = memberMapper.selectMemberListAboutEmail(search, selectCriteria);
+        log.info("[MemberService] selectMemberListAboutEmail : " + memberListAboutEmail);
+
+        log.info("[MemberService] selectMemberListAboutEmail End =============================");
+
+        return memberListAboutEmail;
+
+    }
+
+    /**
+     * @MethodName : selectMemberListAboutDept
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Description : 부서별 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutDept(String search, SelectCriteria selectCriteria) {
+
+        log.info("[MemberService] selectMemberListAboutDept Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListAboutDept = memberMapper.selectMemberListAboutDept(search, selectCriteria);
+        log.info("[MemberService] selectMemberListAboutDept : " + memberListAboutDept);
+
+        log.info("[MemberService] selectMemberListAboutDept End =============================");
+
+        return memberListAboutDept;
+    }
+
+    /**
+     * @MethodName : selectMemberListAboutJob
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Description : 직위별 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutJob(String search, SelectCriteria selectCriteria) {
+
+        log.info("[MemberService] selectMemberListAboutJob Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListAboutJob = memberMapper.selectMemberListAboutJob(search, selectCriteria);
+        log.info("[MemberService] selectMemberListAboutJob : " + memberListAboutJob);
+
+        log.info("[MemberService] selectMemberListAboutJob End =============================");
+
+        return memberListAboutJob;
+    }
+
+    /**
+     * @MethodName : selectMemberListAboutTask
+     * @Date : 23.03.22.
+     * @Writer : 정근호
+     * @Description : 직무별 사원 검색
+     */
+    public List<MemberDTO> selectMemberListAboutTask(String search, SelectCriteria selectCriteria) {
+
+        log.info("[MemberService] selectMemberListAboutTask Start =========================");
+        log.info("[MemberService] searchValue : " + search);
+        List<MemberDTO> memberListAboutTask = memberMapper.selectMemberListAboutTask(search, selectCriteria);
+        log.info("[MemberService] selectMemberListAboutTask : " + memberListAboutTask);
+
+        log.info("[MemberService] selectMemberListAboutTask End =============================");
+
+        return memberListAboutTask;
+    }
+    /**
+    	@MethodName : selectJob
+    	@Date : 2023-04-01
+    	@Writer : 정근호
+    	@Description :
+    */
+    public List<JobDTO> selectJob() {
+
+        log.info("[MemberService] selectJob Start =========================");
+        List<JobDTO> selectJob = memberMapper.selectJob();
+        log.info("[MemberService] selectJob End =============================");
+
+        return selectJob;
+
+
+    }
+
+    /**
+     @MethodName : selectDept
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<DeptDTO> selectDept() {
+
+        log.info("[MemberService] selectDept Start =========================");
+        List<DeptDTO> selectDept = memberMapper.selectDept();
+        log.info("[MemberService] selectDept End =============================");
+
+        return selectDept;
+
+    }
+
+    /**
+     @MethodName : selectTask
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<TaskDTO> selectTask() {
+
+        log.info("[MemberService] selectTask Start =========================");
+        List<TaskDTO> selectTask = memberMapper.selectTask();
+        log.info("[MemberService] selectTask End =============================");
+
+        return selectTask;
+
+    }
+    /**
+     @MethodName : selectTeam
+     @Date : 2023-04-01
+     @Writer : 정근호
+     @Description :
+     */
+    public List<TeamDTO> selectTeam() {
+
+        log.info("[MemberService] selectTask Start =========================");
+        List<TeamDTO> selectTeam = memberMapper.selectTeam();
+        log.info("[MemberService] selectTask End =============================");
+
+        return selectTeam;
+
     }
 }

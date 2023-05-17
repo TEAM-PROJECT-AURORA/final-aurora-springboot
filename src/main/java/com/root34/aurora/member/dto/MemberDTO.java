@@ -6,12 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  @ClassName : MemberDTO
  @Date : 23.03.19.
  @Writer : 정근호
- @Description : 사원 변수
+ @Description : 사원 변수 선언
  */
 @Data
 public class MemberDTO implements UserDetails {

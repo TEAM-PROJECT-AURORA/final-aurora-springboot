@@ -1,8 +1,8 @@
 package com.root34.aurora.jwt;
 
 import com.root34.aurora.exception.TokenException;
-import com.root34.aurora.member.dto.MemberDto;
-import com.root34.aurora.member.dto.TokenDto;
+import com.root34.aurora.member.dto.MemberDTO;
+import com.root34.aurora.member.dto.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -26,7 +26,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;     //30분       // 30분
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;     // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;     // 24시간
     private final UserDetailsService userDetailsService;
     private final Key key;
 
@@ -38,7 +39,7 @@ public class TokenProvider {
     }
 
     // Authentication 객체(유저)의 권한 정보를 이용해서 토큰을 생성
-    public TokenDto generateTokenDto(MemberDto member) {
+    public TokenDTO generateTokenDto(MemberDTO member) {
         log.info("[TokenProvider] generateTokenDto Start ===================================");
         log.info("[TokenProvider] {}", member.getMemberRole());
 
@@ -51,6 +52,7 @@ public class TokenProvider {
                 .setSubject(member.getMemberId());// sub : subject. 토큰 제목을 나타낸다.
         claims.put(AUTHORITIES_KEY, roles);// 권한 담기
         claims.put("memberCode", member.getMemberCode());
+        claims.put("team", member.getTeamCode());
 
         long now = (new Date()).getTime();// 만료시간 때문에 현재 시간을 구하는 듯
 
@@ -62,7 +64,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)// header "alg" : "HS512" // "alg" : "서명 시 사용하는 알고리즘"
                 .compact();
 
-        return new TokenDto(BEARER_TYPE, member.getMemberName(), accessToken, accessTokenExpiresIn.getTime());// Date 객체에 있는 메소든가보네
+        return new TokenDTO(BEARER_TYPE, member.getMemberName(), accessToken, accessTokenExpiresIn.getTime());// Date 객체에 있는 메소든가보네
     }
 
     public String getUserId(String accessToken) {
@@ -74,6 +76,31 @@ public class TokenProvider {
                 .parseClaimsJws(accessToken)
                 .getBody()
                 .getSubject();
+    }
+
+    /**
+    	* @MethodName : getMemberCodeFromToken
+    	* @Date : 2023-03-23
+    	* @Writer : 김수용
+    	* @Description : 토큰에서 memberCode를 추출
+    */
+    public Integer getMemberCodeFromToken(String accessToken) {
+
+        // 토큰에서 Payload 부분을 파싱하고 서명을 검증합니다.
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+        log.info("claims: " + claims);
+
+        // "memberCode" 클레임에서 값을 추출합니다.
+//        Integer memberCodeInteger = (Integer) claims.get("memberCode");
+//        String memberCode = String.valueOf(memberCodeInteger);
+
+        Integer memberCode = (Integer) claims.get("memberCode");
+
+        return memberCode;
     }
 
     // Token 에 담겨있는 정보를 이용해 Authentication 객체 리턴
@@ -95,6 +122,7 @@ public class TokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
+        log.info("[TokenProvider] userDetails : ", userDetails);
 
         // UserDetails 객체를 생성해서 UsernamePasswordAuthenticationToken 형태로 리턴, SecuriyContext 를 사용하기 위한 절차
         // SecurityContext 가 Authentication 객체를 저장하고 있기 때문이다.

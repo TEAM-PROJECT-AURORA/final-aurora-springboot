@@ -3,7 +3,7 @@ package com.root34.aurora.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.root34.aurora.exception.dto.ApiExceptionDto;
+import com.root34.aurora.exception.dto.ApiExceptionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -46,13 +46,17 @@ public class JwtFilter extends OncePerRequestFilter {//OncePerRequestFilter 인�
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                // 23.03.23 김수용 memberCode 추출하기위해 추가함
+                Integer memberCode = tokenProvider.getMemberCodeFromToken(jwt);
+                request.setAttribute("memberCode", memberCode);
             }
             filterChain.doFilter(request, response);
         } catch (RuntimeException e) {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
-            ApiExceptionDto errorResponse = new ApiExceptionDto(HttpStatus.UNAUTHORIZED, e.getMessage());
+            ApiExceptionDTO errorResponse = new ApiExceptionDTO(HttpStatus.UNAUTHORIZED, e.getMessage());
 
 
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
