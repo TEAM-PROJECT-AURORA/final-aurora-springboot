@@ -89,7 +89,7 @@ public class ApprovalController {
      @Description : 결재완료 리스트 조회
      */
     @GetMapping("/approvals/completed/{memberCode}")
-    public ResponseEntity<ResponseDTO> completedList(@PathVariable int memberCode){
+    public ResponseEntity<ResponseDTO> completedList(@PathVariable int memberCode){ // @PathVariable로 url 변수 값을 가져올 수 있었다.
 
         ApprovalDTO approvalDTO = new ApprovalDTO();
         log.info("[ApprovalController] GetMapping lastList: " + approvalDTO);
